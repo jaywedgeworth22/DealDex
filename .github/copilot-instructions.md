@@ -1,7 +1,7 @@
-DealDex lives at https://github.com/jaywedgeworth22/DealDex.
+DealDex: https://github.com/jaywedgeworth22/DealDex
 
-`main` is the source of truth. Pull rebase from origin/main before you edit.
-Commit and push to `main` when the change is done — Vercel deploys that branch
-to the live site. Never force-push `main`. Do not invent a second repo.
+Read AGENTS.md and CONTRIBUTING.md first. Work on a `grok/` / `claude/` / seat
+branch. Pull rebase from origin/main before editing. Commit, open a PR, merge
+when CI is green. Never force-push main. Never invent a second repo.
 
-Read CONTRIBUTING.md for the full loop.
+Live site builds from `main` after the owner imports the repo on Vercel or Coolify.
