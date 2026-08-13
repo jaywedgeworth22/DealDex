@@ -17,6 +17,7 @@ import { verdictCopy } from "@/lib/tcg/appraise";
 import type { Verdict } from "@/lib/tcg/types";
 import { cardImageUrl, cn, formatUsd } from "@/lib/utils";
 import { PriceRangeBar } from "@/components/price-range";
+import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
 
 const CHIPS = [
   { label: "All Pokémon", q: "" },
@@ -155,19 +156,12 @@ export function Scanner() {
           </div>
           <div className="flex gap-2">
             {(["ebay", "mercari"] as const).map((src) => (
-              <button
+              <MarketplaceToggle
                 key={src}
-                type="button"
+                marketplace={src}
+                selected={sources.includes(src)}
                 onClick={() => toggle(src)}
-                className={cn(
-                  "h-11 rounded-full border px-3 text-xs transition-colors duration-150",
-                  sources.includes(src)
-                    ? "border-accent bg-accent text-accent-fg"
-                    : "border-border text-muted hover:text-fg",
-                )}
-              >
-                {src === "ebay" ? "eBay" : "Mercari"}
-              </button>
+              />
             ))}
           </div>
         </div>
@@ -230,8 +224,6 @@ export function Scanner() {
                 ["all", `All ${rows.length}`],
                 ["deals", `Deals ${dealCount}`],
                 ["verified", `Verified ${verifiedCount}`],
-                ["ebay", `eBay ${meta.ebay}`],
-                ["mercari", `Mercari ${meta.mercari}`],
               ] as const
             ).map(([key, label]) => (
               <button
@@ -244,6 +236,22 @@ export function Scanner() {
                 )}
               >
                 {label}
+              </button>
+            ))}
+            {(["ebay", "mercari"] as const).map((key) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setView(key)}
+                className={cn(
+                  "inline-flex h-11 items-center justify-center gap-1.5 rounded-md px-1 transition-colors duration-150",
+                  view === key ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-70 hover:opacity-100",
+                )}
+              >
+                <MarketplaceLogo marketplace={key} />
+                <span className="text-xs tabular-nums text-muted">
+                  {key === "ebay" ? meta.ebay : meta.mercari}
+                </span>
               </button>
             ))}
           </div>
@@ -378,13 +386,15 @@ function ScanRow({ row }: { row: ScoredListing }) {
       {thumb ? (
         <img src={thumb} alt="" className="h-20 w-16 shrink-0 rounded-sm object-cover" />
       ) : (
-        <div className="grid h-20 w-16 shrink-0 place-items-center rounded-sm bg-elevated font-display text-sm text-subtle">
-          {listing.marketplace === "ebay" ? "e" : "m"}
+        <div className="grid h-20 w-16 shrink-0 place-items-center rounded-sm bg-elevated">
+          <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
         </div>
       )}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge>{listing.marketplace === "ebay" ? "eBay" : "Mercari"}</Badge>
+          <Badge className="gap-1.5 px-2">
+            <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
+          </Badge>
           {copy && appraisal && <Badge variant={verdictVariant(appraisal.verdict)}>{copy.label}</Badge>}
           {appraisal && appraisal.sourcesUsed >= 2 && (
             <Badge

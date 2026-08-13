@@ -9,6 +9,7 @@ import { getCard } from "@/lib/server/tcg";
 import { ebaySoldUrl, mercariSearchUrl, pickFinish, tcgplayerUrl } from "@/lib/tcg/appraise";
 import type { TcgCard } from "@/lib/tcg/types";
 import { ValuationBookPanel } from "@/components/valuation-book";
+import { MarketplaceLogo } from "@/components/market-logo";
 import { cardImageUrl, formatUsd } from "@/lib/utils";
 
 export const Route = createFileRoute("/card/$cardId")({ component: CardPage });
@@ -104,14 +105,15 @@ function CardPage() {
                   TCGPlayer <ArrowUpRight />
                 </a>
               </Button>
-              <Button variant="secondary" asChild>
+              <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto">
                 <a href={ebaySoldUrl(card, "raw")} target="_blank" rel="noreferrer">
-                  eBay sold
+                  <MarketplaceLogo marketplace="ebay" />
+                  sold
                 </a>
               </Button>
-              <Button variant="secondary" asChild>
+              <Button variant="secondary" asChild className="[&_svg]:h-5 [&_svg]:w-auto">
                 <a href={mercariSearchUrl(card, "raw")} target="_blank" rel="noreferrer">
-                  Mercari
+                  <MarketplaceLogo marketplace="mercari" />
                 </a>
               </Button>
             </div>

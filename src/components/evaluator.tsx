@@ -32,6 +32,7 @@ import type { Condition, Grade, ListingInput, Marketplace, TcgCard, Verdict } fr
 import { CONDITIONS, GRADES } from "@/lib/tcg/types";
 import { cardImageUrl, cn, formatUsd } from "@/lib/utils";
 import { PriceRangeBar } from "@/components/price-range";
+import { MarketplaceLogo } from "@/components/market-logo";
 import { describeVsBook } from "@/lib/tcg/vs-book";
 
 const LOCAL_KEY = "spreaddex:saved";
@@ -235,11 +236,34 @@ export function Evaluator({
             />
           </Field>
           <Field label="Marketplace">
-            <Select value={marketplace} onChange={(e) => setMarketplace(e.target.value as Marketplace)}>
-              <option value="ebay">eBay</option>
-              <option value="mercari">Mercari</option>
-              <option value="other">Other</option>
-            </Select>
+            <div className="flex h-11 items-center gap-1 rounded-md border border-border bg-elevated px-1">
+              {(["ebay", "mercari"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMarketplace(m)}
+                  aria-label={m === "ebay" ? "eBay" : "Mercari"}
+                  aria-pressed={marketplace === m}
+                  className={cn(
+                    "grid h-9 flex-1 place-items-center rounded-sm transition-[background-color,opacity] duration-150",
+                    marketplace === m ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-60 hover:opacity-100",
+                  )}
+                >
+                  <MarketplaceLogo marketplace={m} />
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setMarketplace("other")}
+                aria-pressed={marketplace === "other"}
+                className={cn(
+                  "h-9 flex-1 rounded-sm text-xs transition-[background-color,color] duration-150",
+                  marketplace === "other" ? "bg-surface text-fg shadow-[var(--shadow-border)]" : "text-muted",
+                )}
+              >
+                Other
+              </button>
+            </div>
           </Field>
           <Field label="Condition">
             <Select value={condition} onChange={(e) => setCondition(e.target.value as Condition)}>
@@ -509,14 +533,15 @@ function AppraisalPanel({
                 TCGPlayer <ArrowUpRight />
               </a>
             </Button>
-            <Button variant="secondary" asChild>
+            <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto">
               <a href={ebaySoldUrl(card, listing?.grade ?? "raw")} target="_blank" rel="noreferrer">
-                eBay sold
+                <MarketplaceLogo marketplace="ebay" />
+                sold
               </a>
             </Button>
-            <Button variant="secondary" asChild>
+            <Button variant="secondary" asChild className="[&_svg]:h-5 [&_svg]:w-auto">
               <a href={mercariSearchUrl(card, listing?.grade ?? "raw")} target="_blank" rel="noreferrer">
-                Mercari
+                <MarketplaceLogo marketplace="mercari" />
               </a>
             </Button>
             <Button variant="outline" asChild>

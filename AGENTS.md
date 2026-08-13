@@ -77,6 +77,17 @@ finished work".
 Onboarding a new seat or a new app: `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md`
 and `docs/ONBOARDING-NEW-APP.md`.
 
+## Grok preview sandbox
+
+The in-chat App Builder preview is a disposable checkout of this repo, not a
+second source of truth. Same rules as every other seat: rebase onto
+`origin/main`, work on a `grok/` branch, open a PR, merge when CI is green.
+If the sandbox drifted from GitHub, GitHub wins. After merge, pull into
+`~/apps/dealdex-grok` (or recreate the lane) so the Mac worktree matches.
+
+Live hosting is **not** this preview. Wire Vercel or Coolify to `main` once
+(see CONTRIBUTING.md). After that, a merged PR is what users get.
+
 ## Pre-commit / handoff
 
 Before every commit/push:

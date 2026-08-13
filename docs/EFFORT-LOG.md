@@ -11,10 +11,11 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- (none)
+- **2026-08-13 — GROK — IN PROGRESS — Marketplace logos + ship path.** eBay/Mercari marks in scan, alerts, native. CONTRIBUTING explains GitHub `main` + one-time Vercel/Coolify import.
 
 ## Planned / Reserved
 - (none)
 
 ## Changelog of this log
+- 2026-08-13 — GROK reserved marketplace logos.
 - 2026-08-13 — bootstrapped by GROK.

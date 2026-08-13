@@ -31,8 +31,12 @@ struct ScanView: View {
                 HStack {
                     chip("all", "All \(desk.rows.count)")
                     chip("deals", "Deals")
-                    chip("ebay", "eBay")
-                    chip("mercari", "Mercari")
+                    Button { desk.view = "ebay" } label: { MarketplaceMark(market: "ebay") }
+                        .buttonStyle(.bordered)
+                        .tint(desk.view == "ebay" ? Color(red: 0.25, green: 0.29, blue: 0.20) : .secondary)
+                    Button { desk.view = "mercari" } label: { MarketplaceMark(market: "mercari") }
+                        .buttonStyle(.bordered)
+                        .tint(desk.view == "mercari" ? Color(red: 0.25, green: 0.29, blue: 0.20) : .secondary)
                 }
                 if desk.loading {
                     Spacer()
@@ -65,7 +69,7 @@ struct ListingRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(row.listing.marketplace == "ebay" ? "eBay" : "Mercari").font(.caption)
+                MarketplaceMark(market: row.listing.marketplace)
                 if let v = row.appraisal?.verdict {
                     Text(v.uppercased()).font(.caption).foregroundStyle(color(v))
                 }
@@ -99,6 +103,28 @@ struct ListingRow: View {
         case "steal", "good": return Color(red: 0.25, green: 0.35, blue: 0.22)
         case "high", "avoid": return Color(red: 0.56, green: 0.31, blue: 0.27)
         default: return Color(red: 0.48, green: 0.40, blue: 0.22)
+        }
+    }
+}
+
+struct MarketplaceMark: View {
+    let market: String
+
+    var body: some View {
+        if market == "ebay" {
+            HStack(spacing: 0) {
+                Text("e").foregroundStyle(Color(red: 0.90, green: 0.17, blue: 0.18))
+                Text("b").foregroundStyle(Color(red: 0.04, green: 0.41, blue: 0.96))
+                Text("a").foregroundStyle(Color(red: 1.0, green: 0.74, blue: 0.07))
+                Text("y").foregroundStyle(Color(red: 0.58, green: 0.78, blue: 0.13))
+            }
+            .font(.caption.weight(.bold))
+            .accessibilityLabel("eBay")
+        } else {
+            Text("mercari")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(Color(red: 0.91, green: 0.13, blue: 0.13))
+                .accessibilityLabel("Mercari")
         }
     }
 }

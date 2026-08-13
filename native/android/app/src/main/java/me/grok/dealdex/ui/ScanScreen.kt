@@ -31,8 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.grok.dealdex.data.ScoredListing
@@ -74,14 +76,10 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
             }
         }
         Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(
-                "all" to "All ${state.rows.size}",
-                "deals" to "Deals",
-                "ebay" to "eBay",
-                "mercari" to "Mercari",
-            ).forEach { (k, label) ->
-                FilterChip(selected = state.view == k, onClick = { vm.setView(k) }, label = { Text(label) })
-            }
+            FilterChip(selected = state.view == "all", onClick = { vm.setView("all") }, label = { Text("All ${state.rows.size}") })
+            FilterChip(selected = state.view == "deals", onClick = { vm.setView("deals") }, label = { Text("Deals") })
+            FilterChip(selected = state.view == "ebay", onClick = { vm.setView("ebay") }, label = { MarketplaceMark("ebay") })
+            FilterChip(selected = state.view == "mercari", onClick = { vm.setView("mercari") }, label = { MarketplaceMark("mercari") })
         }
         Spacer(Modifier.height(12.dp))
         when {
@@ -111,7 +109,7 @@ private fun ListingCard(row: ScoredListing) {
     Surface(shape = RoundedCornerShape(12.dp), tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(if (row.listing.marketplace == "ebay") "eBay" else "Mercari", style = MaterialTheme.typography.labelSmall)
+                MarketplaceMark(row.listing.marketplace)
                 if (a != null) Text(a.verdict.uppercase(), color = color, style = MaterialTheme.typography.labelSmall)
             }
             Text(row.listing.title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
@@ -133,4 +131,24 @@ private fun ListingCard(row: ScoredListing) {
 @Composable
 private fun Mono(text: String) {
     Text(text, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
+}
+
+@Composable
+fun MarketplaceMark(marketplace: String, modifier: Modifier = Modifier) {
+    if (marketplace == "ebay") {
+        Row(modifier) {
+            Text("e", color = Color(0xFFE53238), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("b", color = Color(0xFF0064D2), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("a", color = Color(0xFFF5AF02), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("y", color = Color(0xFF86B817), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+        }
+    } else {
+        Text(
+            "mercari",
+            color = Color(0xFFE72121),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = modifier,
+        )
+    }
 }
