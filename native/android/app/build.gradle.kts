@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "me.grok.spreaddex"
+    namespace = "me.grok.dealdex"
     compileSdk = 34
     defaultConfig {
-        applicationId = "me.grok.spreaddex"
+        applicationId = "me.grok.dealdex"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

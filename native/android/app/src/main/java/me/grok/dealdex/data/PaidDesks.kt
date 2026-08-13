@@ -1,4 +1,4 @@
-package me.grok.spreaddex.data
+package me.grok.dealdex.data
 
 import okhttp3.OkHttpClient
 import okhttp3.Request

@@ -1,4 +1,4 @@
-package me.grok.spreaddex.data
+package me.grok.dealdex.data
 
 data class DeskKeys(
     val justTcg: String = "",

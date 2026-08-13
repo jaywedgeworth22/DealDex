@@ -1,4 +1,4 @@
-package me.grok.spreaddex.ui
+package me.grok.dealdex.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +61,6 @@ private val Type = Typography(
 )
 
 @Composable
-fun SpreadDexTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun DealDexTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = if (dark) Dark else Light, typography = Type, content = content)
 }

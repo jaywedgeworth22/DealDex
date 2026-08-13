@@ -7,9 +7,9 @@
     <key>CFBundleDisplayName</key>
     <string>DealDex</string>
     <key>CFBundleExecutable</key>
-    <string>SpreadDex</string>
+    <string>DealDex</string>
     <key>CFBundleIdentifier</key>
-    <string>me.grok.spreaddex</string>
+    <string>me.grok.dealdex</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>

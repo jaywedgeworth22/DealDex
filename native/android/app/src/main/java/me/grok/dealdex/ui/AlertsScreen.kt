@@ -1,4 +1,4 @@
-package me.grok.spreaddex.ui
+package me.grok.dealdex.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import me.grok.spreaddex.data.AlertRule
+import me.grok.dealdex.data.AlertRule
 
 @Composable
 fun AlertsScreen(vm: DeskViewModel, state: DeskState) {

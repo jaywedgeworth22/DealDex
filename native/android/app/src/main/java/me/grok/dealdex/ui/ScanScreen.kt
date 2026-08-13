@@ -1,4 +1,4 @@
-package me.grok.spreaddex.ui
+package me.grok.dealdex.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import me.grok.spreaddex.data.ScoredListing
+import me.grok.dealdex.data.ScoredListing
 
 private val chips = listOf("" to "All Pokémon", "charizard" to "charizard", "umbreon vmax" to "umbreon vmax", "151" to "151")
 

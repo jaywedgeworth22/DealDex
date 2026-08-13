@@ -35,14 +35,14 @@ function InstallPage() {
               </Button>
             </div>
             <p className="mt-3 text-xs text-subtle">
-              me.grok.spreaddex · Android 8+ · 16 MB · not a Play Store build
+              me.grok.dealdex · Android 8+ · 16 MB · not a Play Store build
             </p>
           </article>
           <article className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
             <h2 className="font-display text-2xl tracking-tight">iOS + source</h2>
             <p className="mt-2 text-sm text-muted">
               SwiftUI Xcode project plus the Android Studio project. Open
-              ios/SpreadDex.xcodeproj on a Mac, pick your team, run on a phone or simulator.
+              ios/DealDex.xcodeproj on a Mac, pick your team, run on a phone or simulator.
               There is no sideload IPA without Apple signing.
             </p>
             <div className="mt-4">
@@ -53,7 +53,7 @@ function InstallPage() {
                 </a>
               </Button>
             </div>
-            <p className="mt-3 text-xs text-subtle">me.grok.spreaddex · iOS 16+ · Xcode 15</p>
+            <p className="mt-3 text-xs text-subtle">me.grok.dealdex · iOS 16+ · Xcode 15</p>
           </article>
         </div>
       </div>

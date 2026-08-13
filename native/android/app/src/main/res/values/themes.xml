@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.SpreadDex" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.DealDex" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/paper</item>
         <item name="android:navigationBarColor">@color/paper</item>
         <item name="android:windowLightStatusBar">true</item>

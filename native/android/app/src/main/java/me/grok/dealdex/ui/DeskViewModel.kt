@@ -1,4 +1,4 @@
-package me.grok.spreaddex.ui
+package me.grok.dealdex.ui
 
 import android.app.Application
 import android.app.NotificationChannel
@@ -12,13 +12,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import me.grok.spreaddex.R
-import me.grok.spreaddex.data.AccountApi
-import me.grok.spreaddex.data.AlertRule
-import me.grok.spreaddex.data.DeskKeys
-import me.grok.spreaddex.data.Market
-import me.grok.spreaddex.data.Prefs
-import me.grok.spreaddex.data.ScoredListing
+import me.grok.dealdex.R
+import me.grok.dealdex.data.AccountApi
+import me.grok.dealdex.data.AlertRule
+import me.grok.dealdex.data.DeskKeys
+import me.grok.dealdex.data.Market
+import me.grok.dealdex.data.Prefs
+import me.grok.dealdex.data.ScoredListing
 
 data class DeskState(
     val query: String = "",

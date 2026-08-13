@@ -1,4 +1,4 @@
-package me.grok.spreaddex
+package me.grok.dealdex
 
 import android.Manifest
 import android.os.Build
@@ -25,12 +25,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import me.grok.spreaddex.ui.AccountScreen
-import me.grok.spreaddex.ui.AlertsScreen
-import me.grok.spreaddex.ui.DeskViewModel
-import me.grok.spreaddex.ui.ScanScreen
-import me.grok.spreaddex.ui.SettingsScreen
-import me.grok.spreaddex.ui.SpreadDexTheme
+import me.grok.dealdex.ui.AccountScreen
+import me.grok.dealdex.ui.AlertsScreen
+import me.grok.dealdex.ui.DeskViewModel
+import me.grok.dealdex.ui.ScanScreen
+import me.grok.dealdex.ui.SettingsScreen
+import me.grok.dealdex.ui.DealDexTheme
 
 class MainActivity : ComponentActivity() {
     private val vm: DeskViewModel by viewModels()
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 33) askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
         setContent {
-            SpreadDexTheme {
+            DealDexTheme {
                 val nav = rememberNavController()
                 val state by vm.state.collectAsState()
                 val route = nav.currentBackStackEntryAsState().value?.destination?.route

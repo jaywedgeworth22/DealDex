@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "SpreadDex"
+rootProject.name = "DealDex"
 include(":app")
