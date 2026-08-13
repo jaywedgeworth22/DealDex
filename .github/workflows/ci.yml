@@ -28,7 +28,9 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # package-lock.json predates this fleet CI and is out of sync on npm 10
+        # (Node 22). Use install until a dedicated lockfile refresh lands.
+        run: npm install --no-audit --no-fund
 
       - name: Lint
         run: npm run lint
