@@ -1,6 +1,6 @@
 # 2026-08-13 — Grok Build joins the fleet
 
-Seat: Grok Build
+Seat: GROK-BUILD
 
 ## What shipped
 

@@ -85,7 +85,7 @@ checkout (`/workspace`), not `~/apps/dealdex-grok` (that is Mac Grok).
 
 Same fleet rules as every other seat: rebase onto `origin/main`, work on a
 `grok-build/` branch, open a PR, merge when CI is green. Sign effort-log and
-STATUS rows **Grok Build**. If the sandbox drifted from GitHub, GitHub wins.
+STATUS rows **GROK-BUILD**. If the sandbox drifted from GitHub, GitHub wins.
 After merge, Mac Grok should pull `~/apps/dealdex-grok` so the worktree matches.
 
 Live hosting is **not** this preview. Wire Vercel or Coolify to `main` once

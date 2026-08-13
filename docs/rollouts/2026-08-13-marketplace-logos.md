@@ -1,6 +1,6 @@
 # 2026-08-13 — Marketplace logos and ship path
 
-Seat: GROK
+Seat: GROK-BUILD
 
 ## What shipped
 
