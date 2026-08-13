@@ -27,7 +27,7 @@ function InstallPage() {
             </p>
             <div className="mt-4">
               <Button asChild>
-                <a href="/dealdex-android-debug.apk" download>
+                <a href="/DealDex.apk" download="DealDex.apk">
                   <Download />
                   Download Android APK
                 </a>
@@ -45,7 +45,7 @@ function InstallPage() {
             </p>
             <div className="mt-4">
               <Button variant="secondary" asChild>
-                <a href="/dealdex-native-src.zip" download>
+                <a href="/DealDex-source.zip" download="DealDex-source.zip">
                   <FolderCode />
                   Download Android + iPhone source
                 </a>

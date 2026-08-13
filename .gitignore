@@ -20,6 +20,8 @@ native/android/build/
 native/android/local.properties
 public/spreaddex-android-debug.apk
 public/spreaddex-native-src.zip
+public/dealdex-android-debug.apk
+public/dealdex-native-src.zip
 .env
 .env.*
 !.env.example
