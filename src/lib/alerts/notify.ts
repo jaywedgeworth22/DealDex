@@ -1,0 +1,66 @@
+import { dispatchRemoteAlerts } from "@/lib/server/alerts";
+import type { AlertHit, AlertRule } from "./types";
+
+export async function ensureNativePermission(): Promise<NotificationPermission | "unsupported"> {
+  if (typeof window === "undefined" || !("Notification" in window)) return "unsupported";
+  if (Notification.permission === "granted" || Notification.permission === "denied") {
+    return Notification.permission;
+  }
+  return Notification.requestPermission();
+}
+
+export function showNativeHit(hit: AlertHit) {
+  if (typeof window === "undefined" || !("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+  const body = [
+    hit.verdict ? hit.verdict.toUpperCase() : "HIT",
+    hit.price != null ? `$${hit.price.toFixed(2)}` : null,
+    hit.marketplace,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  try {
+    const n = new Notification(hit.ruleName || "DealDex", {
+      body: `${hit.title}\n${body}`,
+      tag: hit.id,
+      icon: "/favicon.svg",
+    });
+    n.onclick = () => {
+      window.focus();
+      window.open(hit.url, "_blank", "noreferrer");
+      n.close();
+    };
+  } catch {
+    /* ignore */
+  }
+}
+
+export async function dispatchHits(hits: AlertHit[], rules: AlertRule[]) {
+  if (!hits.length) return;
+  const nativeHits = hits.filter((h) => h.channels.includes("native"));
+  if (nativeHits.length) {
+    const perm = await ensureNativePermission();
+    if (perm === "granted") nativeHits.forEach(showNativeHit);
+  }
+  const remote = hits.filter((h) =>
+    h.channels.some((c) => c === "email" || c === "sms" || c === "pushover"),
+  );
+  if (!remote.length) return;
+  try {
+    await dispatchRemoteAlerts({
+      data: {
+        hits: remote,
+        rules: rules.map((r) => ({
+          id: r.id,
+          email: r.email,
+          phone: r.phone,
+          pushoverUser: r.pushoverUser,
+          pushoverToken: r.pushoverToken,
+          channels: r.channels,
+        })),
+      },
+    });
+  } catch {
+    /* offline / preview — hits still logged locally */
+  }
+}

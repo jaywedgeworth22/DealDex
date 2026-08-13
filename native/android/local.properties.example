@@ -1,0 +1,4 @@
+## Copy to local.properties and point at your SDK.
+## macOS example:  sdk.dir=/Users/you/Library/Android/sdk
+## Linux example:  sdk.dir=/home/you/Android/Sdk
+sdk.dir=/path/to/Android/sdk
