@@ -2,14 +2,14 @@
 
 **GitHub `main` is the product.** Repo: https://github.com/jaywedgeworth22/DealDex
 
-Every agent (Grok, Claude, Codex, Cursor, Antigravity, Monet) and every human
-uses the same loop. Durable rules live in [`AGENTS.md`](AGENTS.md). This file
-is the short version.
+Every agent (Grok, Grok Build, Claude, Codex, Cursor, Antigravity, Monet) and
+every human uses the same loop. Durable rules live in [`AGENTS.md`](AGENTS.md).
+This file is the short version.
 
 ## Loop
 
-1. Work in your seat's lane / branch prefix (`grok/`, `claude/`, …). Do not
-   edit `/Users/jay/Code/DealDex` and do not push straight to `main`.
+1. Work in your seat's lane / branch prefix (`grok-build/`, `grok/`, `claude/`,
+   …). Do not edit `/Users/jay/Code/DealDex` and do not push straight to `main`.
 2. `git fetch origin && git rebase origin/main` before you start.
 3. Finish one coherent unit. Update `STATUS.md`, `docs/EFFORT-LOG.md`, and a
    `docs/rollouts/` note.
@@ -30,11 +30,11 @@ redeploying by hand.
 
 Do not create a second project for the same repo.
 
-## Grok preview sandbox
+## Grok Build
 
-The in-chat preview is a disposable checkout. Treat GitHub as source of truth:
-pull/rebase first, land a PR when the change is real. If this sandbox drifted,
-GitHub wins.
+Grok Build is the in-chat App Builder seat. Lane is this preview (`/workspace`).
+Branch prefix `grok-build/`. GitHub is source of truth: rebase first, land a PR
+when the change is real. If this checkout drifted, GitHub wins.
 
 ## Local
 

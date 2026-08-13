@@ -10,7 +10,7 @@ GitHub: `jaywedgeworth22/DealDex` (private). Integration tree:
 `/Users/jay/Code/DealDex`. Slack `repo:` name: **`DealDex`**. Acronym: **`DD`**.
 
 Read this before making changes. It exists so the next agent (Claude, Codex,
-Antigravity/Gemini, Cursor, Grok, Monet, …) does not re-derive traps the hard way.
+Antigravity/Gemini, Cursor, Grok, Grok Build, Monet, …) does not re-derive traps the hard way.
 
 ## Prior messages stay in scope (owner preference — ALL agents, ALL platforms)
 
@@ -35,6 +35,7 @@ Canonical: `/Users/jay/apps/AGENT-SYNC.md` “Prior messages stay in scope”.
 | Seat | Worktree | Branch prefix |
 |------|----------|---------------|
 | Grok | `~/apps/dealdex-grok` | `grok/` |
+| Grok Build | Grok App Builder preview (`/workspace`) | `grok-build/` |
 | Claude | `~/apps/dealdex-claude` | `claude/` or `agent/claude` |
 | Codex | `~/apps/dealdex-codex` | `codex/` |
 | Antigravity | `~/apps/dealdex-antigravity` | `ag/` or `agent/antigravity` |
@@ -77,16 +78,20 @@ finished work".
 Onboarding a new seat or a new app: `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md`
 and `docs/ONBOARDING-NEW-APP.md`.
 
-## Grok preview sandbox
+## Grok Build (App Builder preview)
 
-The in-chat App Builder preview is a disposable checkout of this repo, not a
-second source of truth. Same rules as every other seat: rebase onto
-`origin/main`, work on a `grok/` branch, open a PR, merge when CI is green.
-If the sandbox drifted from GitHub, GitHub wins. After merge, pull into
-`~/apps/dealdex-grok` (or recreate the lane) so the Mac worktree matches.
+**Grok Build** is the in-chat App Builder seat. Its lane is this preview
+checkout (`/workspace`), not `~/apps/dealdex-grok` (that is Mac Grok).
+
+Same fleet rules as every other seat: rebase onto `origin/main`, work on a
+`grok-build/` branch, open a PR, merge when CI is green. Sign effort-log and
+STATUS rows **Grok Build**. If the sandbox drifted from GitHub, GitHub wins.
+After merge, Mac Grok should pull `~/apps/dealdex-grok` so the worktree matches.
 
 Live hosting is **not** this preview. Wire Vercel or Coolify to `main` once
 (see CONTRIBUTING.md). After that, a merged PR is what users get.
+
+Do not add a second Grok Build seat. Do not push `main` from this preview.
 
 ## Pre-commit / handoff
 
