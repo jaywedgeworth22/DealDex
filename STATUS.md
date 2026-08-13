@@ -1,25 +1,25 @@
 # Status
 
-Updated: 2026-08-13 (GROK — fleet onboard)
+Updated: 2026-08-13 (GROK — fleet onboard landed)
 
 ## Current state
 
 - GitHub: `jaywedgeworth22/DealDex` (private). Local integration tree:
   `/Users/jay/Code/DealDex` tracks `origin/main`.
-- This worktree: `~/apps/dealdex-grok` on `grok/fleet-onboard`.
-- Product is a Pokémon listing desk (web + native Android/iOS). Web stack is
-  React 19 / TanStack Start / Tailwind v4 / Better Auth.
-- Fleet bootstrap in flight: `AGENTS.md`, effort board, effort-issues-sync, CI,
-  Slack `repo: DealDex` / acronym `DD`.
+- Fleet member: acronym **DD**, Slack `repo: DealDex`, live board
+  `~/apps/DEALDEX-EFFORT-LOG.md`.
+- Worktrees: `~/apps/dealdex-grok` (this lane). Other seats create
+  `~/apps/dealdex-<seat>` when they start.
+- CI on `main` is green after PR #3 (`npm install` on Node 22).
 
 ## Blockers
 
-- None for fleet join. Product hosting, Infisical project, Coolify app, and
-  App Store Connect records are not created yet (see onboard checklist).
+- None for fleet join.
+- Owner later: Infisical, Coolify/host, App Store Connect for `me.grok.dealdex`.
+- Digest/calendar will not see this private repo until Actions secret
+  `FLEET_GITHUB_TOKEN` on ai-fleet-coordinator includes it.
 
 ## Next
 
-- Land this onboard PR.
-- Create remaining seat worktrees when those seats start work
-  (`dealdex-claude`, `dealdex-codex`, …).
-- Owner: Infisical / deploy / ASC when the product is ready to ship.
+- Remaining seats start from `main` in their own worktrees.
+- Product work as the owner directs.
