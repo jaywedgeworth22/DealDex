@@ -4,6 +4,20 @@ Pokémon listing desk. Scan live eBay and Mercari Buy It Now singles, then score
 
 Website name: **DealDex**. Android and iPhone apps scan on the device. They do not wrap the website. API keys live on the phone; sign-in is optional if you want a backup.
 
+## Source of truth
+
+GitHub **`main`** is the product: [jaywedgeworth22/DealDex](https://github.com/jaywedgeworth22/DealDex).
+
+Anyone working on DealDex — this preview, another Grok chat, Claude, Cursor, Copilot — must:
+
+1. `git pull --rebase origin main`
+2. Make the change
+3. `git commit` and `git push origin main`
+
+Vercel ships `main` to the live site. Import the repo once at
+[vercel.com/new/import](https://vercel.com/new/import?s=https://github.com/jaywedgeworth22/DealDex)
+if it is not already connected. Full loop: [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Web
 
 ```bash

@@ -13,6 +13,7 @@ import { isIos, isStandalone } from "@/lib/pwa";
 import { useCurrentUser } from "@/lib/auth/use-current-user";
 import { formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
+import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
 
 export const Route = createFileRoute("/alerts")({ component: AlertsPage });
 
@@ -99,7 +100,13 @@ function AlertsPage() {
               className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <Badge>{hit.marketplace}</Badge>
+                <Badge className="gap-1.5 px-2">
+                  {hit.marketplace === "ebay" || hit.marketplace === "mercari" ? (
+                    <MarketplaceLogo marketplace={hit.marketplace} />
+                  ) : (
+                    hit.marketplace
+                  )}
+                </Badge>
                 {hit.verdict && <Badge variant="good">{hit.verdict}</Badge>}
                 <span className="text-xs text-subtle">{hit.ruleName}</span>
               </div>
@@ -204,20 +211,16 @@ function RuleCard({
           </button>
         ))}
         {(["ebay", "mercari"] as const).map((m) => (
-          <button
+          <MarketplaceToggle
             key={m}
-            type="button"
+            marketplace={m}
+            selected={rule.marketplaces.includes(m)}
             onClick={() => {
               const has = rule.marketplaces.includes(m);
               const next = has ? rule.marketplaces.filter((x) => x !== m) : [...rule.marketplaces, m];
               if (next.length) onChange({ marketplaces: next });
             }}
-            className={`h-11 rounded-full px-3 text-xs ${
-              rule.marketplaces.includes(m) ? "bg-accent text-accent-fg" : "bg-elevated text-muted"
-            }`}
-          >
-            {m}
-          </button>
+          />
         ))}
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

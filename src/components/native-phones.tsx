@@ -4,6 +4,7 @@ import { scanMarketplaces } from "@/lib/server/scan";
 import type { ScoredListing } from "@/lib/marketplaces/types";
 import { cn, formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
+import { MarketplaceLogo } from "@/components/market-logo";
 
 type Platform = "android" | "ios";
 
@@ -143,7 +144,7 @@ function ScanPane({
       <h2 className="mt-0.5 font-display text-xl leading-tight tracking-tight">Find the best listings.</h2>
       <p className="mt-1 text-xs text-muted">Scans eBay and Mercari on this phone.</p>
       <div className="mt-2 flex gap-1.5 overflow-x-auto">
-        {["All Pokémon", "Deals", "eBay", "Mercari"].map((label, i) => (
+        {(["All Pokémon", "Deals"] as const).map((label, i) => (
           <span
             key={label}
             className={cn(
@@ -154,6 +155,18 @@ function ScanPane({
           >
             {label}
             {label === "Deals" ? ` ${deals.length}` : ""}
+          </span>
+        ))}
+        {(["ebay", "mercari"] as const).map((m) => (
+          <span
+            key={m}
+            className={cn(
+              "inline-flex shrink-0 items-center px-2.5 py-1",
+              platform === "ios" ? "rounded-full" : "rounded-sm",
+              "bg-elevated",
+            )}
+          >
+            <MarketplaceLogo marketplace={m} className="h-3" />
           </span>
         ))}
       </div>
@@ -177,7 +190,10 @@ function ScanPane({
                 )}
               >
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-subtle">
-                  <span>{row.listing.marketplace === "ebay" ? "eBay" : "Mercari"}</span>
+                  <MarketplaceLogo
+                    marketplace={row.listing.marketplace === "ebay" ? "ebay" : "mercari"}
+                    className="h-3"
+                  />
                   {v && <span className={tone}>{v}</span>}
                 </div>
                 <p className="mt-0.5 line-clamp-2 text-xs leading-snug">{row.listing.title}</p>
