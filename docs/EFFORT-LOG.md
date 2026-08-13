@@ -6,10 +6,12 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - (none)
 
 ## Completed
+- **2026-08-13 — GROK — COMPLETED — Drop broken Auto Update PRs workflow.** `chinthakagodawita/autoupdate@v1.22.0` does not exist; it failed every main push. Revisit with the Usage-Monitor `gh pr update-branch` pattern if DealDex grows stacked PRs.
+- **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-13 — GROK — IN PROGRESS — CI: npm ci fails on Node 22 lock drift.** Follow-up `grok/ci-npm-install` switches the new CI job to `npm install` so the fleet gate can go green.
+- (none)
 
 ## Planned / Reserved
 - (none)
