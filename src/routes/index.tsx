@@ -15,8 +15,9 @@ function Home() {
           Find the best listings.
         </h1>
         <p className="mt-4 max-w-xl text-pretty text-muted">
-          DealDex hunts live Buy It Now listings on eBay and Mercari, then scores every ask
-          against TCGPlayer market.
+          DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask
+          against a book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any
+          keys you add.
         </p>
         <p className="mt-3 text-sm text-muted">
           Native Android and iPhone apps (Kotlin / Swift, not a website wrap) live on{" "}

@@ -21,6 +21,8 @@ export type ValuationBook = {
   quotes: ValuationQuote[];
   blend: number | null;
   conservative: number | null;
+  rangeLow: number | null;
+  rangeHigh: number | null;
   fxEurUsd: number | null;
   confidence: Confidence;
   sourcesUsed: number;
@@ -286,7 +288,16 @@ export function onHandQuotes(card: TcgCard, fx: number | null): ValuationQuote[]
 
 export function scoreBook(quotes: ValuationQuote[]): Pick<
   ValuationBook,
-  "blend" | "conservative" | "confidence" | "sourcesUsed" | "conflict" | "relSpread" | "note" | "conflictDetail"
+  | "blend"
+  | "conservative"
+  | "rangeLow"
+  | "rangeHigh"
+  | "confidence"
+  | "sourcesUsed"
+  | "conflict"
+  | "relSpread"
+  | "note"
+  | "conflictDetail"
 > {
   const seeded = quotes.filter(
     (q) =>
@@ -321,6 +332,8 @@ export function scoreBook(quotes: ValuationQuote[]): Pick<
   const conflict = lo != null && hi != null && hi / lo > 1.35;
   const p20 = ranked[Math.floor((ranked.length - 1) * 0.2)]?.usd ?? lo;
   const p80 = ranked[Math.floor((ranked.length - 1) * 0.8)]?.usd ?? hi;
+  const rangeLow = lo;
+  const rangeHigh = hi;
   const relSpread = blend && p20 != null && p80 != null ? (p80 - p20) / blend : null;
   let confidence: Confidence = "low";
   if (sourcesUsed >= 4 && (relSpread ?? 1) < 0.22) confidence = "high";
@@ -337,7 +350,7 @@ export function scoreBook(quotes: ValuationQuote[]): Pick<
     note = `Desks differ: ${conflictDetail}. Common on vintage US vs EU. We score against the lower cluster, not the highest ask.`;
   } else if (confidence === "high") note = `${sourcesUsed} desks agree within ~${Math.round((relSpread ?? 0) * 100)}%.`;
   else note = `${sourcesUsed} desks in the book. Spread across sources is ${relSpread != null ? `${Math.round(relSpread * 100)}%` : "wide"}.`;
-  return { blend, conservative, confidence, sourcesUsed, conflict, relSpread, note, conflictDetail };
+  return { blend, conservative, rangeLow, rangeHigh, confidence, sourcesUsed, conflict, relSpread, note, conflictDetail };
 }
 
 export async function buildValuationBook(

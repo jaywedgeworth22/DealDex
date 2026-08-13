@@ -36,6 +36,10 @@ export function applyVerification(
   if (scored.conflict && verdict === "steal") verdict = "good";
   const estimatedNetIfSold = verifiedMarket == null ? appraisal.estimatedNetIfSold : verifiedMarket * (1 - appraisal.sellFeeRate);
   const flipProfit = estimatedNetIfSold == null ? appraisal.flipProfit : estimatedNetIfSold - appraisal.allIn;
+  const rawLo = scored.rangeLow;
+  const rawHi = scored.rangeHigh;
+  const rangeLow = rawLo == null ? appraisal.rangeLow : rawLo * conditionGrade;
+  const rangeHigh = rawHi == null ? appraisal.rangeHigh : rawHi * conditionGrade;
   return {
     ...appraisal,
     adjustedMarket: verifiedMarket ?? appraisal.adjustedMarket,
@@ -45,6 +49,10 @@ export function applyVerification(
     estimatedNetIfSold,
     flipProfit,
     verifiedMarket,
+    rangeLow:
+      rangeLow != null && rangeHigh != null ? Math.min(rangeLow, rangeHigh) : rangeLow,
+    rangeHigh:
+      rangeLow != null && rangeHigh != null ? Math.max(rangeLow, rangeHigh) : rangeHigh,
     confidence: scored.confidence,
     sourcesUsed: scored.sourcesUsed,
     conflict: scored.conflict,

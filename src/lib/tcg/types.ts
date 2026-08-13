@@ -99,6 +99,8 @@ export type Appraisal = {
   flipProfit: number | null;
   finish: FinishPrices | null;
   verifiedMarket: number | null;
+  rangeLow: number | null;
+  rangeHigh: number | null;
   confidence: Confidence;
   sourcesUsed: number;
   conflict: boolean;

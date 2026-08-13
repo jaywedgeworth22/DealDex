@@ -120,15 +120,15 @@ export function verdictFromSpread(spread: number | null): Verdict {
 export function verdictCopy(verdict: Verdict) {
   switch (verdict) {
     case "steal":
-      return { label: "Steal", blurb: "Well under TCGPlayer market. Strong buy if authentic." };
+      return { label: "Steal", blurb: "Well under the desk book. Strong buy if authentic." };
     case "good":
-      return { label: "Good deal", blurb: "Meaningfully cheaper than the TCGPlayer market." };
+      return { label: "Good deal", blurb: "Meaningfully cheaper than the middle of the desks." };
     case "fair":
-      return { label: "Fair", blurb: "In line with TCGPlayer. Shop shipping and fees." };
+      return { label: "Fair", blurb: "Inside the desk range. Shop shipping and fees." };
     case "high":
-      return { label: "High ask", blurb: "Asking more than market. Fine if you need it now." };
+      return { label: "High ask", blurb: "Above the book. Fine if you need it now." };
     case "avoid":
-      return { label: "Overpriced", blurb: "Far above TCGPlayer. Wait or counter." };
+      return { label: "Overpriced", blurb: "Far above every desk. Wait or counter." };
   }
 }
 
@@ -146,6 +146,11 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
   const sellFeeRate = TCGPLAYER_SELL_FEE;
   const estimatedNetIfSold = adjustedMarket == null ? null : adjustedMarket * (1 - sellFeeRate);
   const flipProfit = estimatedNetIfSold == null ? null : estimatedNetIfSold - allIn;
+  const mult = conditionMult * gradeMult;
+  const rawLow = finish?.low ?? (rawMarket != null ? rawMarket * 0.85 : null);
+  const rawHigh = finish?.mid ?? finish?.high ?? (rawMarket != null ? rawMarket * 1.15 : null);
+  const rangeLow = rawLow == null ? null : rawLow * mult;
+  const rangeHigh = rawHigh == null ? null : rawHigh * mult;
   return {
     market: rawMarket,
     allIn,
@@ -160,10 +165,14 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
     flipProfit,
     finish,
     verifiedMarket: adjustedMarket,
+    rangeLow:
+      rangeLow != null && rangeHigh != null ? Math.min(rangeLow, rangeHigh) : rangeLow,
+    rangeHigh:
+      rangeLow != null && rangeHigh != null ? Math.max(rangeLow, rangeHigh) : rangeHigh,
     confidence: rawMarket == null ? "low" : "medium",
     sourcesUsed: rawMarket == null ? 0 : 1,
     conflict: false,
-    verifyNote: rawMarket == null ? "No TCGPlayer market on this printing." : "TCGPlayer market only — not yet cross-checked.",
+    verifyNote: rawMarket == null ? "No desk market on this printing." : "Single-desk start — cross-check still running.",
     conflictDetail: null,
   };
 }

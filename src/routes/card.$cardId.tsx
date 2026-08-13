@@ -78,7 +78,10 @@ function CardPage() {
             </p>
             <p className="mt-6 font-mono text-3xl tabular-nums">{formatUsd(finish?.market)}</p>
             <p className="text-xs uppercase tracking-[0.14em] text-subtle">
-              TCGPlayer {finish?.label ?? "market"}
+              TCGPlayer snapshot · {finish?.label ?? "market"}
+            </p>
+            <p className="mt-2 text-sm text-muted">
+              One desk’s listed band — the full book (Cardmarket, solds, PriceCharting) is below.
             </p>
             <p className="mt-2 font-mono text-sm tabular-nums text-muted">
               Low {formatUsd(finish?.low)} · Mid {formatUsd(finish?.mid)} · High {formatUsd(finish?.high)}

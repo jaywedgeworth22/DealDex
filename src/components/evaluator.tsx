@@ -30,7 +30,9 @@ import {
 import { parseListingBlob, SAMPLE_LISTINGS } from "@/lib/tcg/parse-listing";
 import type { Condition, Grade, ListingInput, Marketplace, TcgCard, Verdict } from "@/lib/tcg/types";
 import { CONDITIONS, GRADES } from "@/lib/tcg/types";
-import { cardImageUrl, cn, formatPct, formatUsd } from "@/lib/utils";
+import { cardImageUrl, cn, formatUsd } from "@/lib/utils";
+import { PriceRangeBar } from "@/components/price-range";
+import { describeVsBook } from "@/lib/tcg/vs-book";
 
 const LOCAL_KEY = "spreaddex:saved";
 const LEGACY_KEY = "trueask:saved";
@@ -388,14 +390,39 @@ function AppraisalPanel({
 
           {result && listing && copy && (
             <>
+              <PriceRangeBar
+                ask={result.allIn}
+                book={result.adjustedMarket}
+                low={result.rangeLow}
+                high={result.rangeHigh}
+              />
+
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <Stat label="TCGPlayer market" value={formatUsd(result.market)} hint={result.finish?.label} />
-                <Stat label="Verified blend" value={formatUsd(result.adjustedMarket)} hint={listing.grade === "raw" ? listing.condition : `${listing.grade} estimate`} />
-                <Stat label="Listing all-in" value={formatUsd(result.allIn)} hint={`${formatUsd(listing.price)} + ship`} />
                 <Stat
-                  label="Spread"
-                  value={formatPct(result.spread)}
-                  hint={result.dollarsOff == null ? undefined : `${formatUsd(result.dollarsOff)} vs market`}
+                  label="Desk range"
+                  value={
+                    result.rangeLow != null && result.rangeHigh != null
+                      ? `${formatUsd(result.rangeLow, 0)}–${formatUsd(result.rangeHigh, 0)}`
+                      : formatUsd(result.adjustedMarket)
+                  }
+                  hint={`${result.sourcesUsed} desk${result.sourcesUsed === 1 ? "" : "s"}`}
+                />
+                <Stat
+                  label="Book middle"
+                  value={formatUsd(result.adjustedMarket)}
+                  hint={listing.grade === "raw" ? listing.condition : `${listing.grade} estimate`}
+                />
+                <Stat label="This ask, all-in" value={formatUsd(result.allIn)} hint={`${formatUsd(listing.price)} + ship`} />
+                <Stat
+                  label="Vs the book"
+                  value={describeVsBook(result.allIn, result.adjustedMarket, result.rangeLow, result.rangeHigh).short}
+                  hint={
+                    result.dollarsOff == null
+                      ? undefined
+                      : result.dollarsOff >= 0
+                        ? `${formatUsd(result.dollarsOff)} cheaper than the middle`
+                        : `${formatUsd(-result.dollarsOff)} more than the middle`
+                  }
                   tone={result.verdict}
                 />
               </div>
@@ -405,7 +432,7 @@ function AppraisalPanel({
                 <p className="text-sm text-muted">
                   <span className="text-fg">
                     {result.confidence} confidence · {result.sourcesUsed} desks
-                    {result.conflict ? " · conflict" : ""}.
+                    {result.conflict ? " · desks differ" : ""}.
                   </span>{" "}
                   {result.verifyNote}
                 </p>
@@ -413,23 +440,21 @@ function AppraisalPanel({
 
               {listing.grade !== "raw" && (
                 <p className="text-xs text-subtle">
-                  Graded value is an estimate ({result.gradeMult}× raw NM market). Check sold slabs
+                  Graded value is an estimate ({result.gradeMult}× raw NM book). Check sold slabs
                   before you buy a PSA / BGS / CGC / ACE copy.
                 </p>
               )}
 
               <div className="grid gap-3 rounded-lg bg-elevated p-4 sm:grid-cols-2">
                 <div>
-                  <p className="text-xs text-subtle">If you flip on TCGPlayer</p>
+                  <p className="text-xs text-subtle">If you flip after ~{Math.round(result.sellFeeRate * 1000) / 10}% fees</p>
                   <p className="font-mono text-lg tabular-nums">
                     {formatUsd(result.flipProfit)}{" "}
-                    <span className="text-sm text-muted">
-                      net after ~{Math.round(result.sellFeeRate * 1000) / 10}% fees
-                    </span>
+                    <span className="text-sm text-muted">net vs this ask</span>
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-subtle">TCGPlayer range</p>
+                  <p className="text-xs text-subtle">TCGPlayer listed band (one desk)</p>
                   <p className="font-mono text-sm tabular-nums text-muted">
                     Low {formatUsd(result.finish?.low)} · Mid {formatUsd(result.finish?.mid)} · High{" "}
                     {formatUsd(result.finish?.high)}

@@ -6,6 +6,7 @@ import { loadDeskKeys } from "@/lib/settings/keys";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { formatUsd } from "@/lib/utils";
+import { PriceRangeBar } from "@/components/price-range";
 
 const FAMILY: Record<string, string> = {
   sold: "Sold comps",
@@ -57,7 +58,10 @@ export function ValuationBookPanel({ cardId }: { cardId: string }) {
         <div className="text-right">
           <p className="font-mono text-2xl tabular-nums">{formatUsd(book.blend)}</p>
           <p className="text-xs text-subtle">
-            Blend · conservative {formatUsd(book.conservative)}
+            Middle of the book · conservative {formatUsd(book.conservative)}
+          </p>
+          <p className="text-xs text-subtle">
+            Desk range {formatUsd(book.rangeLow)}–{formatUsd(book.rangeHigh)}
           </p>
           <div className="mt-1 flex justify-end gap-2">
             <Badge variant={tone}>{book.confidence} confidence</Badge>
@@ -67,6 +71,15 @@ export function ValuationBookPanel({ cardId }: { cardId: string }) {
             <p className="mt-1 max-w-xs text-xs text-deal-bad">{book.conflictDetail}</p>
           )}
         </div>
+      </div>
+
+      <div className="mb-6 rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]">
+        <PriceRangeBar
+          ask={null}
+          book={book.blend}
+          low={book.rangeLow}
+          high={book.rangeHigh}
+        />
       </div>
 
       {(["sold", "listed", "retail", "model"] as const).map((family) => {

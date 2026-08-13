@@ -26,8 +26,10 @@ export function MarketBoard() {
     <section className="space-y-4">
       <div className="flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-display text-2xl tracking-tight">Live TCGPlayer board</h2>
-          <p className="text-sm text-muted">A few cards people flip. Open one to run an appraisal.</p>
+          <h2 className="font-display text-2xl tracking-tight">A few cards on TCGPlayer</h2>
+          <p className="text-sm text-muted">
+            One desk’s snapshot. Open a card for the full book — Cardmarket, solds, PriceCharting.
+          </p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

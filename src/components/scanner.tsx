@@ -15,7 +15,8 @@ import { loadRules, pushHits } from "@/lib/alerts/store";
 import { loadDeskKeys } from "@/lib/settings/keys";
 import { verdictCopy } from "@/lib/tcg/appraise";
 import type { Verdict } from "@/lib/tcg/types";
-import { cardImageUrl, cn, formatPct, formatUsd } from "@/lib/utils";
+import { cardImageUrl, cn, formatUsd } from "@/lib/utils";
+import { PriceRangeBar } from "@/components/price-range";
 
 const CHIPS = [
   { label: "All Pokémon", q: "" },
@@ -146,12 +147,10 @@ export function Scanner() {
             <p className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</p>
             <h2 className="font-display text-2xl tracking-tight">Every live single, scored</h2>
             <p className="mt-1 max-w-xl text-xs text-muted">
-              Asks are checked against TCGPlayer, Cardmarket 7-day, TCGCSV, and sold comps. A steal
-              needs desks to agree — Verified is the short list.{" "}
-              <Link to="/settings" className="text-fg underline-offset-4 hover:underline">
-                Add API keys
-              </Link>{" "}
-              for JustTCG, PriceCharting, and pokemontcg.io.
+              Book = TCGPlayer, Cardmarket, TCGCSV, eBay solds, PriceCharting, plus any keys in
+              Settings. <span className="text-fg">Under</span> means cheaper than the middle of
+              those desks. <span className="text-fg">× book</span> means the ask is that many times
+              the middle — not a discount.
             </p>
           </div>
           <div className="flex gap-2">
@@ -286,14 +285,14 @@ export function Scanner() {
               ]}
             />
             <FilterSelect
-              label="Min spread"
+              label="Min discount"
               value={spreadMin}
               onChange={setSpreadMin}
               options={[
-                ["any", "Any spread"],
-                ["10", "10%+ off"],
-                ["20", "20%+ off"],
-                ["40", "40%+ off"],
+                ["any", "Any vs book"],
+                ["10", "10%+ under book"],
+                ["20", "20%+ under book"],
+                ["40", "40%+ under book"],
               ]}
             />
             <FilterSelect
@@ -373,7 +372,7 @@ function ScanRow({ row }: { row: ScoredListing }) {
   const { listing, card, appraisal } = row;
   const copy = appraisal ? verdictCopy(appraisal.verdict) : null;
   const thumb = listing.image || cardImageUrl(card?.image ?? null, "low");
-  const cm = card?.cardmarketEur ?? null;
+  const ask = listing.price != null ? listing.price + listing.shipping : listing.price;
   return (
     <article className="flex min-w-0 gap-3 overflow-hidden rounded-lg bg-surface p-3 shadow-[var(--shadow-border)] sm:p-4">
       {thumb ? (
@@ -400,40 +399,25 @@ function ScanRow({ row }: { row: ScoredListing }) {
           <h3 className="line-clamp-2 text-sm font-medium">{listing.title}</h3>
         </a>
         <p className="truncate text-xs text-subtle">
-          {card ? `${card.name} · ${card.setName} #${card.localId}` : "No TCGPlayer match yet"}
+          {card ? `${card.name} · ${card.setName} #${card.localId}` : "No card match yet"}
         </p>
         {appraisal?.conflict && appraisal.conflictDetail && (
           <p className="mt-1 text-xs text-deal-bad">{appraisal.conflictDetail}</p>
         )}
-        <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-sm tabular-nums">
-          <span>
+        {appraisal ? (
+          <PriceRangeBar
+            compact
+            ask={ask ?? appraisal.allIn}
+            book={appraisal.adjustedMarket}
+            low={appraisal.rangeLow}
+            high={appraisal.rangeHigh}
+          />
+        ) : (
+          <p className="mt-2 font-mono text-sm tabular-nums">
             {formatUsd(listing.price)}
             <span className="text-xs text-subtle"> ask</span>
-          </span>
-          <span className="text-muted">
-            {formatUsd(appraisal?.adjustedMarket ?? null)}
-            <span className="text-xs"> blend</span>
-          </span>
-          {cm != null && (
-            <span className="text-muted">
-              €{cm.toFixed(2)}
-              <span className="text-xs"> CM</span>
-            </span>
-          )}
-          {appraisal?.spread != null && (
-            <span
-              className={cn(
-                appraisal.verdict === "steal" || appraisal.verdict === "good"
-                  ? "text-deal-good"
-                  : appraisal.verdict === "high" || appraisal.verdict === "avoid"
-                    ? "text-deal-bad"
-                    : "text-deal-fair",
-              )}
-            >
-              {formatPct(appraisal.spread)}
-            </span>
-          )}
-        </div>
+          </p>
+        )}
         {card && (
           <Link
             to="/card/$cardId"

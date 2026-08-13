@@ -11,7 +11,8 @@ import { loadHits, loadRules, saveRules } from "@/lib/alerts/store";
 import { ensureNativePermission } from "@/lib/alerts/notify";
 import { isIos, isStandalone } from "@/lib/pwa";
 import { useCurrentUser } from "@/lib/auth/use-current-user";
-import { formatPct, formatUsd } from "@/lib/utils";
+import { formatUsd } from "@/lib/utils";
+import { labelSpread } from "@/lib/tcg/vs-book";
 
 export const Route = createFileRoute("/alerts")({ component: AlertsPage });
 
@@ -104,7 +105,7 @@ function AlertsPage() {
               </div>
               <p className="mt-1 text-sm font-medium">{hit.title}</p>
               <p className="font-mono text-sm tabular-nums text-muted">
-                {formatUsd(hit.price)} · {formatPct(hit.spread)} · {hit.channels.join(", ")}
+                {formatUsd(hit.price)} · {labelSpread(hit.spread)} · {hit.channels.join(", ")}
               </p>
             </a>
           ))}

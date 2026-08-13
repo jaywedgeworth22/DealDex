@@ -8,7 +8,8 @@ import { deleteSaved, listSaved, type SavedRow } from "@/lib/server/saved";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { verdictCopy } from "@/lib/tcg/appraise";
 import type { Verdict } from "@/lib/tcg/types";
-import { formatPct, formatUsd } from "@/lib/utils";
+import { formatUsd } from "@/lib/utils";
+import { labelSpread } from "@/lib/tcg/vs-book";
 
 export const Route = createFileRoute("/saved")({ component: SavedPage });
 
@@ -118,8 +119,8 @@ function SavedPage() {
                   {row.grade !== "raw" ? ` · ${row.grade}` : ""}
                 </p>
                 <p className="mt-1 font-mono text-sm tabular-nums text-subtle">
-                  Ask {formatUsd(row.listingPrice)} · Value {formatUsd(row.marketPrice)} ·{" "}
-                  {formatPct(row.spread)}
+                  Ask {formatUsd(row.listingPrice)} · Book {formatUsd(row.marketPrice)} ·{" "}
+                  {labelSpread(row.spread)}
                 </p>
               </div>
               <Button variant="ghost" size="icon" onClick={() => void remove(row.id)} aria-label="Remove">

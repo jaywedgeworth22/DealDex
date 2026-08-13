@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Bell, Radar } from "lucide-react";
 import { scanMarketplaces } from "@/lib/server/scan";
 import type { ScoredListing } from "@/lib/marketplaces/types";
-import { cn, formatPct, formatUsd } from "@/lib/utils";
+import { cn, formatUsd } from "@/lib/utils";
+import { labelSpread } from "@/lib/tcg/vs-book";
 
 type Platform = "android" | "ios";
 
@@ -190,8 +191,8 @@ function ScanPane({
                 <p className="mt-1 font-mono text-xs">
                   {formatUsd(row.listing.price)} ask
                   <span className="mx-1.5 text-subtle">·</span>
-                  {formatUsd(row.appraisal?.adjustedMarket)} TCGP
-                  <span className={cn("ml-1.5", tone)}>{formatPct(row.appraisal?.spread)}</span>
+                  {formatUsd(row.appraisal?.adjustedMarket)} book
+                  <span className={cn("ml-1.5", tone)}>{labelSpread(row.appraisal?.spread)}</span>
                 </p>
               </article>
             );
