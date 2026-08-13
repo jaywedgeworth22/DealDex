@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (Grok Build — joined the fleet)
+Updated: 2026-08-13 (GROK-BUILD — signature is GROK-BUILD)
 
 ## Current state
 
