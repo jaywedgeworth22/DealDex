@@ -26,7 +26,9 @@ try {
         !/Scan listings/.test(document.querySelector("button")?.innerText || "") === false
       );
     }, { timeout: 2000 });
-  } catch {}
+  } catch {
+    /* timeout: fall through to the explicit wait below */
+  }
 
   // More reliable: wait until loading skeletons gone and results or empty appear
   await page.waitForSelector("button:has-text('Scan listings')", { timeout: 15000 });
