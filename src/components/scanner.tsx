@@ -180,6 +180,12 @@ export function Scanner() {
               if (e.key === "Enter") void run();
             }}
             placeholder="All Pokémon — or type a name to narrow"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            name="dealdex-scan"
+            inputMode="search"
             className="sm:flex-1"
           />
           <Button onClick={() => void run()} disabled={loading} className="sm:w-40">
