@@ -20,7 +20,7 @@ function Home() {
           keys you add.
         </p>
         <p className="mt-3 text-sm text-muted">
-          Native Android and iPhone apps (Kotlin / Swift, not a website wrap) live on{" "}
+          Android and iPhone apps are on{" "}
           <a href="/install" className="text-fg underline-offset-4 hover:underline">
             Apps
           </a>

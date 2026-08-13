@@ -46,7 +46,7 @@ fun AlertsScreen(vm: DeskViewModel, state: DeskState) {
         Spacer(Modifier.height(16.dp))
         Button(onClick = { vm.scan() }) { Text("Scan now and notify") }
         Text(
-            "Uses Android notification channels — not a website. Matches fire after each scan.",
+            "Matches fire after each scan on this phone.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 12.dp),

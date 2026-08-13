@@ -141,9 +141,7 @@ function ScanPane({
     <div className="flex min-h-0 flex-1 flex-col px-3 pb-2">
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Pokémon listing desk</p>
       <h2 className="mt-0.5 font-display text-xl leading-tight tracking-tight">Find the best listings.</h2>
-      <p className="mt-1 text-xs text-muted">
-        {platform === "android" ? "Kotlin · Compose · OkHttp" : "SwiftUI · URLSession"}
-      </p>
+      <p className="mt-1 text-xs text-muted">Scans eBay and Mercari on this phone.</p>
       <div className="mt-2 flex gap-1.5 overflow-x-auto">
         {["All Pokémon", "Deals", "eBay", "Mercari"].map((label, i) => (
           <span
@@ -207,11 +205,7 @@ function AlertsPane({ platform }: { platform: Platform }) {
     <div className="flex-1 px-3">
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Alerts</p>
       <h2 className="font-display text-xl tracking-tight">Native deal pings</h2>
-      <p className="mt-2 text-xs text-muted">
-        {platform === "android"
-          ? "Android notification channel — not a website."
-          : "Apple UserNotifications — not a website."}
-      </p>
+      <p className="mt-2 text-xs text-muted">Pings on this phone after each scan.</p>
       <div
         className={cn(
           "mt-4 space-y-3 bg-surface p-3 text-xs shadow-[var(--shadow-border)]",

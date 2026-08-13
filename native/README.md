@@ -1,6 +1,6 @@
 # DealDex native apps
 
-Real Android (Kotlin / Jetpack Compose) and iOS (SwiftUI) apps. They talk to eBay, Mercari, TCGDex, JustTCG, PriceCharting, and pokemontcg.io **from the phone**. The website is optional.
+Android and iPhone apps. They talk to eBay, Mercari, TCGDex, JustTCG, PriceCharting, and pokemontcg.io **from the phone**. The website is optional.
 
 Keys you paste in **Keys** live on the device. If the website is down, scan still uses those keys.
 

@@ -18,7 +18,7 @@ struct AlertsView: View {
                 Section {
                     Button("Scan now and notify") { Task { await desk.scan() } }
                 } footer: {
-                    Text("Uses Apple UserNotifications — not a website. Matches fire after each scan on this device.")
+                    Text("Matches fire after each scan on this phone.")
                 }
             }
             .navigationTitle("Alerts")
