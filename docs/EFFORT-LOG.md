@@ -6,7 +6,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - (none)
 
 ## Completed
-- **2026-08-13 — GROK-BUILD — COMPLETED — Scan desk polish (PR #22).** Locked wordmarks, no grey pills, 600×825 thumbs, last-scan cache + price ticks. Title Case except or/vs.
+- **2026-08-13 — GROK-BUILD — COMPLETED — One page measure (PR #29).** Copy and cards share `max-w-7xl`. Scan card is eyebrow + controls.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Official eBay + Mercari wordmarks (PR #20).** Owner-supplied blue MERCARI mark replaces the red character. eBay four-color wordmark kept. Native Scan matches.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Join fleet as named seat.** Seat table + `grok-build/` prefix. Preview lane is `/workspace`. Same PR/CI/merge loop as every other seat.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Marketplace logos + ship path (PR #10).** eBay/Mercari marks on scan, alerts, native. CONTRIBUTING documents GitHub `main` + one-time Vercel/Coolify import.
@@ -15,13 +15,14 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-13 — GROK-BUILD — IN PROGRESS — One page measure.** Copy and cards share `max-w-7xl`. Drop `text-pretty` (it was shortening lines). Logos sit next to the scan title.
+- **2026-08-13 — GROK-BUILD — IN PROGRESS — Chip toggles + phone Settings.** eBay/Mercari sit in filled chips like the app filters. Android/iOS Settings tab holds sign-in and API keys.
 - **2026-08-13 — GROK — IN PROGRESS — iOS agent build-loop policy (branch `grok/ios-agent-rules`, worktree `~/apps/dealdex-grok-ios-rules`).** Docs/hooks only: `native/ios/CLAUDE.md`, AGENTS stanza, Claude pbxproj write-block. xcodebuild via bash is pre-approved; do not stand up Xcode MCP.
 
 ## Planned / Reserved
 - (none)
 
 ## Changelog of this log
+- 2026-08-13 — GROK-BUILD reserved chip toggles + phone Settings.
 - 2026-08-13 — GROK-BUILD reserved one page measure (drop text-pretty, max-w-7xl).
 - 2026-08-13 — GROK-BUILD reserved copy wrap + guest line.
 - 2026-08-13 — GROK-BUILD moved scan desk polish to Completed (PR #22).

@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — one page measure)
+Updated: 2026-08-13 (GROK-BUILD — chip toggles + phone Settings)
 
 ## Current state
 

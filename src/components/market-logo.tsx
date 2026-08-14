@@ -119,10 +119,10 @@ export function MarketplaceToggle({
       aria-pressed={selected}
       aria-label={count != null ? `${LABEL[marketplace]} ${count}` : LABEL[marketplace]}
       className={cn(
-        "inline-flex h-11 items-center gap-2 rounded-full border px-3 transition-[border-color,background-color,box-shadow] duration-150",
+        "inline-flex h-11 items-center gap-2 rounded-full border px-3 transition-colors duration-150",
         selected
-          ? "border-accent bg-surface shadow-[var(--shadow-border)]"
-          : "border-border bg-transparent opacity-70 hover:opacity-100",
+          ? "border-accent bg-accent text-accent-fg"
+          : "border-border bg-elevated text-muted hover:text-fg",
         className,
       )}
     >

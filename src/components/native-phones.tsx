@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Bell, Radar } from "lucide-react";
+import { Bell, Radar, Settings } from "lucide-react";
 import { scanMarketplaces } from "@/lib/server/scan";
 import type { ScoredListing } from "@/lib/marketplaces/types";
 import { cn, formatUsd } from "@/lib/utils";
@@ -10,7 +10,7 @@ type Platform = "android" | "ios";
 
 export function NativePhones() {
   const [platform, setPlatform] = useState<Platform>("android");
-  const [tab, setTab] = useState<"scan" | "alerts">("scan");
+  const [tab, setTab] = useState<"scan" | "alerts" | "settings">("scan");
   const [rows, setRows] = useState<ScoredListing[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,41 +60,65 @@ export function NativePhones() {
         <PhoneChrome platform={platform}>
           {tab === "scan" ? (
             <ScanPane platform={platform} rows={rows} loading={loading} />
-          ) : (
+          ) : tab === "alerts" ? (
             <AlertsPane platform={platform} />
+          ) : (
+            <SettingsPane platform={platform} />
           )}
           <nav
             className={cn(
-              "mt-auto grid grid-cols-2 border-t border-border bg-surface",
+              "mt-auto grid grid-cols-3 border-t border-border bg-surface",
               platform === "ios" ? "rounded-b-xl" : "rounded-b-lg",
             )}
           >
-            <button
-              type="button"
+            <TabBtn
+              active={tab === "scan"}
               onClick={() => setTab("scan")}
-              className={cn(
-                "flex h-14 flex-col items-center justify-center gap-0.5 text-xs",
-                tab === "scan" ? "text-accent" : "text-muted",
-              )}
-            >
-              <Radar className="size-4" />
-              Scan
-            </button>
-            <button
-              type="button"
+              icon={<Radar className="size-4" />}
+              label="Scan"
+            />
+            <TabBtn
+              active={tab === "alerts"}
               onClick={() => setTab("alerts")}
-              className={cn(
-                "flex h-14 flex-col items-center justify-center gap-0.5 text-xs",
-                tab === "alerts" ? "text-accent" : "text-muted",
-              )}
-            >
-              <Bell className="size-4" />
-              Alerts
-            </button>
+              icon={<Bell className="size-4" />}
+              label="Alerts"
+            />
+            <TabBtn
+              active={tab === "settings"}
+              onClick={() => setTab("settings")}
+              icon={<Settings className="size-4" />}
+              label="Settings"
+            />
           </nav>
         </PhoneChrome>
       </div>
     </div>
+  );
+}
+
+function TabBtn({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex h-14 flex-col items-center justify-center gap-0.5 text-xs",
+        active ? "text-accent" : "text-muted",
+      )}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
 
@@ -160,7 +184,10 @@ function ScanPane({
         {(["ebay", "mercari"] as const).map((m) => (
           <span
             key={m}
-            className="inline-flex shrink-0 items-center"
+            className={cn(
+              "inline-flex shrink-0 items-center bg-elevated px-2.5 py-1",
+              platform === "ios" ? "rounded-full" : "rounded-sm",
+            )}
           >
             <MarketplaceLogo marketplace={m} />
           </span>
@@ -206,6 +233,49 @@ function ScanPane({
               </article>
             );
           })}
+      </div>
+    </div>
+  );
+}
+
+function SettingsPane({ platform }: { platform: Platform }) {
+  const box = platform === "ios" ? "rounded-xl" : "rounded-md";
+  return (
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 pb-2">
+      <p className="text-xs uppercase tracking-[0.16em] text-subtle">Settings</p>
+      <h2 className="font-display text-xl tracking-tight">This Phone</h2>
+      <p className="mt-1 text-xs text-muted">Sign in to back up keys. Keys stay on the device.</p>
+      <div className={cn("mt-3 space-y-2 bg-surface p-3 text-xs shadow-[var(--shadow-border)]", box)}>
+        <p className="text-xs uppercase tracking-[0.12em] text-subtle">Account</p>
+        <p>
+          Email
+          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">you@email.com</span>
+        </p>
+        <p>
+          Password
+          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">••••••••</span>
+        </p>
+        <span className="inline-flex h-8 items-center rounded-full bg-accent px-3 text-xs text-accent-fg">
+          Sign In
+        </span>
+      </div>
+      <div className={cn("mt-3 space-y-2 bg-surface p-3 text-xs shadow-[var(--shadow-border)]", box)}>
+        <p className="text-xs uppercase tracking-[0.12em] text-subtle">API Desks</p>
+        <p>
+          JustTCG
+          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">tcg_…</span>
+        </p>
+        <p>
+          PriceCharting
+          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">pc_…</span>
+        </p>
+        <p>
+          Pokémon TCG API
+          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">optional</span>
+        </p>
+        <span className="inline-flex h-8 items-center rounded-full bg-accent px-3 text-xs text-accent-fg">
+          Save on This Phone
+        </span>
       </div>
     </div>
   );

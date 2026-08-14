@@ -10,7 +10,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material3.Icon
@@ -25,7 +24,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import me.grok.dealdex.ui.AccountScreen
 import me.grok.dealdex.ui.AlertsScreen
 import me.grok.dealdex.ui.DeskViewModel
 import me.grok.dealdex.ui.ScanScreen
@@ -63,13 +61,7 @@ class MainActivity : ComponentActivity() {
                                 selected = route == "settings",
                                 onClick = { nav.navigate("settings") { launchSingleTop = true } },
                                 icon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-                                label = { Text("Keys") },
-                            )
-                            NavigationBarItem(
-                                selected = route == "account",
-                                onClick = { nav.navigate("account") { launchSingleTop = true } },
-                                icon = { Icon(Icons.Outlined.Person, contentDescription = null) },
-                                label = { Text("Account") },
+                                label = { Text("Settings") },
                             )
                         }
                     },
@@ -78,7 +70,6 @@ class MainActivity : ComponentActivity() {
                         composable("scan") { ScanScreen(vm, state) }
                         composable("alerts") { AlertsScreen(vm, state) }
                         composable("settings") { SettingsScreen(vm, state) }
-                        composable("account") { AccountScreen(vm, state) }
                     }
                 }
             }

@@ -27,10 +27,7 @@ struct RootView: View {
                 .tabItem { Label("Alerts", systemImage: "bell") }
             SettingsView()
                 .environmentObject(desk)
-                .tabItem { Label("Keys", systemImage: "key") }
-            AccountView()
-                .environmentObject(desk)
-                .tabItem { Label("Account", systemImage: "person") }
+                .tabItem { Label("Settings", systemImage: "gearshape") }
         }
         .tint(Color(red: 0.25, green: 0.29, blue: 0.20))
     }
