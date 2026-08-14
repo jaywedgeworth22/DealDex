@@ -3,265 +3,346 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000000000000000000001 /* DealDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* DealDexApp.swift */; };
-		A10000000000000000000002 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* Models.swift */; };
-		A10000000000000000000003 /* Appraise.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* Appraise.swift */; };
-		A10000000000000000000004 /* Market.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* Market.swift */; };
-		A10000000000000000000005 /* DeskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* DeskModel.swift */; };
-		A10000000000000000000006 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* ScanView.swift */; };
-		A10000000000000000000007 /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* AlertsView.swift */; };
-		A10000000000000000000008 /* DeskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* DeskStore.swift */; };
-		A10000000000000000000009 /* AccountApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* AccountApi.swift */; };
-		A1000000000000000000000A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000A /* SettingsView.swift */; };
-		A1000000000000000000000B /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000B /* AccountView.swift */; };
-		A1000000000000000000000C /* PaidDesks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000C /* PaidDesks.swift */; };
+		115F5E513207288F44040D12 /* Appraise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */; };
+		4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6ED06FC5E7DA4B309E90F /* Models.swift */; };
+		82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */; };
+		90341ABD2FBF83991C619ED2 /* AccountApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311B6F98D562C40268CAF219 /* AccountApi.swift */; };
+		91AD53E281BD98AFD212A2BF /* Market.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E96EE4589197B685843AB3 /* Market.swift */; };
+		A612C5E54E4042A1F04AF87B /* PaidDesks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CA7FA5A7C93FE00BFF5816 /* PaidDesks.swift */; };
+		BFBD6E80909740C203D5B174 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61487D9B0E035704CAFC1E9 /* SettingsView.swift */; };
+		CDFE44760F4FDE7DB16B293C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F5F676B10407840DA6220C /* ScanView.swift */; };
+		D69450F58B17C2EECD236C19 /* DeskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE02B033E727EE0760B492 /* DeskStore.swift */; };
+		D956F7DEF8BAB101A87B62F7 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22646DB4462EBE054FA5FD1D /* AccountView.swift */; };
+		E0BFA5839CEC00B3F19EF40B /* DeskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8027642EE047BC6844FC1731 /* DeskModel.swift */; };
+		E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74DAB841052EE8417CAA3FA /* AlertsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B10000000000000000000001 /* DealDexApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealDexApp.swift; sourceTree = "<group>"; };
-		B10000000000000000000002 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		B10000000000000000000003 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
-		B10000000000000000000004 /* Market.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Market.swift; sourceTree = "<group>"; };
-		B10000000000000000000005 /* DeskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskModel.swift; sourceTree = "<group>"; };
-		B10000000000000000000006 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
-		B10000000000000000000007 /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
-		B10000000000000000000008 /* DeskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskStore.swift; sourceTree = "<group>"; };
-		B10000000000000000000009 /* AccountApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountApi.swift; sourceTree = "<group>"; };
-		B1000000000000000000000A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		B1000000000000000000000B /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
-		B1000000000000000000000C /* PaidDesks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaidDesks.swift; sourceTree = "<group>"; };
-		B10000000000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C10000000000000000000001 /* DealDex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DealDex.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		04E6ED06FC5E7DA4B309E90F /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		06CA7FA5A7C93FE00BFF5816 /* PaidDesks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaidDesks.swift; sourceTree = "<group>"; };
+		22646DB4462EBE054FA5FD1D /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		311B6F98D562C40268CAF219 /* AccountApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountApi.swift; sourceTree = "<group>"; };
+		50067F711863E53C8B62C880 /* DealDex.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DealDex.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealDexApp.swift; sourceTree = "<group>"; };
+		66E96EE4589197B685843AB3 /* Market.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Market.swift; sourceTree = "<group>"; };
+		79BE02B033E727EE0760B492 /* DeskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskStore.swift; sourceTree = "<group>"; };
+		8027642EE047BC6844FC1731 /* DeskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskModel.swift; sourceTree = "<group>"; };
+		CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
+		D61487D9B0E035704CAFC1E9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E74DAB841052EE8417CAA3FA /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
+		F9F5F676B10407840DA6220C /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFrameworksBuildPhase section */
-		D10000000000000000000001 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
 /* Begin PBXGroup section */
-		E10000000000000000000001 = {
+		3ADF03538B5F5916137FEA9A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E10000000000000000000002 /* DealDex */,
-				E10000000000000000000003 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		E10000000000000000000002 /* DealDex */ = {
-			isa = PBXGroup;
-			children = (
-				B10000000000000000000001 /* DealDexApp.swift */,
-				B10000000000000000000002 /* Models.swift */,
-				B10000000000000000000003 /* Appraise.swift */,
-				B10000000000000000000004 /* Market.swift */,
-				B10000000000000000000005 /* DeskModel.swift */,
-				B10000000000000000000006 /* ScanView.swift */,
-				B10000000000000000000007 /* AlertsView.swift */,
-				B10000000000000000000008 /* DeskStore.swift */,
-				B10000000000000000000009 /* AccountApi.swift */,
-				B1000000000000000000000A /* SettingsView.swift */,
-				B1000000000000000000000B /* AccountView.swift */,
-				B1000000000000000000000C /* PaidDesks.swift */,
-				B10000000000000000000010 /* Info.plist */,
-			);
-			path = DealDex;
-			sourceTree = "<group>";
-		};
-		E10000000000000000000003 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				C10000000000000000000001 /* DealDex.app */,
+				50067F711863E53C8B62C880 /* DealDex.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9F6B8204DBAE4AFFF7AFCEE8 = {
+			isa = PBXGroup;
+			children = (
+				FAA4199A8553FE5D93E9D5AC /* DealDex */,
+				3ADF03538B5F5916137FEA9A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FAA4199A8553FE5D93E9D5AC /* DealDex */ = {
+			isa = PBXGroup;
+			children = (
+				311B6F98D562C40268CAF219 /* AccountApi.swift */,
+				22646DB4462EBE054FA5FD1D /* AccountView.swift */,
+				E74DAB841052EE8417CAA3FA /* AlertsView.swift */,
+				CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */,
+				5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */,
+				8027642EE047BC6844FC1731 /* DeskModel.swift */,
+				79BE02B033E727EE0760B492 /* DeskStore.swift */,
+				66E96EE4589197B685843AB3 /* Market.swift */,
+				04E6ED06FC5E7DA4B309E90F /* Models.swift */,
+				06CA7FA5A7C93FE00BFF5816 /* PaidDesks.swift */,
+				F9F5F676B10407840DA6220C /* ScanView.swift */,
+				D61487D9B0E035704CAFC1E9 /* SettingsView.swift */,
+			);
+			path = DealDex;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F10000000000000000000001 /* DealDex */ = {
+		BB883C50AFFC936740631EB0 /* DealDex */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F10000000000000000000011 /* Build configuration list for PBXNativeTarget "DealDex" */;
+			buildConfigurationList = 9D2CCF5414C1BC30C0540204 /* Build configuration list for PBXNativeTarget "DealDex" */;
 			buildPhases = (
-				F10000000000000000000002 /* Sources */,
-				D10000000000000000000001 /* Frameworks */,
-				F10000000000000000000003 /* Resources */,
+				26796C64882EED1C35E2FE1C /* Sources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = DealDex;
+			packageProductDependencies = (
+			);
 			productName = DealDex;
-			productReference = C10000000000000000000001 /* DealDex.app */;
+			productReference = 50067F711863E53C8B62C880 /* DealDex.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		F10000000000000000000010 /* Project object */ = {
+		4CC1402F95CED31C94CA27DF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					F10000000000000000000001 = {
-						CreatedOnToolsVersion = 15.4;
+					BB883C50AFFC936740631EB0 = {
+						DevelopmentTeam = CC8UTF7ATG;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = F10000000000000000000012 /* Build configuration list for PBXProject "DealDex" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = 0142A60441FF8451840B82FC /* Build configuration list for PBXProject "DealDex" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
-			mainGroup = E10000000000000000000001;
-			productRefGroup = E10000000000000000000003 /* Products */;
+			mainGroup = 9F6B8204DBAE4AFFF7AFCEE8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 3ADF03538B5F5916137FEA9A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F10000000000000000000001 /* DealDex */,
+				BB883C50AFFC936740631EB0 /* DealDex */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		F10000000000000000000003 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		F10000000000000000000002 /* Sources */ = {
+		26796C64882EED1C35E2FE1C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000001 /* DealDexApp.swift in Sources */,
-				A10000000000000000000002 /* Models.swift in Sources */,
-				A10000000000000000000003 /* Appraise.swift in Sources */,
-				A10000000000000000000004 /* Market.swift in Sources */,
-				A10000000000000000000005 /* DeskModel.swift in Sources */,
-				A10000000000000000000006 /* ScanView.swift in Sources */,
-				A10000000000000000000007 /* AlertsView.swift in Sources */,
-				A10000000000000000000008 /* DeskStore.swift in Sources */,
-				A10000000000000000000009 /* AccountApi.swift in Sources */,
-				A1000000000000000000000A /* SettingsView.swift in Sources */,
-				A1000000000000000000000B /* AccountView.swift in Sources */,
-				A1000000000000000000000C /* PaidDesks.swift in Sources */,
+				90341ABD2FBF83991C619ED2 /* AccountApi.swift in Sources */,
+				D956F7DEF8BAB101A87B62F7 /* AccountView.swift in Sources */,
+				E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */,
+				115F5E513207288F44040D12 /* Appraise.swift in Sources */,
+				82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */,
+				E0BFA5839CEC00B3F19EF40B /* DeskModel.swift in Sources */,
+				D69450F58B17C2EECD236C19 /* DeskStore.swift in Sources */,
+				91AD53E281BD98AFD212A2BF /* Market.swift in Sources */,
+				4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */,
+				A612C5E54E4042A1F04AF87B /* PaidDesks.swift in Sources */,
+				CDFE44760F4FDE7DB16B293C /* ScanView.swift in Sources */,
+				BFBD6E80909740C203D5B174 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		F20000000000000000000001 /* Debug */ = {
+		70194031FCB17ABF44D88209 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CC8UTF7ATG;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DealDex/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.grok.dealdex;
+				PRODUCT_NAME = DealDex;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8E2AF7D19A47ED3D385EBA0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CC8UTF7ATG;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DealDex/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = me.grok.dealdex;
+				PRODUCT_NAME = DealDex;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		944D563BC3F8F79498019FAF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_TESTABILITY = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = CC8UTF7ATG;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BC48985C75BA039DC5AAE03F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = CC8UTF7ATG;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		F20000000000000000000002 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		F20000000000000000000003 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DealDex/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = DealDex;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = me.grok.dealdex;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
-		};
-		F20000000000000000000004 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DealDex/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = DealDex;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = me.grok.dealdex;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F10000000000000000000011 /* Build configuration list for PBXNativeTarget "DealDex" */ = {
+		0142A60441FF8451840B82FC /* Build configuration list for PBXProject "DealDex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F20000000000000000000003 /* Debug */,
-				F20000000000000000000004 /* Release */,
+				BC48985C75BA039DC5AAE03F /* Debug */,
+				944D563BC3F8F79498019FAF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F10000000000000000000012 /* Build configuration list for PBXProject "DealDex" */ = {
+		9D2CCF5414C1BC30C0540204 /* Build configuration list for PBXNativeTarget "DealDex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F20000000000000000000001 /* Debug */,
-				F20000000000000000000002 /* Release */,
+				8E2AF7D19A47ED3D385EBA0F /* Debug */,
+				70194031FCB17ABF44D88209 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = F10000000000000000000010 /* Project object */;
+	rootObject = 4CC1402F95CED31C94CA27DF /* Project object */;
 }

@@ -4,7 +4,7 @@
 **Project:** `native/ios/DealDex.xcodeproj`
 **Scheme:** `DealDex`
 **Team:** `CC8UTF7ATG` (ASC app record may not exist yet — see `/Users/jay/apps/ios-fleet/README.md`)
-**XcodeGen:** none — new `.swift` files must be added to the target in Xcode (or reported for a human). Do not hand-edit `project.pbxproj`.
+**XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.
 **Keys:** stay on device. Do not invent a cloud key store.
 
 Binding fleet rule: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop. `xcodebuild` / `xcrun simctl` via bash are pre-approved. Do not ask. Do not stand up or narrate Xcode MCP.
@@ -15,6 +15,8 @@ Binding fleet rule: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop. `xc
 xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
   -destination 'generic/platform=iOS Simulator' build
 ```
+
+If `xcodebuild` hangs at `ExecuteExternalTool … clang -v -E -dM` (Xcode 26 Swift Build can stall on a full pipe on this Mac), compile with `swiftc` against the iPhoneSimulator SDK and `xcrun simctl install booted`.
 
 Discover simulators with `xcrun simctl list devices available`. After a user-visible change:
 
@@ -28,7 +30,8 @@ xcrun simctl io booted screenshot /tmp/dd-ios-verify.png
 
 ```
 native/ios/
-├── DealDex.xcodeproj/                  # do not hand-edit
+├── project.yml                         # XcodeGen spec
+├── DealDex.xcodeproj/                  # generated; do not hand-edit
 └── DealDex/
     ├── DealDexApp.swift                # App entry
     ├── DeskStore.swift                 # @Observable desk / session store

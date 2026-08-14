@@ -12,16 +12,25 @@ Keys you paste in **Settings** live on the device. If the website is down, scan 
 
 ```
 cd native/android
-ANDROID_HOME=… ./gradlew :app:assembleDebug --no-daemon
+JAVA_HOME="$(/usr/libexec/java_home -v 17 2>/dev/null || echo /opt/homebrew/opt/openjdk@17)"
+ANDROID_HOME="${ANDROID_HOME:-/opt/homebrew/share/android-commandlinetools}"
+ANDROID_HOME="$ANDROID_HOME" JAVA_HOME="$JAVA_HOME" ./gradlew :app:assembleDebug --no-daemon
 ```
+
+The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your Android SDK (copy `local.properties.example`).  Need JDK 17.
 
 - Package `me.grok.dealdex`, min SDK 26, target 34.
 - Launcher name: DealDex.
 
 ## iOS
 
-1. Open `ios/DealDex.xcodeproj` in Xcode 15+.
-2. Set your Development Team on the target.
+1. From `native/ios`, run `xcodegen generate` after editing `project.yml`.
+2. Open `ios/DealDex.xcodeproj` in Xcode 15+ (team `CC8UTF7ATG`).
 3. Run on a phone or simulator.
 
-Bundle id: `me.grok.dealdex`. Display name: DealDex.
+```
+xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
+  -destination 'generic/platform=iOS Simulator' build
+```
+
+Bundle id: `me.grok.dealdex`.  Display name: DealDex.

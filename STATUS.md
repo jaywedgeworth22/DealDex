@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-14 (GROK-BUILD — Vercel project linked)
+Updated: Fri, Aug 14, 2026 at 3:50 PM CT (GROK — native iOS + Android builds)
 
 ## Current state
 
@@ -9,14 +9,10 @@ Updated: 2026-08-14 (GROK-BUILD — Vercel project linked)
 - Fleet member: acronym **DD**, Slack `repo: DealDex`, live board
   `~/apps/DEALDEX-EFFORT-LOG.md`.
 - **Grok Build** (`GROK-BUILD`) is a standing seat.  Prefix `grok-build/`.
-  Mac TUI lane: `~/apps/dealdex-grok-build`.  Cloud preview: `/workspace`.
-  Inventory: fleet #26 (`fleet-apps.json`) + #27 (AGENT-SYNC seat table).
-- Vercel project **dealdex** is linked to this GitHub repo, production
-  branch `main`.  Team `jaywedgeworth22s-projects`.  First production
-  deploy fires when this commit lands on `main`.
-- Marketplace logos: official eBay four-color wordmark + official Mercari
-  blue wordmark.  Scan/alert chips use solid white letters (PR #37).
-- CI on `main` is green after PR #3 (`npm install` on Node 22).
+- Vercel project **dealdex** is linked to GitHub `main`.
+- Native Android debug APK builds with the new Gradle 8.7 wrapper.
+  iOS has an XcodeGen spec (`native/ios/project.yml`).  Simulator
+  install verified this turn.
 
 ## Blockers
 
@@ -26,8 +22,10 @@ Updated: 2026-08-14 (GROK-BUILD — Vercel project linked)
 - Integration tree `~/Code/DealDex` is dirty (uncommitted
   `native/ios/DealDex.xcodeproj` bits) and behind `origin/main`.  Do not
   fast-forward it until those files are cleaned by a human or an iOS lane.
+- `xcodebuild` on this Mac can hang at Xcode 26's `clang -v` probe.
+  Fallback: `swiftc` + `simctl` (see `native/ios/CLAUDE.md`).
 
 ## Next
 
-- Confirm the first Vercel production deploy after this PR merges.
+- TestFlight / ASC app record when the owner is ready.
 - Remaining seats start from `main` in their own worktrees.
