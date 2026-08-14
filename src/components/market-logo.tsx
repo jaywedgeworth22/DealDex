@@ -1,18 +1,25 @@
 import { cn } from "@/lib/utils";
 
 type Market = "ebay" | "mercari";
+type Tone = "color" | "white";
 
 const LABEL: Record<Market, string> = {
   ebay: "eBay",
   mercari: "Mercari",
 };
 
+const EBAY_FILLS = {
+  color: ["#F02D2D", "#0968F6", "#FFBD14", "#92C821"],
+  white: ["#ffffff", "#ffffff", "#ffffff", "#ffffff"],
+} as const;
+
 /** Locked box so viewBox 1000×401 never paints at intrinsic size. */
 const EBAY = { w: 35, h: 14 } as const;
 const MERCARI = { w: 64, h: 14 } as const;
 
 /** Official four-color eBay wordmark. */
-function EbayWordmark({ className }: { className?: string }) {
+function EbayWordmark({ className, tone = "color" }: { className?: string; tone?: Tone }) {
+  const fill = EBAY_FILLS[tone];
   return (
     <span
       className={cn("inline-flex shrink-0 overflow-hidden", className)}
@@ -28,19 +35,19 @@ function EbayWordmark({ className }: { className?: string }) {
       >
         <title>{LABEL.ebay}</title>
         <path
-          fill="#F02D2D"
+          fill={fill[0]}
           d="M199.636 185.866c-1.944-46.877-35.78-64.42-71.941-64.42-38.994 0-70.127 19.733-75.58 64.42zM51.034 219.191c2.704 45.484 34.07 72.384 77.198 72.384 29.88 0 56.46-12.175 65.359-38.66h51.684c-10.052 53.74-67.154 71.98-116.303 71.98C39.606 324.895 0 275.679 0 209.307 0 136.242 40.966 88.122 129.788 88.122c70.699 0 122.5 36.999 122.5 117.756v13.313z"
         />
         <path
-          fill="#0968F6"
+          fill={fill[1]}
           d="M380.832 290.624c46.572 0 78.441-33.522 78.441-84.109 0-50.582-31.869-84.108-78.441-84.108-46.311 0-78.444 33.526-78.444 84.108 0 50.587 32.133 84.109 78.444 84.109zM252.285 0h50.103v125.877c24.557-29.26 58.389-37.755 91.69-37.755 55.835 0 117.851 37.677 117.851 119.029 0 68.122-49.322 117.745-118.781 117.745-36.357 0-70.581-13.043-91.687-38.883 0 10.321-.576 20.724-1.705 30.564h-49.172c.855-15.909 1.706-35.718 1.706-51.747z"
         />
         <path
-          fill="#FFBD14"
+          fill={fill[2]}
           d="M633.078 212.533c-45.439 1.489-73.671 9.689-73.671 39.619 0 19.376 15.447 40.382 54.663 40.382 52.577 0 80.643-28.659 80.643-75.663v-5.17c-18.433 0-41.164.161-61.637.833zm111.751 62.103c0 14.583.422 28.978 1.694 41.941h-46.614c-1.243-10.674-1.697-21.28-1.697-31.567-25.202 30.98-55.177 39.886-96.762 39.886-61.676 0-94.7-32.6-94.7-70.307 0-54.612 44.916-73.867 122.89-75.654 21.323-.487 45.274-.559 65.075-.559v-5.336c0-36.561-23.444-51.593-64.068-51.593-30.158 0-52.386 12.48-54.676 34.047h-52.652c5.572-53.772 62.067-67.371 111.74-67.371 59.509 0 109.773 21.173 109.773 84.115z"
         />
         <path
-          fill="#92C821"
+          fill={fill[3]}
           d="m1000 96.457-154.945 304.294h-56.106l44.547-84.495L716.89 96.457h58.627l85.805 171.731 85.563-171.731z"
         />
       </svg>
@@ -48,8 +55,8 @@ function EbayWordmark({ className }: { className?: string }) {
   );
 }
 
-/** Official Mercari wordmark — blue #5356EE. */
-function MercariWordmark({ className }: { className?: string }) {
+/** Official Mercari wordmark — blue #5356EE, or solid white on dark chips. */
+function MercariWordmark({ className, tone = "color" }: { className?: string; tone?: Tone }) {
   return (
     <span
       className={cn("inline-flex shrink-0 overflow-hidden", className)}
@@ -64,7 +71,7 @@ function MercariWordmark({ className }: { className?: string }) {
         className="block h-full w-full"
       >
         <title>{LABEL.mercari}</title>
-        <g fill="#5356EE">
+        <g fill={tone === "white" ? "#ffffff" : "#5356EE"}>
           <path d="M17.2 33.3 26.6 15.2h7.5v33.5h-7.4V29.5h-.1l-7.2 12.9h-4.8L7.5 29.5H7.4v19.1H0V15.1h7.5l9.5 18.2h.2z" />
           <path d="M72 54.5v-6.9H54.7v-6.4h16.5v-6.8H54.7v-6.7H72V21H47.3v33.5H72z" />
           <path
@@ -91,12 +98,14 @@ function MercariWordmark({ className }: { className?: string }) {
 export function MarketplaceLogo({
   marketplace,
   className,
+  tone = "color",
 }: {
   marketplace: Market;
   className?: string;
+  tone?: Tone;
 }) {
-  if (marketplace === "ebay") return <EbayWordmark className={className} />;
-  return <MercariWordmark className={className} />;
+  if (marketplace === "ebay") return <EbayWordmark className={className} tone={tone} />;
+  return <MercariWordmark className={className} tone={tone} />;
 }
 
 export function MarketplaceToggle({
@@ -121,13 +130,13 @@ export function MarketplaceToggle({
       className={cn(
         "inline-flex h-11 items-center gap-2 rounded-full border px-3 transition-colors duration-150",
         selected
-          ? "border-accent bg-accent text-accent-fg"
-          : "border-border bg-elevated text-muted hover:text-fg",
+          ? "border-accent bg-accent"
+          : "border-fg/20 bg-fg/80 opacity-70 hover:opacity-100",
         className,
       )}
     >
-      <MarketplaceLogo marketplace={marketplace} />
-      {count != null && <span className="text-xs tabular-nums text-muted">{count}</span>}
+      <MarketplaceLogo marketplace={marketplace} tone="white" />
+      {count != null && <span className="text-xs tabular-nums text-white/80">{count}</span>}
     </button>
   );
 }

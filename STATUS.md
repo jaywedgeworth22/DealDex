@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — straighten JustTCG J)
+Updated: 2026-08-13 (GROK-BUILD — white toggle wordmarks)
 
 ## Current state
 
