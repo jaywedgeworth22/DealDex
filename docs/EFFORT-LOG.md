@@ -1,12 +1,12 @@
 # DealDex Effort Log — cross-agent board
-Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
-`/Users/jay/apps/DEALDEX-EFFORT-LOG.md` (mirror: this file). As of 2026-08-14.
+Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this file
+(mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-14.
 
 ## Deployed
-- (none)
+- **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 
 ## Completed
-- **2026-08-14 — GROK-BUILD — COMPLETED — Register Grok Build as a standing fleet seat (DealDex PR #41, fleet #26 + #27).** Mac lane `~/apps/dealdex-grok-build`.  `fleet-apps.json` + AGENT-SYNC seat table.
+- **2026-08-14 — GROK-BUILD — COMPLETED — Register Grok Build as a standing fleet seat (DealDex PR #41, fleet PR #26).** Mac lane `~/apps/dealdex-grok-build`.  `fleet-apps.json` has GROK-BUILD.  AGENT-SYNC seat table still for Mac Grok (keepout this turn).
 - **2026-08-14 — GROK — COMPLETED — Onboarding links + subagent/economics wording (PR #40).** AGENTS.md start-here table + stronger Delegation stanza.  Docs only.
 - **2026-08-13 — GROK-BUILD — COMPLETED — White toggle wordmarks (PR #37).** Scan/alert source chips use solid white eBay/Mercari letters.  Listing-row marks stay full color.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Straighten the JustTCG J (PR #34).** Desk names use Plex.  Fraunces WONK=0.
@@ -19,14 +19,14 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-14 — GROK-BUILD — IN PROGRESS — Link Vercel project dealdex to GitHub main.** Owner `/vercel /+`.  First production deploy on this merge.
+- **2026-08-14 — GROK — IN PROGRESS — Compile native iOS + Android apps (PR pending).** Lane `~/apps/dealdex-grok` branch `grok/native-builds`.  Android APK built.  iOS installed on iPhone 17 Pro sim.
 
 ## Planned / Reserved
 - (none)
 
 ## Changelog of this log
-- 2026-08-14 — GROK-BUILD reserved standing-seat registration; closed white-toggle (#37) and iOS rules (#18) rows that were still In Progress on the stale mirror.  Rebased onto #40 (GROK onboard-links).
-- 2026-08-14 — GROK reserved onboarding links + economics wording (PR #40).
+- 2026-08-14 — GROK reserved native iOS + Android compile (wrapper + XcodeGen).
+- 2026-08-14 — GROK-BUILD reserved fleet seat registration; reconciled live board with origin/main mirror (did not delete GROK-BUILD rows).
 - 2026-08-13 — GROK-BUILD reserved white toggle wordmarks.
 - 2026-08-13 — GROK-BUILD reserved JustTCG J fix (Plex for desk names, Fraunces WONK=0).
 - 2026-08-13 — GROK-BUILD reserved chip toggles + phone Settings.
