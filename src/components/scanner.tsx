@@ -310,7 +310,7 @@ export function Scanner() {
               value={condition}
               onChange={setCondition}
               options={[
-                ["any", "Raw Or Graded"],
+                ["any", "Raw or Graded"],
                 ["raw", "Raw Only"],
                 ["graded", "Graded Only"],
               ]}
@@ -320,7 +320,7 @@ export function Scanner() {
               value={spreadMin}
               onChange={setSpreadMin}
               options={[
-                ["any", "Any Vs Book"],
+                ["any", "Any vs Book"],
                 ["10", "10%+ Under Book"],
                 ["20", "20%+ Under Book"],
                 ["40", "40%+ Under Book"],
