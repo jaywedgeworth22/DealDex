@@ -32,9 +32,11 @@ Do not create a second project for the same repo.
 
 ## Grok Build
 
-Grok Build is the in-chat App Builder seat. Lane is this preview (`/workspace`).
-Branch prefix `grok-build/`. GitHub is source of truth: rebase first, land a PR
-when the change is real. If this checkout drifted, GitHub wins.
+Grok Build (`GROK-BUILD`) is a standing seat, distinct from Mac Grok (`GROK`).
+Branch prefix `grok-build/`.  Cloud App Builder preview lane is `/workspace`.
+Mac Grok Build TUI lane is `~/apps/dealdex-grok-build`.  Never edit
+`/Users/jay/Code/DealDex`.  GitHub is source of truth: rebase first, land a PR
+when the change is real.  If this checkout drifted, GitHub wins.
 
 ## Local
 
