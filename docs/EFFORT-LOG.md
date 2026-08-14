@@ -1,28 +1,31 @@
 # DealDex Effort Log — cross-agent board
 Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
-`/Users/jay/apps/DEALDEX-EFFORT-LOG.md` (mirror: this file). As of 2026-08-13.
+`/Users/jay/apps/DEALDEX-EFFORT-LOG.md` (mirror: this file). As of 2026-08-14.
 
 ## Deployed
 - (none)
 
 ## Completed
-- **2026-08-13 — GROK-BUILD — COMPLETED — Straighten the JustTCG J (PR #34).** Desk names use Plex. Fraunces WONK=0.
-- **2026-08-13 — GROK-BUILD — COMPLETED — Official eBay + Mercari wordmarks (PR #20).** Owner-supplied blue MERCARI mark replaces the red character. eBay four-color wordmark kept. Native Scan matches.
-- **2026-08-13 — GROK-BUILD — COMPLETED — Join fleet as named seat.** Seat table + `grok-build/` prefix. Preview lane is `/workspace`. Same PR/CI/merge loop as every other seat.
-- **2026-08-13 — GROK-BUILD — COMPLETED — Marketplace logos + ship path (PR #10).** eBay/Mercari marks on scan, alerts, native. CONTRIBUTING documents GitHub `main` + one-time Vercel/Coolify import.
-- **2026-08-13 — GROK — COMPLETED — Drop broken Auto Update PRs workflow.** `chinthakagodawita/autoupdate@v1.22.0` does not exist; it failed every main push. Revisit with the Usage-Monitor `gh pr update-branch` pattern if DealDex grows stacked PRs.
+- **2026-08-14 — GROK — COMPLETED — Onboarding links + subagent/economics wording (PR #40).** AGENTS.md start-here table + stronger Delegation stanza.  Docs only.
+- **2026-08-13 — GROK-BUILD — COMPLETED — White toggle wordmarks (PR #37).** Scan/alert source chips use solid white eBay/Mercari letters.  Listing-row marks stay full color.
+- **2026-08-13 — GROK-BUILD — COMPLETED — Straighten the JustTCG J (PR #34).** Desk names use Plex.  Fraunces WONK=0.
+- **2026-08-13 — GROK-BUILD — COMPLETED — Official eBay + Mercari wordmarks (PR #20).** Owner-supplied blue MERCARI mark replaces the red character.  eBay four-color wordmark kept.  Native Scan matches.
+- **2026-08-13 — GROK-BUILD — COMPLETED — Join fleet as named seat.** Seat table + `grok-build/` prefix.  Preview lane is `/workspace`.  Same PR/CI/merge loop as every other seat.
+- **2026-08-13 — GROK-BUILD — COMPLETED — Marketplace logos + ship path (PR #10).** eBay/Mercari marks on scan, alerts, native.  CONTRIBUTING documents GitHub `main` + one-time Vercel/Coolify import.
+- **2026-08-13 — GROK — COMPLETED — iOS agent build-loop policy (PR #18).** `native/ios/CLAUDE.md` + AGENTS + Claude pbxproj hook.  xcodebuild via bash is pre-approved.
+- **2026-08-13 — GROK — COMPLETED — Drop broken Auto Update PRs workflow.** `chinthakagodawita/autoupdate@v1.22.0` does not exist; it failed every main push.  Revisit with the Usage-Monitor `gh pr update-branch` pattern if DealDex grows stacked PRs.
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
-- **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
+- **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-14 — GROK — IN PROGRESS — Onboarding links + subagent/economics wording (branch `grok/docs-onboard-links`).** AGENTS.md start-here table + stronger Delegation stanza. Docs only.
-- **2026-08-13 — GROK-BUILD — IN PROGRESS — White toggle wordmarks.** Scan/alert source chips use solid white eBay/Mercari letters. Listing-row marks stay full color.
-- **2026-08-13 — GROK — IN PROGRESS — iOS agent build-loop policy (branch `grok/ios-agent-rules`, worktree `~/apps/dealdex-grok-ios-rules`).** Docs/hooks only: `native/ios/CLAUDE.md`, AGENTS stanza, Claude pbxproj write-block. xcodebuild via bash is pre-approved; do not stand up Xcode MCP.
+- **2026-08-14 — GROK-BUILD — IN PROGRESS — Register Grok Build as a standing fleet seat.** `fleet-apps.json` + Mac lane `~/apps/dealdex-grok-build` (`grok-build/fleet-setup`).  AGENT-SYNC seat table deferred to GROK FLEET keepout.
 
 ## Planned / Reserved
 - (none)
 
 ## Changelog of this log
+- 2026-08-14 — GROK-BUILD reserved standing-seat registration; closed white-toggle (#37) and iOS rules (#18) rows that were still In Progress on the stale mirror.  Rebased onto #40 (GROK onboard-links).
+- 2026-08-14 — GROK reserved onboarding links + economics wording (PR #40).
 - 2026-08-13 — GROK-BUILD reserved white toggle wordmarks.
 - 2026-08-13 — GROK-BUILD reserved JustTCG J fix (Plex for desk names, Fraunces WONK=0).
 - 2026-08-13 — GROK-BUILD reserved chip toggles + phone Settings.
