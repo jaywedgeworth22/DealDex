@@ -12,11 +12,10 @@ fleet / delivery posture, not card-desk features.
 
 ## Next (product, not this PR)
 
-- Runtime secrets in Infisical (prod env) when a host exists.  Owner creates
-  the project — do not invent one.
-- Production host (Vercel fits this stack, or Coolify) with auto-deploy on
-  `main` only after the owner picks it.  `/vercel /+` is parked behind the
-  seat PR.
+- Runtime secrets in Infisical (prod env).  Owner creates the project — do
+  not invent one.
+- Custom domain on the Vercel **dealdex** project (GitHub `main` already
+  linked; first deploy comes from this PR).
 - iOS TestFlight via `/Users/jay/apps/ios-fleet` once an ASC app record exists
   for `me.grok.dealdex`.
 - Android Play / sideload pipeline as the owner directs.

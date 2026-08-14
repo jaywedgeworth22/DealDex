@@ -6,6 +6,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - (none)
 
 ## Completed
+- **2026-08-14 — GROK-BUILD — COMPLETED — Register Grok Build as a standing fleet seat (DealDex PR #41, fleet #26 + #27).** Mac lane `~/apps/dealdex-grok-build`.  `fleet-apps.json` + AGENT-SYNC seat table.
 - **2026-08-14 — GROK — COMPLETED — Onboarding links + subagent/economics wording (PR #40).** AGENTS.md start-here table + stronger Delegation stanza.  Docs only.
 - **2026-08-13 — GROK-BUILD — COMPLETED — White toggle wordmarks (PR #37).** Scan/alert source chips use solid white eBay/Mercari letters.  Listing-row marks stay full color.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Straighten the JustTCG J (PR #34).** Desk names use Plex.  Fraunces WONK=0.
@@ -18,7 +19,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-14 — GROK-BUILD — IN PROGRESS — Register Grok Build as a standing fleet seat.** `fleet-apps.json` + Mac lane `~/apps/dealdex-grok-build` (`grok-build/fleet-setup`).  AGENT-SYNC seat table deferred to GROK FLEET keepout.
+- **2026-08-14 — GROK-BUILD — IN PROGRESS — Link Vercel project dealdex to GitHub main.** Owner `/vercel /+`.  First production deploy on this merge.
 
 ## Planned / Reserved
 - (none)
