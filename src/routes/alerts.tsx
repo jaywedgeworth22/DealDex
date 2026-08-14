@@ -15,6 +15,7 @@ import { formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
 import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
 import { verdictCopy } from "@/lib/tcg/appraise";
+import { Lead } from "@/components/lead";
 
 export const Route = createFileRoute("/alerts")({ component: AlertsPage });
 
@@ -36,10 +37,10 @@ function AlertsPage() {
     <Shell>
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Watchlist</p>
       <h1 className="mt-1 font-display text-4xl tracking-tight">Alerts</h1>
-      <p className="mt-3 max-w-xl text-sm text-muted">
+      <Lead>
         Tell DealDex what a deal looks like. Native phone alerts fire on this device. Email, SMS,
         and Pushover use the destinations you add.
-      </p>
+      </Lead>
 
       <div className="mt-6 flex flex-wrap gap-2">
         <Button
@@ -51,17 +52,17 @@ function AlertsPage() {
             else toast("Permission saved.");
           }}
         >
-          <Bell /> Enable native alerts
+          <Bell /> Enable Native Alerts
         </Button>
         <Button variant="secondary" asChild>
           <Link to="/install">
-            <Smartphone /> Install the phone app
+            <Smartphone /> Install the Phone App
           </Link>
         </Button>
       </div>
       {isIos() && !isStandalone() && (
         <p className="mt-3 text-sm text-muted">
-          On iPhone, add DealDex to the Home Screen first, then tap Enable native alerts from the
+          On iPhone, add DealDex to the Home Screen first, then tap Enable Native Alerts from the
           icon.
         </p>
       )}
@@ -84,12 +85,12 @@ function AlertsPage() {
             persist([...rules, next]);
           }}
         >
-          Add alert
+          Add Alert
         </Button>
       </div>
 
       <section className="mt-14">
-        <h2 className="font-display text-2xl tracking-tight">Recent hits</h2>
+        <h2 className="font-display text-2xl tracking-tight">Recent Hits</h2>
         {!hits.length && <p className="mt-3 text-sm text-muted">No matches yet. Run a scan.</p>}
         <div className="mt-4 grid gap-3">
           {hits.map((hit) => (

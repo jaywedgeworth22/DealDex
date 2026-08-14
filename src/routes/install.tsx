@@ -3,6 +3,7 @@ import { Download, FolderCode } from "lucide-react";
 import { NativePhones } from "@/components/native-phones";
 import { Shell } from "@/components/shell";
 import { Button } from "@/components/ui/button";
+import { Lead } from "@/components/lead";
 
 export const Route = createFileRoute("/install")({ component: InstallPage });
 
@@ -11,10 +12,10 @@ function InstallPage() {
     <Shell>
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Native apps</p>
       <h1 className="mt-1 font-display text-4xl tracking-tight">Android and iPhone</h1>
-      <p className="mt-3 max-w-xl text-pretty text-muted">
-        Two phone apps. They scan eBay and Mercari on the device, score each ask against the
-        desks, and keep working if this website is down.
-      </p>
+      <Lead>
+        Two phone apps. They scan eBay and Mercari on the device, score each ask against the desks,
+        and keep working if this website is down.
+      </Lead>
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[auto_1fr]">
         <NativePhones />
