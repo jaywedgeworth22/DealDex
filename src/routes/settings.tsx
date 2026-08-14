@@ -120,7 +120,7 @@ function SettingsPage() {
           <article key={desk.id} className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
             <div>
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <h2 className="font-display text-2xl tracking-tight">{desk.label}</h2>
+                <h2 className="text-xl font-medium tracking-tight">{desk.label}</h2>
                 <a
                   href={desk.href}
                   target="_blank"
@@ -133,7 +133,7 @@ function SettingsPage() {
               <p className="mt-1 text-sm text-muted">{desk.blurb}</p>
             </div>
             <div className="mt-4">
-              <Label htmlFor={desk.id}>{desk.label} key</Label>
+              <Label htmlFor={desk.id}>{desk.label} Key</Label>
               <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
                 <div className="relative min-w-0 flex-1">
                   <Input
