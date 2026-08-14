@@ -166,18 +166,10 @@ export function Scanner() {
   return (
     <section className="min-w-0 space-y-5">
       <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-6">
-        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</p>
-            <h2 className="font-display text-2xl tracking-tight">Every live single, scored</h2>
-            <p className="mt-1 max-w-xl text-xs text-muted">
-              Book = TCGPlayer, Cardmarket, TCGCSV, eBay solds, PriceCharting, plus any keys in
-              Settings. <span className="text-fg">Under</span> means cheaper than the middle of
-              those desks. <span className="text-fg">× book</span> means the ask is that many times
-              the middle — not a discount.
-            </p>
-          </div>
-          <div className="flex gap-2">
+        <p className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</p>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-2xl tracking-tight">Every live single, scored</h2>
+          <div className="flex flex-wrap gap-2">
             {(["ebay", "mercari"] as const).map((src) => (
               <MarketplaceToggle
                 key={src}
@@ -188,7 +180,13 @@ export function Scanner() {
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <p className="mt-2 max-w-3xl text-pretty text-sm text-muted">
+          Book is TCGPlayer, Cardmarket, TCGCSV, eBay solds, PriceCharting, and any keys in
+          Settings. <span className="text-fg">Under</span> means cheaper than the middle of those
+          desks. <span className="text-fg">× book</span> is how many times the ask is versus that
+          middle — not a discount.
+        </p>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
