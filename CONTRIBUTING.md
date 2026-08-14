@@ -20,15 +20,10 @@ build from.
 
 ## Live site
 
-Wire hosting to this repo **once**. After that, merged PRs ship without anyone
-redeploying by hand.
+Hosting is the Vercel project **dealdex**, linked to this GitHub repo,
+production branch `main`.  Merged PRs ship without anyone redeploying by hand.
 
-- **Vercel (fits this stack):** import
-  [jaywedgeworth22/DealDex](https://vercel.com/new/import?s=https://github.com/jaywedgeworth22/DealDex)
-  with production branch `main`. Build command is `npm run build`.
-- **Coolify / other:** point the app at the same GitHub repo and `main`.
-
-Do not create a second project for the same repo.
+Do not create a second Vercel or Coolify project for the same repo.
 
 ## Grok Build
 
