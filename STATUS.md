@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — official marketplace wordmarks)
+Updated: 2026-08-13 (GROK-BUILD — official wordmarks on main, PR #20)
 
 ## Current state
 
