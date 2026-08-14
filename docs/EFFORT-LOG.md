@@ -20,7 +20,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- (none)
+- **2026-08-14 — GROK — IN PROGRESS — Submit DealDex to TestFlight / App Store and Play.** Lane `~/apps/dealdex-grok` branch `grok/store-ship`.  Bundle ID `me.grok.dealdex` registered (KJX389KP5M).  ASC App Manager key cannot CREATE apps.
 
 ## Planned / Reserved
 - (none)

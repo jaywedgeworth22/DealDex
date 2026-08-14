@@ -75,8 +75,11 @@ export function Shell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border/80">
         <div className={cn(PAGE, "flex flex-col gap-2 py-8 text-xs text-subtle sm:flex-row sm:items-start sm:justify-between sm:gap-8")}>
           <p>
-            Values from TCGPlayer, Cardmarket, eBay solds, and PriceCharting. Not affiliated with
-            those markets or Pokémon.
+            Values from TCGPlayer, Cardmarket, eBay solds, and PriceCharting.  Not affiliated with
+            those markets or Pokémon.{" "}
+            <Link to="/privacy" className="underline decoration-border underline-offset-2 hover:text-fg">
+              Privacy
+            </Link>
           </p>
           <p className="sm:max-w-sm sm:text-right">
             Grade multipliers are estimates. Confirm authenticity before you buy.
