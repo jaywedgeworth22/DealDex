@@ -245,7 +245,7 @@ export function Evaluator({
                   aria-label={m === "ebay" ? "eBay" : "Mercari"}
                   aria-pressed={marketplace === m}
                   className={cn(
-                    "grid h-9 flex-1 place-items-center rounded-sm transition-[background-color,opacity] duration-150 [&_svg]:size-auto",
+                    "grid h-9 flex-1 place-items-center overflow-hidden rounded-sm transition-[background-color,opacity] duration-150",
                     marketplace === m ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-60 hover:opacity-100",
                   )}
                 >
@@ -380,10 +380,10 @@ function AppraisalPanel({
             <img
               src={img}
               alt={card.name}
-              className="w-full rounded-lg bg-elevated object-cover"
+              className="aspect-[600/825] w-full rounded-lg bg-elevated object-cover"
             />
           ) : (
-            <div className="grid aspect-[63/88] place-items-center rounded-lg bg-elevated text-sm text-subtle">
+            <div className="grid aspect-[600/825] place-items-center rounded-lg bg-elevated text-sm text-subtle">
               No scan
             </div>
           )}
@@ -456,7 +456,7 @@ function AppraisalPanel({
                 <p className="text-sm text-muted">
                   <span className="text-fg">
                     {result.confidence} confidence · {result.sourcesUsed} desks
-                    {result.conflict ? " · desks differ" : ""}.
+                    {result.conflict ? " · Desks Differ" : ""}.
                   </span>{" "}
                   {result.verifyNote}
                 </p>
@@ -546,7 +546,7 @@ function AppraisalPanel({
             </Button>
             <Button variant="outline" asChild>
               <Link to="/card/$cardId" params={{ cardId: card.id }}>
-                Card dossier
+                Card Dossier
               </Link>
             </Button>
             {listing && result && (
@@ -578,9 +578,9 @@ function AppraisalPanel({
                   )}
                 >
                   {thumb ? (
-                    <img src={thumb} alt="" className="h-16 w-12 rounded-sm object-cover" />
+                    <img src={thumb} alt="" className="h-[66px] w-12 shrink-0 rounded-sm object-cover" />
                   ) : (
-                    <div className="h-16 w-12 rounded-sm bg-elevated" />
+                    <div className="h-[66px] w-12 shrink-0 rounded-sm bg-elevated" />
                   )}
                   <span className="min-w-0">
                     <span className="block truncate text-sm">{c.name}</span>

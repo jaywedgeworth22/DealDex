@@ -18,6 +18,14 @@ import type { Verdict } from "@/lib/tcg/types";
 import { cardImageUrl, cn, formatUsd } from "@/lib/utils";
 import { PriceRangeBar } from "@/components/price-range";
 import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
+import { PriceSpark } from "@/components/price-spark";
+import {
+  formatAge,
+  loadScanCache,
+  peekListing,
+  rememberListings,
+  saveScanCache,
+} from "@/lib/marketplaces/memory";
 
 const CHIPS = [
   { label: "All Pokémon", q: "" },
@@ -65,6 +73,14 @@ export function Scanner() {
       });
       setRows(res.rows);
       setMeta({ ebay: res.ebay, mercari: res.mercari, notes: res.notes });
+      rememberListings(res.rows);
+      saveScanCache({
+        q: term,
+        sources: src,
+        at: new Date().toISOString(),
+        rows: res.rows,
+        meta: { ebay: res.ebay, mercari: res.mercari, notes: res.notes },
+      });
       if (!res.rows.length) toast("No live listings right now. Try again in a minute.");
       const rules = loadRules();
       const hits = collectHits(res.rows, rules);
@@ -81,7 +97,14 @@ export function Scanner() {
   }
 
   useEffect(() => {
-    void run("", ["ebay", "mercari"]);
+    const cached = loadScanCache();
+    if (cached) {
+      setRows(cached.rows);
+      setMeta(cached.meta);
+      setQ(cached.q);
+      if (cached.sources.length) setSources(cached.sources);
+    }
+    void run(cached?.q ?? "", cached?.sources ?? ["ebay", "mercari"]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -183,7 +206,7 @@ export function Scanner() {
           />
           <Button onClick={() => void run()} disabled={loading} className="sm:w-40">
             {loading ? <LoaderCircle className="animate-spin" /> : <Radar />}
-            {q.trim() ? "Scan listings" : "Scan market"}
+            {q.trim() ? "Scan Listings" : "Scan Market"}
           </Button>
         </div>
         <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -208,7 +231,7 @@ export function Scanner() {
         </div>
       </div>
 
-      {loading && (
+      {loading && !rows && (
         <div className="grid gap-3 sm:grid-cols-2">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-28 rounded-lg" />
@@ -216,7 +239,7 @@ export function Scanner() {
         </div>
       )}
 
-      {!loading && rows && (
+      {rows && (
         <>
           <div className="grid grid-cols-2 gap-1 rounded-lg bg-elevated p-1 sm:grid-cols-5">
             {(
@@ -244,7 +267,7 @@ export function Scanner() {
                 type="button"
                 onClick={() => setView(key)}
                 className={cn(
-                  "inline-flex h-11 items-center justify-center gap-1.5 rounded-md px-1 transition-colors duration-150 [&_svg]:size-auto",
+                  "inline-flex h-11 items-center justify-center gap-1.5 overflow-hidden rounded-md px-1 transition-colors duration-150",
                   view === key ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-70 hover:opacity-100",
                 )}
               >
@@ -262,20 +285,20 @@ export function Scanner() {
               value={verdict}
               onChange={setVerdict}
               options={[
-                ["any", "Any verdict"],
+                ["any", "Any Verdict"],
                 ["steal", "Steal"],
-                ["good", "Good deal"],
+                ["good", "Good Deal"],
                 ["fair", "Fair"],
-                ["high", "High ask"],
+                ["high", "High Ask"],
                 ["avoid", "Overpriced"],
               ]}
             />
             <FilterSelect
-              label="Max ask"
+              label="Max Ask"
               value={priceCap}
               onChange={setPriceCap}
               options={[
-                ["any", "Any price"],
+                ["any", "Any Price"],
                 ["25", "Under $25"],
                 ["50", "Under $50"],
                 ["100", "Under $100"],
@@ -287,20 +310,20 @@ export function Scanner() {
               value={condition}
               onChange={setCondition}
               options={[
-                ["any", "Raw or graded"],
-                ["raw", "Raw only"],
-                ["graded", "Graded only"],
+                ["any", "Raw Or Graded"],
+                ["raw", "Raw Only"],
+                ["graded", "Graded Only"],
               ]}
             />
             <FilterSelect
-              label="Min discount"
+              label="Min Discount"
               value={spreadMin}
               onChange={setSpreadMin}
               options={[
-                ["any", "Any vs book"],
-                ["10", "10%+ under book"],
-                ["20", "20%+ under book"],
-                ["40", "40%+ under book"],
+                ["any", "Any Vs Book"],
+                ["10", "10%+ Under Book"],
+                ["20", "20%+ Under Book"],
+                ["40", "40%+ Under Book"],
               ]}
             />
             <FilterSelect
@@ -308,7 +331,7 @@ export function Scanner() {
               value={finish}
               onChange={setFinish}
               options={[
-                ["any", "Any finish"],
+                ["any", "Any Finish"],
                 ["holo", "Holo"],
                 ["reverse", "Reverse"],
                 ["promo", "Promo"],
@@ -331,7 +354,7 @@ export function Scanner() {
                   rel="noreferrer"
                   className="mt-2 inline-flex h-11 items-center gap-1 text-sm text-fg"
                 >
-                  Open Mercari search <ArrowUpRight className="size-4" />
+                  Open Mercari Search <ArrowUpRight className="size-4" />
                 </a>
               )}
             </div>
@@ -381,27 +404,39 @@ function ScanRow({ row }: { row: ScoredListing }) {
   const copy = appraisal ? verdictCopy(appraisal.verdict) : null;
   const thumb = listing.image || cardImageUrl(card?.image ?? null, "low");
   const ask = listing.price != null ? listing.price + listing.shipping : listing.price;
+  const memory = peekListing(listing.marketplace, listing.id);
+  const listed = formatAge(listing.listedAt ?? memory?.listedAt);
+  const seen = formatAge(memory?.firstSeen);
+  const ageLabel = listed ? `Listed ${listed}` : seen ? `Seen ${seen}` : null;
+  const confidence =
+    appraisal && appraisal.sourcesUsed >= 2
+      ? appraisal.conflict
+        ? "Desks Differ"
+        : `${appraisal.confidence[0]!.toUpperCase()}${appraisal.confidence.slice(1)} · ${appraisal.sourcesUsed} Desks`
+      : null;
   return (
     <article className="flex min-w-0 gap-3 overflow-hidden rounded-lg bg-surface p-3 shadow-[var(--shadow-border)] sm:p-4">
       {thumb ? (
-        <img src={thumb} alt="" className="h-20 w-16 shrink-0 rounded-sm object-cover" />
+        <img
+          src={thumb}
+          alt=""
+          className="h-[88px] w-16 shrink-0 rounded-sm bg-elevated object-cover"
+        />
       ) : (
-        <div className="grid h-20 w-16 shrink-0 place-items-center rounded-sm bg-elevated">
+        <div className="grid h-[88px] w-16 shrink-0 place-items-center rounded-sm bg-elevated">
           <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
         </div>
       )}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge className="gap-1.5 px-2">
-            <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
-          </Badge>
+          <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
           {copy && appraisal && <Badge variant={verdictVariant(appraisal.verdict)}>{copy.label}</Badge>}
-          {appraisal && appraisal.sourcesUsed >= 2 && (
+          {confidence && (
             <Badge
-              variant={appraisal.conflict ? "bad" : appraisal.confidence === "high" ? "good" : "fair"}
-              title={appraisal.conflictDetail ?? appraisal.verifyNote ?? undefined}
+              variant={appraisal?.conflict ? "bad" : appraisal?.confidence === "high" ? "good" : "fair"}
+              title={appraisal?.conflictDetail ?? appraisal?.verifyNote ?? undefined}
             >
-              {appraisal.conflict ? "desks differ" : `${appraisal.confidence} · ${appraisal.sourcesUsed} desks`}
+              {confidence}
             </Badge>
           )}
         </div>
@@ -411,6 +446,12 @@ function ScanRow({ row }: { row: ScoredListing }) {
         <p className="truncate text-xs text-subtle">
           {card ? `${card.name} · ${card.setName} #${card.localId}` : "No card match yet"}
         </p>
+        {(ageLabel || (memory && memory.prices.length > 1)) && (
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-subtle">
+            {ageLabel && <span>{ageLabel}</span>}
+            {memory && <PriceSpark ticks={memory.prices} />}
+          </div>
+        )}
         {appraisal?.conflict && appraisal.conflictDetail && (
           <p className="mt-1 text-xs text-deal-bad">{appraisal.conflictDetail}</p>
         )}
@@ -434,7 +475,7 @@ function ScanRow({ row }: { row: ScoredListing }) {
             params={{ cardId: card.id }}
             className="mt-1 inline-flex h-11 items-center text-sm text-muted hover:text-fg"
           >
-            Card dossier
+            Card Dossier
           </Link>
         )}
       </div>

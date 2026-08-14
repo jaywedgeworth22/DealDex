@@ -53,7 +53,7 @@ export function PriceRangeBar({ ask, book, low, high, compact }: Props) {
       )}
       <div className="flex items-baseline justify-between gap-2 text-xs tabular-nums text-subtle">
         <span>{formatUsd(low ?? book)}</span>
-        <span className="truncate text-center text-muted">desk range</span>
+        <span className="truncate text-center text-muted">Desk Range</span>
         <span>{formatUsd(high ?? book)}</span>
       </div>
       <div
