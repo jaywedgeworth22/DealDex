@@ -6,6 +6,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 
 ## Completed
+- **2026-08-14 — GROK — COMPLETED — Store-submit prep (PR #56).** Privacy page, listing copy, ship wrapper, export-compliance plist.  ASC CREATE forbidden for App Manager key.  Archive hung on Xcode 26 `clang -v`.
 - **2026-08-14 — GROK — COMPLETED — Compile native iOS + Android apps (PR #50).** Gradle 8.7 wrapper + XcodeGen spec.  Debug APK in `public/DealDex.apk`.  iOS launched on iPhone 17 Pro sim.
 - **2026-08-14 — GROK-BUILD — COMPLETED — Register Grok Build as a standing fleet seat (DealDex PR #41, fleet PR #26).** Mac lane `~/apps/dealdex-grok-build`.  `fleet-apps.json` has GROK-BUILD.  AGENT-SYNC seat table still for Mac Grok (keepout this turn).
 - **2026-08-14 — GROK — COMPLETED — Onboarding links + subagent/economics wording (PR #40).** AGENTS.md start-here table + stronger Delegation stanza.  Docs only.
@@ -20,12 +21,13 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-14 — GROK — IN PROGRESS — Submit DealDex to TestFlight / App Store and Play.** Lane `~/apps/dealdex-grok` branch `grok/store-ship`.  Bundle ID `me.grok.dealdex` registered (KJX389KP5M).  ASC App Manager key cannot CREATE apps.
-
-## Planned / Reserved
 - (none)
 
+## Planned / Reserved
+- **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
+
 ## Changelog of this log
+- 2026-08-14 — GROK store-submit prep (#56); upload remains Planned (ASC create + Play creds).
 - 2026-08-14 — GROK moved native iOS + Android compile to Completed (PR #50).
 - 2026-08-14 — GROK reserved native iOS + Android compile (wrapper + XcodeGen).
 - 2026-08-14 — GROK-BUILD reserved fleet seat registration; reconciled live board with origin/main mirror (did not delete GROK-BUILD rows).
