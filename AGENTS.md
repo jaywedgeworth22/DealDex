@@ -75,8 +75,15 @@ for the owner to ask. After each coherent finished unit: commit → push →
 is unfinished. Canonical: `/Users/jay/apps/AGENT-SYNC.md` "Always commit + land
 finished work".
 
-Onboarding a new seat or a new app: `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md`
-and `docs/ONBOARDING-NEW-APP.md`.
+## Fleet docs (start here)
+
+| What | Live / repo path | GitHub |
+|------|------------------|--------|
+| Protocol | `/Users/jay/apps/AGENT-SYNC.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/AGENT-SYNC.md |
+| Effort boards | `/Users/jay/apps/EFFORT-LOG-PROTOCOL.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/EFFORT-LOG-PROTOCOL.md |
+| New app | `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-APP.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md |
+| New seat | `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md |
+| UI copy | `/Users/jay/apps/FLEET-UI-COPY.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/FLEET-UI-COPY.md |
 
 ## Grok Build (App Builder preview)
 
@@ -156,9 +163,12 @@ Infisical is the sole source of truth for app runtime secrets when they exist.
 
 ## Delegation & model economics (fleet rule)
 
-- Teams of sub-agents are the default for substantial work.
-- Right-size the model: small = mechanical, mid = default implementation,
-  frontier = design-heavy / money-path / critical verify only.
+- **Use sub-agents whenever they help.** Teams are the default for substantial work.
+  Also spawn a child when it would save context, run in parallel, or be cheaper at
+  another tier.
+- **Right-size the model per task, even if that is a lower or higher tier than
+  this session.** Small = mechanical, mid = default implementation, frontier =
+  design-heavy / money-path / critical verify only.
 - Escalate a tier when a cheaper model's output fails verification — not
-  preemptively.
+  preemptively, and not because the parent session is frontier-tier.
 - Canonical: `/Users/jay/apps/AGENT-SYNC.md` — "Delegation & model economics".
