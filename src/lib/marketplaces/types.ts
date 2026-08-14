@@ -10,6 +10,8 @@ export type LiveListing = {
   price: number | null;
   shipping: number;
   image: string | null;
+  /** ISO time the marketplace said it was listed, when we can parse one. */
+  listedAt?: string | null;
 };
 
 export type ScoredListing = {

@@ -14,6 +14,7 @@ import { useCurrentUser } from "@/lib/auth/use-current-user";
 import { formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
 import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
+import { verdictCopy } from "@/lib/tcg/appraise";
 
 export const Route = createFileRoute("/alerts")({ component: AlertsPage });
 
@@ -100,13 +101,11 @@ function AlertsPage() {
               className="rounded-lg bg-surface p-4 shadow-[var(--shadow-border)]"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <Badge className="gap-1.5 px-2">
-                  {hit.marketplace === "ebay" || hit.marketplace === "mercari" ? (
-                    <MarketplaceLogo marketplace={hit.marketplace} />
-                  ) : (
-                    hit.marketplace
-                  )}
-                </Badge>
+                {hit.marketplace === "ebay" || hit.marketplace === "mercari" ? (
+                  <MarketplaceLogo marketplace={hit.marketplace} />
+                ) : (
+                  hit.marketplace
+                )}
                 {hit.verdict && <Badge variant="good">{hit.verdict}</Badge>}
                 <span className="text-xs text-subtle">{hit.ruleName}</span>
               </div>
@@ -207,7 +206,7 @@ function RuleCard({
               rule.verdicts.includes(v) ? "bg-accent text-accent-fg" : "bg-elevated text-muted"
             }`}
           >
-            {v}
+            {verdictCopy(v).label}
           </button>
         ))}
         {(["ebay", "mercari"] as const).map((m) => (

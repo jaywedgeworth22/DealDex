@@ -65,7 +65,7 @@ export function ValuationBookPanel({ cardId }: { cardId: string }) {
           </p>
           <div className="mt-1 flex justify-end gap-2">
             <Badge variant={tone}>{book.confidence} confidence</Badge>
-            {book.conflict && <Badge variant="bad">desks differ</Badge>}
+            {book.conflict && <Badge variant="bad">Desks Differ</Badge>}
           </div>
           {book.conflictDetail && (
             <p className="mt-1 max-w-xs text-xs text-deal-bad">{book.conflictDetail}</p>

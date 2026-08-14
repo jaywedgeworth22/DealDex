@@ -47,7 +47,7 @@ function CardPage() {
 
       {card === undefined && (
         <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-          <Skeleton className="aspect-[63/88] w-full" />
+          <Skeleton className="aspect-[600/825] w-full" />
           <div className="space-y-3">
             <Skeleton className="h-10 w-1/2" />
             <Skeleton className="h-24 w-full" />
@@ -62,9 +62,9 @@ function CardPage() {
       {card && (
         <div className="grid items-start gap-8 lg:grid-cols-[240px_1fr]">
           {img ? (
-            <img src={img} alt={card.name} className="w-full rounded-lg bg-elevated" />
+            <img src={img} alt={card.name} className="aspect-[600/825] w-full rounded-lg bg-elevated object-cover" />
           ) : (
-            <div className="grid aspect-[63/88] place-items-center rounded-lg bg-elevated text-subtle">
+            <div className="grid aspect-[600/825] place-items-center rounded-lg bg-elevated text-subtle">
               No scan
             </div>
           )}

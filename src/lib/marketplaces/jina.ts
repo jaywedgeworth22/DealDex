@@ -1,5 +1,5 @@
 import type { LiveListing } from "./types";
-import { SKIP_LISTING, decodeHtml, parseMoney, titleMatchesQuery } from "./html";
+import { SKIP_LISTING, decodeHtml, parseListedAt, parseMoney, titleMatchesQuery } from "./html";
 
 const JINA = "https://r.jina.ai/";
 const mem = new Map<string, { at: number; text: string }>();
@@ -60,6 +60,7 @@ export function parseJinaEbay(md: string, query: string): LiveListing[] {
       price,
       shipping: free ? 0 : (shipAmt ?? 4.47),
       image: img,
+      listedAt: parseListedAt(chunk),
     });
     if (out.length >= 16) break;
   }
@@ -93,6 +94,7 @@ export function parseJinaMercari(md: string, query: string): LiveListing[] {
       price,
       shipping: 4.49,
       image: img || `https://u-mercari-images.mercdn.net/photos/${id}_1.jpg`,
+      listedAt: parseListedAt(text),
     });
     if (out.length >= 16) break;
   }

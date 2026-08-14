@@ -160,13 +160,9 @@ function ScanPane({
         {(["ebay", "mercari"] as const).map((m) => (
           <span
             key={m}
-            className={cn(
-              "inline-flex shrink-0 items-center px-2.5 py-1",
-              platform === "ios" ? "rounded-full" : "rounded-sm",
-              "bg-elevated",
-            )}
+            className="inline-flex shrink-0 items-center"
           >
-            <MarketplaceLogo marketplace={m} className="h-3" />
+            <MarketplaceLogo marketplace={m} />
           </span>
         ))}
       </div>
@@ -192,7 +188,6 @@ function ScanPane({
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-subtle">
                   <MarketplaceLogo
                     marketplace={row.listing.marketplace === "ebay" ? "ebay" : "mercari"}
-                    className="h-3"
                   />
                   {v && <span className={tone}>{v}</span>}
                 </div>

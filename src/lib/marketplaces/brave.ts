@@ -1,5 +1,5 @@
 import type { LiveListing, ScanSource } from "./types";
-import { BROWSER_HEADERS, SKIP_LISTING, decodeHtml, parseMoney, titleMatchesQuery } from "./html";
+import { BROWSER_HEADERS, SKIP_LISTING, decodeHtml, parseListedAt, parseMoney, titleMatchesQuery } from "./html";
 
 const ID_RE: Record<ScanSource, RegExp> = {
   ebay: /ebay\.com\/itm\/(\d{12,14})/i,
@@ -65,6 +65,7 @@ export function parseBraveListings(
       price,
       shipping: marketplace === "ebay" ? 4.47 : 4.49,
       image,
+      listedAt: parseListedAt(block),
     });
     if (out.length >= 12) break;
   }

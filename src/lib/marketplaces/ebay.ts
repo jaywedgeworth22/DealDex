@@ -4,6 +4,7 @@ import {
   SKIP_LISTING,
   decodeHtml,
   isBroadQuery,
+  parseListedAt,
   parseMoney,
   titleMatchesQuery,
 } from "./html";
@@ -76,6 +77,7 @@ export function parseEbayHtml(html: string, query = ""): LiveListing[] {
       price,
       shipping: free ? 0 : (shipAmt ?? 4.47),
       image: img,
+      listedAt: parseListedAt(chunk),
     });
     if (out.length >= 16) break;
   }

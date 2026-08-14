@@ -122,11 +122,11 @@ export function verdictCopy(verdict: Verdict) {
     case "steal":
       return { label: "Steal", blurb: "Well under the desk book. Strong buy if authentic." };
     case "good":
-      return { label: "Good deal", blurb: "Meaningfully cheaper than the middle of the desks." };
+      return { label: "Good Deal", blurb: "Meaningfully cheaper than the middle of the desks." };
     case "fair":
       return { label: "Fair", blurb: "Inside the desk range. Shop shipping and fees." };
     case "high":
-      return { label: "High ask", blurb: "Above the book. Fine if you need it now." };
+      return { label: "High Ask", blurb: "Above the book. Fine if you need it now." };
     case "avoid":
       return { label: "Overpriced", blurb: "Far above every desk. Wait or counter." };
   }
