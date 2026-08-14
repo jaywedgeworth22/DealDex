@@ -13,7 +13,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- (none)
+- **2026-08-13 — GROK — IN PROGRESS — iOS agent build-loop policy (branch `grok/ios-agent-rules`, worktree `~/apps/dealdex-grok-ios-rules`).** Docs/hooks only: `native/ios/CLAUDE.md`, AGENTS stanza, Claude pbxproj write-block. xcodebuild via bash is pre-approved; do not stand up Xcode MCP.
 
 ## Planned / Reserved
 - (none)

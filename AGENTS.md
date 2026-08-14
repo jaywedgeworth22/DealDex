@@ -120,7 +120,17 @@ npm run build          # vite build; db migrate no-ops without DATABASE_URL
 Native:
 
 - Android: `cd native/android && ANDROID_HOME=… ./gradlew :app:assembleDebug --no-daemon`
-- iOS: open `native/ios/DealDex.xcodeproj` (bundle `me.grok.dealdex`)
+- iOS: `xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex -destination 'generic/platform=iOS Simulator' build` (bundle `me.grok.dealdex`). Onboarding: `native/ios/CLAUDE.md`.
+
+## iOS agent build loop (owner 2026-08-13)
+
+Canonical: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop.
+
+- Do **not** stand up, debug, or narrate Xcode MCP (`build_sim`, `mcpbridge`).
+- `xcodebuild` / `xcrun simctl` via bash are pre-approved. Run them. Do not ask.
+- User-visible changes need `xcrun simctl io booted screenshot …` before you claim done.
+- Do not hand-edit `.pbxproj` / entitlements / xibs. New Swift files: create them and report target membership.
+- `@Observable` + `@MainActor`; `NavigationStack`; light theme default.
 
 ## Product / stack
 
