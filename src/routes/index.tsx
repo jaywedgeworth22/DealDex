@@ -9,15 +9,14 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   return (
     <Shell>
-      <section className="mb-10 max-w-2xl">
+      <section className="mb-10 max-w-3xl">
         <p className="text-xs uppercase tracking-[0.2em] text-subtle">Pokémon listing desk</p>
         <h1 className="mt-2 font-display text-4xl tracking-tight sm:text-5xl">
           Find the best listings.
         </h1>
-        <p className="mt-4 max-w-xl text-pretty text-muted">
-          DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask
-          against a book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any
-          keys you add.
+        <p className="mt-4 text-pretty text-muted">
+          DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask against a
+          book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any keys you add.
         </p>
         <p className="mt-3 text-sm text-muted">
           Android and iPhone apps are on{" "}

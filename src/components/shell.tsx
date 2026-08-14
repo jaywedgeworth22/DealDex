@@ -27,13 +27,13 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-dvh min-w-0 overflow-x-hidden bg-bg text-fg">
       <header className="sticky top-0 z-20 border-b border-border/80 bg-bg/85 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/" className="flex shrink-0 items-center gap-2.5">
             <span className="grid size-7 place-items-center rounded-sm border border-accent/40 font-display text-sm leading-none text-accent">
               Δ
             </span>
             <span className="font-display text-lg tracking-tight">DealDex</span>
           </Link>
-          <nav className="flex items-center gap-1 text-sm">
+          <nav className="flex shrink-0 items-center gap-0.5 text-sm sm:gap-1">
             <Link
               to="/"
               className="hidden h-11 items-center px-3 text-muted transition-colors duration-150 hover:text-fg sm:inline-flex"

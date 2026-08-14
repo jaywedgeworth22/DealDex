@@ -96,18 +96,17 @@ function SettingsPage() {
   return (
     <Shell>
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Settings</p>
-      <h1 className="mt-1 font-display text-4xl tracking-tight">API desks</h1>
-      <p className="mt-3 max-w-xl text-pretty text-muted">
-        Free desks run without a key. Paid desks stay off until you paste one. Keys are stored on
-        this device first
-        {user ? " and also copied to your DealDex account when you save." : " — sign in only if you want them on another browser or phone."}
+      <h1 className="mt-1 font-display text-4xl tracking-tight">API Desks</h1>
+      <p className="mt-3 max-w-3xl text-pretty text-muted">
+        {user
+          ? "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device and copy to your DealDex account when you save."
+          : "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device first — sign in only if you want them on another browser or phone."}
       </p>
-      <p className="mt-2 text-sm text-muted">
-        {n} extra desk{n === 1 ? "" : "s"} enabled
-        {user ? ` · signed in as ${user.primaryEmail ?? user.displayName}` : " · guest"}.
+      <p className="mt-3 text-sm text-muted">
+        {n} extra desk{n === 1 ? "" : "s"} enabled — {user ? "SIGNED IN" : "GUEST"}
       </p>
       {!user && !isPending && (
-        <p className="mt-2 text-sm">
+        <p className="mt-2 max-w-3xl text-pretty text-sm text-muted">
           <Link to="/login" className="text-fg underline-offset-4 hover:underline">
             Sign in
           </Link>{" "}

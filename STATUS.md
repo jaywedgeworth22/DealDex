@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — scan desk polish)
+Updated: 2026-08-13 (GROK-BUILD — copy wrap + guest line)
 
 ## Current state
 
