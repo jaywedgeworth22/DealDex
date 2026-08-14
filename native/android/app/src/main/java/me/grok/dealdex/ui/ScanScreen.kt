@@ -144,8 +144,8 @@ fun MarketplaceMark(marketplace: String, modifier: Modifier = Modifier) {
         }
     } else {
         Text(
-            "mercari",
-            color = Color(0xFFE72121),
+            "MERCARI",
+            color = Color(0xFF5356EE),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelLarge,
             modifier = modifier,

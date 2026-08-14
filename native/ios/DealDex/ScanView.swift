@@ -121,9 +121,10 @@ struct MarketplaceMark: View {
             .font(.caption.weight(.bold))
             .accessibilityLabel("eBay")
         } else {
-            Text("mercari")
+            Text("MERCARI")
                 .font(.caption.weight(.bold))
-                .foregroundStyle(Color(red: 0.91, green: 0.13, blue: 0.13))
+                .tracking(0.4)
+                .foregroundStyle(Color(red: 83 / 255, green: 86 / 255, blue: 238 / 255))
                 .accessibilityLabel("Mercari")
         }
     }

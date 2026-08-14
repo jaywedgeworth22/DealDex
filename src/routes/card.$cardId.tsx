@@ -105,13 +105,13 @@ function CardPage() {
                   TCGPlayer <ArrowUpRight />
                 </a>
               </Button>
-              <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto">
+              <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto [&_svg]:size-auto">
                 <a href={ebaySoldUrl(card, "raw")} target="_blank" rel="noreferrer">
                   <MarketplaceLogo marketplace="ebay" />
                   sold
                 </a>
               </Button>
-              <Button variant="secondary" asChild className="[&_svg]:h-5 [&_svg]:w-auto">
+              <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto [&_svg]:size-auto">
                 <a href={mercariSearchUrl(card, "raw")} target="_blank" rel="noreferrer">
                   <MarketplaceLogo marketplace="mercari" />
                 </a>
