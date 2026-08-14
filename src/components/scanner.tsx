@@ -167,7 +167,7 @@ export function Scanner() {
     <section className="min-w-0 space-y-5">
       <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-6">
         <p className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</p>
-        <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-1 flex flex-wrap items-center gap-3">
           <h2 className="font-display text-2xl tracking-tight">Every live single, scored</h2>
           <div className="flex flex-wrap gap-2">
             {(["ebay", "mercari"] as const).map((src) => (
@@ -180,7 +180,7 @@ export function Scanner() {
             ))}
           </div>
         </div>
-        <p className="mt-2 max-w-3xl text-pretty text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           Book is TCGPlayer, Cardmarket, TCGCSV, eBay solds, PriceCharting, and any keys in
           Settings. <span className="text-fg">Under</span> means cheaper than the middle of those
           desks. <span className="text-fg">× book</span> is how many times the ask is versus that

@@ -10,6 +10,7 @@ import { verdictCopy } from "@/lib/tcg/appraise";
 import type { Verdict } from "@/lib/tcg/types";
 import { formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
+import { Lead } from "@/components/lead";
 
 export const Route = createFileRoute("/saved")({ component: SavedPage });
 
@@ -78,18 +79,18 @@ function SavedPage() {
 
   return (
     <Shell>
-      <h1 className="font-display text-4xl tracking-tight">Saved appraisals</h1>
-      <p className="mt-2 max-w-xl text-sm text-muted">
+      <h1 className="font-display text-4xl tracking-tight">Saved Appraisals</h1>
+      <Lead className="mt-2 text-sm">
         {user
           ? "Your ledger syncs with this account."
           : "Saved on this device. Sign in to keep a copy."}
-      </p>
+      </Lead>
 
       {!rows.length && (
         <div className="mt-10 rounded-xl bg-surface p-8 shadow-[var(--shadow-border)]">
           <p className="text-muted">Nothing saved yet.</p>
           <Button className="mt-4" asChild>
-            <Link to="/">Appraise a listing</Link>
+            <Link to="/">Appraise a Listing</Link>
           </Button>
         </div>
       )}

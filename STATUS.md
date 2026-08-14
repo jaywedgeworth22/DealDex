@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — copy wrap + guest line)
+Updated: 2026-08-13 (GROK-BUILD — one page measure)
 
 ## Current state
 

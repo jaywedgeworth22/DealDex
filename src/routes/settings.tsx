@@ -17,6 +17,7 @@ import {
 import { testDeskKey } from "@/lib/server/tcg";
 import { getAccountKeys, saveAccountKeys } from "@/lib/server/desk-keys";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { Lead } from "@/components/lead";
 
 export const Route = createFileRoute("/settings")({ component: SettingsPage });
 
@@ -97,16 +98,16 @@ function SettingsPage() {
     <Shell>
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Settings</p>
       <h1 className="mt-1 font-display text-4xl tracking-tight">API Desks</h1>
-      <p className="mt-3 max-w-3xl text-pretty text-muted">
+      <Lead>
         {user
           ? "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device and copy to your DealDex account when you save."
           : "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device first — sign in only if you want them on another browser or phone."}
-      </p>
+      </Lead>
       <p className="mt-3 text-sm text-muted">
         {n} extra desk{n === 1 ? "" : "s"} enabled — {user ? "SIGNED IN" : "GUEST"}
       </p>
       {!user && !isPending && (
-        <p className="mt-2 max-w-3xl text-pretty text-sm text-muted">
+        <p className="mt-2 text-sm text-muted">
           <Link to="/login" className="text-fg underline-offset-4 hover:underline">
             Sign in
           </Link>{" "}
@@ -117,19 +118,19 @@ function SettingsPage() {
       <div className="mt-8 space-y-4">
         {DESK_KEY_META.map((desk) => (
           <article key={desk.id} className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
+            <div>
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <h2 className="font-display text-2xl tracking-tight">{desk.label}</h2>
-                <p className="mt-1 max-w-xl text-sm text-muted">{desk.blurb}</p>
+                <a
+                  href={desk.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-11 items-center gap-1 text-sm text-muted hover:text-fg"
+                >
+                  {desk.hrefLabel} <ExternalLink className="size-3.5" />
+                </a>
               </div>
-              <a
-                href={desk.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-11 items-center gap-1 text-sm text-muted hover:text-fg"
-              >
-                {desk.hrefLabel} <ExternalLink className="size-3.5" />
-              </a>
+              <p className="mt-1 text-sm text-muted">{desk.blurb}</p>
             </div>
             <div className="mt-4">
               <Label htmlFor={desk.id}>{desk.label} key</Label>
@@ -176,7 +177,7 @@ function SettingsPage() {
         </Link>
       </div>
 
-      <aside className="mt-10 max-w-2xl rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
+      <aside className="mt-10 rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
         <h2 className="font-display text-xl tracking-tight">Website vs phone apps</h2>
         <p className="mt-2 text-sm text-muted">
           Android and iPhone scan eBay, Mercari, TCGDex, and any paid desks you keyed — on the

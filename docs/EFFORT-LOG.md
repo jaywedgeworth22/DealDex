@@ -15,13 +15,14 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-13 — GROK-BUILD — IN PROGRESS — Copy wrap + guest line.** Stop skinny max-w-xl rag on Settings, hero, and scan card. Guest line is `N extra desks enabled — GUEST`.
+- **2026-08-13 — GROK-BUILD — IN PROGRESS — One page measure.** Copy and cards share `max-w-7xl`. Drop `text-pretty` (it was shortening lines). Logos sit next to the scan title.
 - **2026-08-13 — GROK — IN PROGRESS — iOS agent build-loop policy (branch `grok/ios-agent-rules`, worktree `~/apps/dealdex-grok-ios-rules`).** Docs/hooks only: `native/ios/CLAUDE.md`, AGENTS stanza, Claude pbxproj write-block. xcodebuild via bash is pre-approved; do not stand up Xcode MCP.
 
 ## Planned / Reserved
 - (none)
 
 ## Changelog of this log
+- 2026-08-13 — GROK-BUILD reserved one page measure (drop text-pretty, max-w-7xl).
 - 2026-08-13 — GROK-BUILD reserved copy wrap + guest line.
 - 2026-08-13 — GROK-BUILD moved scan desk polish to Completed (PR #22).
 - 2026-08-13 — GROK-BUILD reserved official marketplace wordmarks.

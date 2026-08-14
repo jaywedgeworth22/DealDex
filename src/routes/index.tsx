@@ -9,12 +9,12 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   return (
     <Shell>
-      <section className="mb-10 max-w-3xl">
+      <section className="mb-10">
         <p className="text-xs uppercase tracking-[0.2em] text-subtle">Pokémon listing desk</p>
         <h1 className="mt-2 font-display text-4xl tracking-tight sm:text-5xl">
           Find the best listings.
         </h1>
-        <p className="mt-4 text-pretty text-muted">
+        <p className="mt-4 text-muted">
           DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask against a
           book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any keys you add.
         </p>
