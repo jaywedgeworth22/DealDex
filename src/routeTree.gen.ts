@@ -15,6 +15,7 @@ import { Route as InstallRouteImport } from './routes/install'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiNativeKeysRouteImport } from './routes/api/native/keys'
@@ -50,6 +51,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CardCardIdRoute = CardCardIdRouteImport.update({
   id: '/card/$cardId',
   path: '/card/$cardId',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
+  '/privacy': typeof PrivacyRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
+  '/privacy': typeof PrivacyRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
+  '/privacy': typeof PrivacyRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/saved'
     | '/settings'
+    | '/privacy'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/keys'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/saved'
     | '/settings'
+    | '/privacy'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/keys'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/saved'
     | '/settings'
+    | '/privacy'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/keys'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
+  PrivacyRoute: typeof PrivacyRoute
   CardCardIdRoute: typeof CardCardIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiNativeKeysRoute: typeof ApiNativeKeysRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/card/$cardId': {
       id: '/card/$cardId'
       path: '/card/$cardId'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
+  PrivacyRoute: PrivacyRoute,
   CardCardIdRoute: CardCardIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiNativeKeysRoute: ApiNativeKeysRoute,

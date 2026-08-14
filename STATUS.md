@@ -1,6 +1,6 @@
 # Status
 
-Updated: Fri, Aug 14, 2026 at 3:50 PM CT (GROK — native iOS + Android builds)
+Updated: Fri, Aug 14, 2026 at 4:25 PM CT (GROK — store submit blocked on ASC create + Play creds)
 
 ## Current state
 
@@ -16,9 +16,12 @@ Updated: Fri, Aug 14, 2026 at 3:50 PM CT (GROK — native iOS + Android builds)
 
 ## Blockers
 
-- Custom domain, Infisical project (prod env), App Store Connect for
-  `me.grok.dealdex`, `SENTRY_FLEET_DSN`, and `FLEET_GITHUB_TOKEN` (so the
-  digest can see this private repo) still need the owner.
+- App Store Connect **app record** for `me.grok.dealdex` (bundle ID is
+  registered; App Manager API cannot CREATE apps).  Account Holder must
+  add DealDex once (SKU `dealdex`).
+- Google Play Console credentials are not in `~/.secrets/`.
+- Custom domain, Infisical project (prod env), `SENTRY_FLEET_DSN`, and
+  `FLEET_GITHUB_TOKEN` still need the owner.
 - Integration tree `~/Code/DealDex` is dirty (uncommitted
   `native/ios/DealDex.xcodeproj` bits) and behind `origin/main`.  Do not
   fast-forward it until those files are cleaned by a human or an iOS lane.
