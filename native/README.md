@@ -2,9 +2,9 @@
 
 Android and iPhone apps. They talk to eBay, Mercari, TCGDex, JustTCG, PriceCharting, and pokemontcg.io **from the phone**. The website is optional.
 
-Keys you paste in **Keys** live on the device. If the website is down, scan still uses those keys.
+Keys you paste in **Settings** live on the device. If the website is down, scan still uses those keys.
 
-**Account** is optional. Sign in with the same email as the website only when you want to copy keys to or from your account.
+**Settings** also has optional sign-in. Use the same email as the website only when you want to copy keys to or from your account.
 
 ## Android
 
