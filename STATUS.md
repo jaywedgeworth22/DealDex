@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — chip toggles + phone Settings)
+Updated: 2026-08-13 (GROK-BUILD — straighten JustTCG J)
 
 ## Current state
 

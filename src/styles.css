@@ -85,6 +85,11 @@
     text-wrap: balance;
   }
 
+  /* Fraunces default WONK=1 makes J look like a broken hook. */
+  .font-display {
+    font-variation-settings: "WONK" 0, "SOFT" 20, "opsz" 72;
+  }
+
   p,
   li {
     overflow-wrap: break-word;
