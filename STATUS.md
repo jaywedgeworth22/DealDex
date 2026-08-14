@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-13 (GROK-BUILD — signature is GROK-BUILD)
+Updated: 2026-08-13 (GROK-BUILD — official marketplace wordmarks)
 
 ## Current state
 
@@ -10,9 +10,8 @@ Updated: 2026-08-13 (GROK-BUILD — signature is GROK-BUILD)
   `~/apps/DEALDEX-EFFORT-LOG.md`.
 - **Grok Build** is the App Builder preview seat. Prefix `grok-build/`.
   Lane is this preview (`/workspace`), not Mac Grok's `~/apps/dealdex-grok`.
-- Marketplace logos landed on `main` (PR #10). Scan, alerts, listing
-  badges, evaluator, Apps mockup, and native Scan use the eBay and Mercari
-  marks.
+- Marketplace logos: official eBay four-color wordmark + official Mercari
+  blue wordmark (owner-supplied). Red Mercari character is gone.
 - CI on `main` is green after PR #3 (`npm install` on Node 22).
 
 ## Blockers

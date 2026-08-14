@@ -13,12 +13,14 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board:
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`. AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
+- **2026-08-13 — GROK-BUILD — IN PROGRESS — Official eBay + Mercari wordmarks.** Swap the red Mercari character for the owner's official blue MERCARI mark. Keep eBay four-color wordmark. Native Scan marks match.
 - **2026-08-13 — GROK — IN PROGRESS — iOS agent build-loop policy (branch `grok/ios-agent-rules`, worktree `~/apps/dealdex-grok-ios-rules`).** Docs/hooks only: `native/ios/CLAUDE.md`, AGENTS stanza, Claude pbxproj write-block. xcodebuild via bash is pre-approved; do not stand up Xcode MCP.
 
 ## Planned / Reserved
 - (none)
 
 ## Changelog of this log
+- 2026-08-13 — GROK-BUILD reserved official marketplace wordmarks.
 - 2026-08-13 — GROK-BUILD: this seat signs GROK-BUILD, not GROK.
 - 2026-08-13 — GROK-BUILD reserved join-fleet; moved logos to Completed (PR #10).
 - 2026-08-13 — GROK-BUILD reserved marketplace logos.

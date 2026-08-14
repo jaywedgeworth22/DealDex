@@ -244,7 +244,7 @@ export function Scanner() {
                 type="button"
                 onClick={() => setView(key)}
                 className={cn(
-                  "inline-flex h-11 items-center justify-center gap-1.5 rounded-md px-1 transition-colors duration-150",
+                  "inline-flex h-11 items-center justify-center gap-1.5 rounded-md px-1 transition-colors duration-150 [&_svg]:size-auto",
                   view === key ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-70 hover:opacity-100",
                 )}
               >

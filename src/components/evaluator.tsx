@@ -245,7 +245,7 @@ export function Evaluator({
                   aria-label={m === "ebay" ? "eBay" : "Mercari"}
                   aria-pressed={marketplace === m}
                   className={cn(
-                    "grid h-9 flex-1 place-items-center rounded-sm transition-[background-color,opacity] duration-150",
+                    "grid h-9 flex-1 place-items-center rounded-sm transition-[background-color,opacity] duration-150 [&_svg]:size-auto",
                     marketplace === m ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-60 hover:opacity-100",
                   )}
                 >
@@ -533,13 +533,13 @@ function AppraisalPanel({
                 TCGPlayer <ArrowUpRight />
               </a>
             </Button>
-            <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto">
+            <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto [&_svg]:size-auto">
               <a href={ebaySoldUrl(card, listing?.grade ?? "raw")} target="_blank" rel="noreferrer">
                 <MarketplaceLogo marketplace="ebay" />
                 sold
               </a>
             </Button>
-            <Button variant="secondary" asChild className="[&_svg]:h-5 [&_svg]:w-auto">
+            <Button variant="secondary" asChild className="[&_svg]:h-3.5 [&_svg]:w-auto [&_svg]:size-auto">
               <a href={mercariSearchUrl(card, listing?.grade ?? "raw")} target="_blank" rel="noreferrer">
                 <MarketplaceLogo marketplace="mercari" />
               </a>
