@@ -13,7 +13,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — COMPLETED — Compile native iOS + Android apps (PR #50).** Gradle 8.7 wrapper + XcodeGen spec.  Debug APK in `public/DealDex.apk`.  iOS launched on iPhone 17 Pro sim.
 - **2026-08-14 — GROK-BUILD — COMPLETED — Register Grok Build as a standing fleet seat (DealDex PR #41, fleet PR #26).** Mac lane `~/apps/dealdex-grok-build`.  `fleet-apps.json` has GROK-BUILD.  AGENT-SYNC seat table still for Mac Grok (keepout this turn).
 - **2026-08-14 — GROK — COMPLETED — Onboarding links + subagent/economics wording (PR #40).** AGENTS.md start-here table + stronger Delegation stanza.  Docs only.
-- **2026-08-15 — GROK-BUILD — COMPLETED — DealDex OG + shared scan cache + app marks (PR #65).** Share image says DealDex.  Shared scan cache.  Four app marks.
+- **2026-08-15 — GROK-BUILD — COMPLETED — White filter-row marks (PR #67).** eBay/Mercari count filters are white-on-dark.  Listing-row marks stay color.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Straighten the JustTCG J (PR #34).** Desk names use Plex.  Fraunces WONK=0.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Official eBay + Mercari wordmarks (PR #20).** Owner-supplied blue MERCARI mark replaces the red character.  eBay four-color wordmark kept.  Native Scan matches.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Join fleet as named seat.** Seat table + `grok-build/` prefix.  Preview lane is `/workspace`.  Same PR/CI/merge loop as every other seat.
@@ -24,13 +24,14 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-15 — GROK-BUILD — IN PROGRESS — White filter-row marks.** eBay/Mercari count filters use the same white-on-dark chips as the source toggles.  This merge refreshes the live site.
+- **2026-08-15 — GROK-BUILD — IN PROGRESS — Point dealdex.online at the GitHub Vercel project.** Repo treats dealdex.online as the public host.  Owner must attach the domain on project `dealdex` and drop the parallel publish.
 
 
 ## Planned / Reserved
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 
 ## Changelog of this log
+- 2026-08-15 — GROK-BUILD reserved dealdex.online → GitHub Vercel project.
 - 2026-08-15 — GROK-BUILD reserved white filter-row marks (refresh live).
 - 2026-08-15 — GROK-BUILD reserved DealDex OG + shared scan cache + app marks.
 - 2026-08-14 — GROK store-submit prep (#56); upload remains Planned (ASC create + Play creds).

@@ -6,8 +6,8 @@ Updated: Fri, Aug 14, 2026 at 4:20 PM CT.  Two spaces between sentences.  No age
 **SKU:** `dealdex`  
 **Category:** Shopping  
 **Marketing version:** 1.0.1  
-**Privacy:** `https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/privacy`  
-**Support:** `https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/`
+**Privacy:** `https://dealdex.online/privacy`  
+**Support:** `https://dealdex.online/`
 
 ## Name
 

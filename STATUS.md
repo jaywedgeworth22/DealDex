@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-15 (GROK-BUILD — white filter-row marks + live refresh)
+Updated: 2026-08-15 (GROK-BUILD — dealdex.online is the public host; attach it to the GitHub Vercel project)
 
 ## Current state
 
@@ -9,7 +9,10 @@ Updated: 2026-08-15 (GROK-BUILD — white filter-row marks + live refresh)
 - Fleet member: acronym **DD**, Slack `repo: DealDex`, live board
   `~/apps/DEALDEX-EFFORT-LOG.md`.
 - **Grok Build** (`GROK-BUILD`) is a standing seat.  Prefix `grok-build/`.
-- Vercel project **dealdex** is linked to GitHub `main`.
+- Vercel project **dealdex** is linked to GitHub `main`.  Public host should
+  be **https://dealdex.online**.  That domain is still on a parallel Vercel
+  publish (older build).  Owner: add the domain on the GitHub-linked project
+  and drop the extra site.  See CONTRIBUTING.md.
 - Native Android debug APK builds with the new Gradle 8.7 wrapper.
   iOS has an XcodeGen spec (`native/ios/project.yml`).  Simulator
   install verified this turn.
@@ -20,7 +23,9 @@ Updated: 2026-08-15 (GROK-BUILD — white filter-row marks + live refresh)
   registered; App Manager API cannot CREATE apps).  Account Holder must
   add DealDex once (SKU `dealdex`).
 - Google Play Console credentials are not in `~/.secrets/`.
-- Custom domain, Infisical project (prod env), `SENTRY_FLEET_DSN`, and
+- Custom domain **dealdex.online** is registered and serving DealDex, but on
+  the wrong Vercel project.  Move it onto `prj_xcIQb423JxSHHMY0lHmDqvSh95QF`.
+- Infisical project (prod env), `SENTRY_FLEET_DSN`, and
   `FLEET_GITHUB_TOKEN` still need the owner.
 - Integration tree `~/Code/DealDex` is dirty (uncommitted
   `native/ios/DealDex.xcodeproj` bits) and behind `origin/main`.  Do not
