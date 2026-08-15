@@ -253,20 +253,14 @@ export function Scanner() {
               </button>
             ))}
             {(["ebay", "mercari"] as const).map((key) => (
-              <button
+              <MarketplaceToggle
                 key={key}
-                type="button"
+                marketplace={key}
+                selected={view === key}
                 onClick={() => setView(key)}
-                className={cn(
-                  "inline-flex h-11 items-center justify-center gap-1.5 overflow-hidden rounded-md px-1 transition-colors duration-150",
-                  view === key ? "bg-surface shadow-[var(--shadow-border)]" : "opacity-70 hover:opacity-100",
-                )}
-              >
-                <MarketplaceLogo marketplace={key} />
-                <span className="text-xs tabular-nums text-muted">
-                  {key === "ebay" ? meta.ebay : meta.mercari}
-                </span>
-              </button>
+                count={key === "ebay" ? meta.ebay : meta.mercari}
+                className="w-full justify-center rounded-md"
+              />
             ))}
           </div>
 

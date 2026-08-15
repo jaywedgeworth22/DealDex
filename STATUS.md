@@ -1,6 +1,6 @@
 # Status
 
-Updated: 2026-08-15 (GROK-BUILD — DealDex OG + shared scan cache + app marks)
+Updated: 2026-08-15 (GROK-BUILD — white filter-row marks + live refresh)
 
 ## Current state
 
