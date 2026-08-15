@@ -24,6 +24,13 @@ todo list and finish or explicitly park them — do not silently drop them.
 
 Canonical: `/Users/jay/apps/AGENT-SYNC.md` “Prior messages stay in scope”.
 
+## Mac local processes (binding)
+
+**Master list:** `/Users/jay/apps/MAC-LOCAL-PROCESSES.md`
+**Owner Note:** `[FLEET, Grok] Mac background jobs master list` (Coding, pinned)
+
+If you create, change, load, bootout, or retire a LaunchAgent, cron row, login item, pm2 KeepAlive job, **or any helper script other agents are expected to run**, you **must** add or update a row on that list **and** refresh the Apple Note in the same change.  Say whether it is **always-on** or **on-demand**.  A new background Python/Node/bash job that is not on the list is unfinished work.
+
 ## Before you start
 
 > [!CAUTION]
