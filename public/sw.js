@@ -40,7 +40,7 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener("push", (event) => {
   const data = event.data ? event.data.json() : {};
   event.waitUntil(
-    self.registration.showNotification(data.title || "SpreadDex", {
+    self.registration.showNotification(data.title || "DealDex", {
       body: data.body || "A listing just dropped into range.",
       icon: "/favicon.svg",
       data: { url: data.url || "/" },

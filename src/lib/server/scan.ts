@@ -3,6 +3,7 @@ import { ALL_POKEMON_QUERY } from "@/lib/marketplaces/html";
 import { scanAndScore } from "@/lib/marketplaces/scan";
 import type { ScanSource } from "@/lib/marketplaces/types";
 import type { DeskKeys } from "@/lib/settings/keys";
+import { readScanCache, SCAN_FRESH_MS, scanCacheKey, writeScanCache } from "./scan-cache";
 
 function cleanKeys(input: unknown): DeskKeys {
   if (!input || typeof input !== "object") return {};
@@ -23,6 +24,40 @@ export const scanMarketplaces = createServerFn({ method: "POST" })
   }))
   .handler(async ({ data }) => {
     const query = data.q.trim() || ALL_POKEMON_QUERY;
-    const result = await scanAndScore(query, data.sources, data.keys);
-    return { query, ...result };
+    const key = scanCacheKey(query, data.sources);
+    const cached = await readScanCache(key);
+    if (cached && Date.now() - cached.at < SCAN_FRESH_MS) {
+      return {
+        query,
+        ebay: cached.ebay,
+        mercari: cached.mercari,
+        notes: cached.notes,
+        rows: cached.rows,
+        fromCache: true,
+      };
+    }
+    try {
+      const result = await scanAndScore(query, data.sources, data.keys);
+      if (result.rows.length) {
+        await writeScanCache(key, query, data.sources, {
+          ebay: result.ebay,
+          mercari: result.mercari,
+          notes: result.notes,
+          rows: result.rows,
+        });
+      }
+      return { query, ...result, fromCache: false };
+    } catch (err) {
+      if (cached) {
+        return {
+          query,
+          ebay: cached.ebay,
+          mercari: cached.mercari,
+          notes: cached.notes,
+          rows: cached.rows,
+          fromCache: true,
+        };
+      }
+      throw err;
+    }
   });
