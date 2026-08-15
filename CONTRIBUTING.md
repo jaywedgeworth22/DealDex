@@ -20,10 +20,23 @@ build from.
 
 ## Live site
 
-Hosting is the Vercel project **dealdex**, linked to this GitHub repo,
-production branch `main`.  Merged PRs ship without anyone redeploying by hand.
+**Grok's Vercel** serves **https://dealdex.online**.  **GitHub `main`** is the
+source of truth.  Those two are supposed to be one loop:
 
-Do not create a second Vercel or Coolify project for the same repo.
+1. Every agent (including Grok Build) lands a PR on `jaywedgeworth22/DealDex`.
+2. Merge to `main`.
+3. Grok's Vercel builds that commit and dealdex.online updates.
+
+Do not put production on a personal `jaywedgeworth22s-projects` Vercel app.
+That was a parallel project.  Leave it or delete it — it is not the live site.
+
+Grok App Builder preview (`/workspace`) is a workbench, not production.  Ship
+through GitHub so Claude / Codex / Cursor / Grok all hit the same tree.
+
+If dealdex.online is behind `main`, Grok's Vercel project is not subscribed to
+this repo.  Re-link `jaywedgeworth22/DealDex` (production branch `main`) on
+**Grok's** Vercel, keep `dealdex.online` on that project, set
+`VITE_PUBLIC_HOSTNAME=dealdex.online`.
 
 ## Grok Build
 

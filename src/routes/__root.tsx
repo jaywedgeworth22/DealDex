@@ -9,8 +9,8 @@ import { useEffect } from "react";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "DealDex";
-const host = import.meta.env.VITE_PUBLIC_HOSTNAME;
-const ogImage = host ? `https://${host}/og.jpg` : undefined;
+const host = import.meta.env.VITE_PUBLIC_HOSTNAME || "dealdex.online";
+const ogImage = `https://${host}/og.jpg`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -34,13 +34,10 @@ export const Route = createRootRoute({
         property: "og:description",
         content: "Find the best listings.",
       },
-      ...(ogImage
-        ? [
-            { property: "og:image", content: ogImage },
-            { property: "og:image:width", content: "1200" },
-            { property: "og:image:height", content: "630" },
-          ]
-        : []),
+      { property: "og:url", content: `https://${host}/` },
+      { property: "og:image", content: ogImage },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
