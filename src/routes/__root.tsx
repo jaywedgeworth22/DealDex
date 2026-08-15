@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { ThemeProvider, THEME_BOOT, useTheme } from "@/lib/theme";
+import { MarkProvider } from "@/components/app-mark";
 import { listenForInstallPrompt, registerServiceWorker } from "@/lib/pwa";
 import { useEffect } from "react";
 import appCss from "../styles.css?url";
@@ -86,11 +87,13 @@ function Root() {
       <body>
         <PreviewHostBridge />
         <ThemeProvider>
-          <Boot />
-          <AuthProvider>
-            <Outlet />
-            <ThemedToaster />
-          </AuthProvider>
+          <MarkProvider>
+            <Boot />
+            <AuthProvider>
+              <Outlet />
+              <ThemedToaster />
+            </AuthProvider>
+          </MarkProvider>
         </ThemeProvider>
         <Scripts />
       </body>

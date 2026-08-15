@@ -1,6 +1,6 @@
 # Status
 
-Updated: Fri, Aug 14, 2026 at 4:25 PM CT (GROK — store submit blocked on ASC create + Play creds)
+Updated: 2026-08-15 (GROK-BUILD — DealDex OG + shared scan cache + app marks)
 
 ## Current state
 

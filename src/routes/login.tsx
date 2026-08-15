@@ -4,11 +4,13 @@ import { GROK_PROVIDERS, authClient, authEnabled, signIn } from "@/lib/auth/clie
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AppMark, useAppMark } from "@/components/app-mark";
 
 export const Route = createFileRoute("/login")({ component: Login });
 
 function Login() {
   const nav = useNavigate();
+  const { mark } = useAppMark();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +46,10 @@ function Login() {
     <main className="grid min-h-dvh place-items-center bg-bg px-4 text-fg">
       <div className="w-full max-w-sm space-y-5 rounded-xl bg-surface p-6 shadow-[var(--shadow-border)]">
         <div>
-          <p className="font-display text-2xl tracking-tight">DealDex</p>
+          <div className="flex items-center gap-2.5">
+            <AppMark id={mark} />
+            <p className="font-display text-2xl tracking-tight">DealDex</p>
+          </div>
           <h1 className="mt-1 text-lg font-medium">
             {mode === "up" ? "Create an account" : "Sign in"}
           </h1>

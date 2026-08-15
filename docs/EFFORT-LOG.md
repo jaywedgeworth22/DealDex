@@ -24,12 +24,13 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- (none)
+- **2026-08-15 — GROK-BUILD — IN PROGRESS — DealDex OG + shared scan cache + app marks.** Share image says DealDex.  Fresh scans are saved so the next visitor loads in ~8 minutes without a live wait.  Settings has four app marks.
 
 ## Planned / Reserved
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 
 ## Changelog of this log
+- 2026-08-15 — GROK-BUILD reserved DealDex OG + shared scan cache + app marks.
 - 2026-08-14 — GROK store-submit prep (#56); upload remains Planned (ASC create + Play creds).
 - 2026-08-14 — GROK moved native iOS + Android compile to Completed (PR #50).
 - 2026-08-14 — GROK reserved native iOS + Android compile (wrapper + XcodeGen).
