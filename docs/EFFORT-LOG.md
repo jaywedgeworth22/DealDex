@@ -6,6 +6,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 
 ## Completed
+- **2026-08-16 — GROK — IN PR — Rename Apple Note pointer to `⭐️ Background Jobs Master List` (branch `grok/note-title`).**  Owner retitled the pinned Coding note; AGENTS.md uses the exact new title.
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt.  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
 
 - **2026-08-15 — GROK — IN PR — Point DealDex AGENTS.md at Mac background-jobs master list (branch `grok/mac-process-list`).**  Canonical `~/apps/MAC-LOCAL-PROCESSES.md` + pinned Note.
