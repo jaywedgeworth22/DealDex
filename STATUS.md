@@ -1,3 +1,9 @@
+# Current Handoff
+
+## 2026-08-17 GROK — Effort-board hygiene
+
+In Progress rebuilt to leftover real work. Verified-merged rows moved to Completed. Landing this mirror so GitHub effort issues close.
+
 # Status
 
 Updated: 2026-08-15 (GROK-BUILD — live host is Grok Vercel + GitHub + dealdex.online)
