@@ -1,20 +1,20 @@
 # DealDex Effort Log — cross-agent board
 Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this file
-(mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-14.
+(mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-17.
 
 ## Deployed
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 
 ## Completed
-- **2026-08-16 — GROK — IN PR — Rename Apple Note pointer to `⭐️ Background Jobs Master List` (branch `grok/note-title`).**  Owner retitled the pinned Coding note; AGENTS.md uses the exact new title.
-- **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt.  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
-
-- **2026-08-15 — GROK — IN PR — Point DealDex AGENTS.md at Mac background-jobs master list (branch `grok/mac-process-list`).**  Canonical `~/apps/MAC-LOCAL-PROCESSES.md` + pinned Note.
+- **2026-08-15 — GROK-BUILD — COMPLETED/MERGED #71 — Grok Vercel + GitHub + dealdex.online.** Live host is dealdex.online. Re-link on Grok Vercel if `main` is not auto-building.
+- **2026-08-17 — GROK — COMPLETED — Effort-board hygiene.** Live In Progress already empty; landing this board as the repo mirror so stale GitHub `state:in-progress` issues close.
+- **2026-08-16 — GROK — IN PR — Rename Apple Note pointer to `⭐️ Background Jobs Master List` (branch `grok/note-title`, worktree `~/apps/dealdex-grok-note-title`).**  AGENTS.md only.
+- **2026-08-15 — GROK — COMPLETED/MERGED #61 — Point DealDex AGENTS.md at Mac background-jobs master list.**  Canonical `~/apps/MAC-LOCAL-PROCESSES.md` + pinned Note.
 - **2026-08-14 — GROK — COMPLETED — Store-submit prep (PR #56).** Privacy page, listing copy, ship wrapper, export-compliance plist.  ASC CREATE forbidden for App Manager key.  Archive hung on Xcode 26 `clang -v`.
 - **2026-08-14 — GROK — COMPLETED — Compile native iOS + Android apps (PR #50).** Gradle 8.7 wrapper + XcodeGen spec.  Debug APK in `public/DealDex.apk`.  iOS launched on iPhone 17 Pro sim.
 - **2026-08-14 — GROK-BUILD — COMPLETED — Register Grok Build as a standing fleet seat (DealDex PR #41, fleet PR #26).** Mac lane `~/apps/dealdex-grok-build`.  `fleet-apps.json` has GROK-BUILD.  AGENT-SYNC seat table still for Mac Grok (keepout this turn).
 - **2026-08-14 — GROK — COMPLETED — Onboarding links + subagent/economics wording (PR #40).** AGENTS.md start-here table + stronger Delegation stanza.  Docs only.
-- **2026-08-15 — GROK-BUILD — COMPLETED — White filter-row marks (PR #67).** eBay/Mercari count filters are white-on-dark.  Listing-row marks stay color.
+- **2026-08-13 — GROK-BUILD — COMPLETED — White toggle wordmarks (PR #37).** Scan/alert source chips use solid white eBay/Mercari letters.  Listing-row marks stay full color.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Straighten the JustTCG J (PR #34).** Desk names use Plex.  Fraunces WONK=0.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Official eBay + Mercari wordmarks (PR #20).** Owner-supplied blue MERCARI mark replaces the red character.  eBay four-color wordmark kept.  Native Scan matches.
 - **2026-08-13 — GROK-BUILD — COMPLETED — Join fleet as named seat.** Seat table + `grok-build/` prefix.  Preview lane is `/workspace`.  Same PR/CI/merge loop as every other seat.
@@ -25,16 +25,16 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-15 — GROK-BUILD — IN PROGRESS — Grok Vercel + GitHub + dealdex.online.** One loop.  Closed PR #70 (wrong account).  Repo canonical host is dealdex.online.  Grok Vercel still needs the GitHub repo linked so `main` deploys there.
+- (none)
 
+## Completed
+- **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
 
 ## Planned / Reserved
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 
 ## Changelog of this log
-- 2026-08-15 — GROK-BUILD reserved Grok Vercel + GitHub + dealdex.online (closed #70).
-- 2026-08-15 — GROK-BUILD reserved white filter-row marks (refresh live).
-- 2026-08-15 — GROK-BUILD reserved DealDex OG + shared scan cache + app marks.
+- 2026-08-17 — GROK: board hygiene. Confirm In Progress empty; #71 recorded Completed; landing mirror.
 - 2026-08-14 — GROK store-submit prep (#56); upload remains Planned (ASC create + Play creds).
 - 2026-08-14 — GROK moved native iOS + Android compile to Completed (PR #50).
 - 2026-08-14 — GROK reserved native iOS + Android compile (wrapper + XcodeGen).
