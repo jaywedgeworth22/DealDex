@@ -15,7 +15,7 @@ function read(rel) {
 
 test("XcodeGen spec uses online.dealdex and team CC8UTF7ATG", () => {
   const spec = read("native/ios/project.yml");
-  assert.match(spec, /^    bundleId: online\.dealdex$/m);
+  assert.match(spec, /^\s{4}bundleId: online\.dealdex$/m);
   assert.match(spec, /^\s+PRODUCT_BUNDLE_IDENTIFIER: online\.dealdex$/m);
   assert.match(spec, /^\s+DEVELOPMENT_TEAM: CC8UTF7ATG$/m);
   assert.doesNotMatch(spec, /me\.grok\.dealdex/);
