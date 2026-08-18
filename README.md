@@ -41,7 +41,7 @@ Stack: React 19, TanStack Start, Tailwind v4, Better Auth.
 See [`native/README.md`](native/README.md).
 
 - Android package `me.grok.dealdex`, launcher name DealDex
-- iOS project `native/ios/DealDex.xcodeproj`, display name DealDex
+- iOS project `native/ios/DealDex.xcodeproj`, bundle `online.dealdex`, display name DealDex
 
 ## Valuation
 

@@ -17,7 +17,9 @@ fleet / delivery posture, not card-desk features.
 - Custom domain on the Vercel **dealdex** project (GitHub `main` already
   linked; first deploy comes from this PR).
 - iOS TestFlight via `/Users/jay/apps/ios-fleet` once an ASC app record exists
-  for `me.grok.dealdex`.
+  for `online.dealdex` (SKU `dealdex`).  Do not upload until Jay creates that
+  app.  Team stays `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is
+  not a team id.
 - Android Play / sideload pipeline as the owner directs.
 
 ## Out of scope until asked

@@ -25,15 +25,16 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- (none)
+- **2026-08-18 — CURSOR — IN PROGRESS — iOS bundle ID `online.dealdex`.**  Branch `cursor/ios-bundle-online-dealdex-2596`.  Team stays `CC8UTF7ATG`.  Resource id `R2FAW69NPD` is not a team id.  No TestFlight / ASC upload.
 
 ## Completed
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
 
 ## Planned / Reserved
-- **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
+- **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
+- 2026-08-18 — CURSOR: reserved iOS bundle switch to `online.dealdex`.
 - 2026-08-17 — GROK: board hygiene. Confirm In Progress empty; #71 recorded Completed; landing mirror.
 - 2026-08-14 — GROK store-submit prep (#56); upload remains Planned (ASC create + Play creds).
 - 2026-08-14 — GROK moved native iOS + Android compile to Completed (PR #50).

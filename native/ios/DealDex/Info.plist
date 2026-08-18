@@ -9,7 +9,7 @@
     <key>CFBundleExecutable</key>
     <string>DealDex</string>
     <key>CFBundleIdentifier</key>
-    <string>me.grok.dealdex</string>
+    <string>online.dealdex</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
