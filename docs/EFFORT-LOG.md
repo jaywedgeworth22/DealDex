@@ -25,7 +25,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-18 — CURSOR — IN PROGRESS — iOS bundle ID `online.dealdex`.**  Branch `cursor/ios-bundle-online-dealdex-2596`.  Team stays `CC8UTF7ATG`.  Resource id `R2FAW69NPD` is not a team id.  No TestFlight / ASC upload.
+- **2026-08-18 — CURSOR — IN PROGRESS — iOS bundle ID `online.dealdex` (PR #82).**  Branch `cursor/ios-bundle-online-dealdex-2596`.  Team stays `CC8UTF7ATG`.  Resource id `R2FAW69NPD` is not a team id.  No TestFlight / ASC upload.
 
 ## Completed
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
