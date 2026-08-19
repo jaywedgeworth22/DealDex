@@ -7,7 +7,7 @@ cannot ship web-only commits.  Path filter is `native/ios/**`.  Fleet app
 key is `dealdex`.  Runner `[self-hosted, macOS, ARM64, xcode26]`.  Secrets
 stay on the Mac.  Bundle `online.dealdex` and team `CC8UTF7ATG` are
 unchanged.  Android package `me.grok.dealdex` is unchanged.  This seat
-does not upload to TestFlight.  Rebased onto current `main`.
+does not upload to TestFlight.  Rebased onto current `main`.  PR #85.
 
 ## 2026-08-20 CURSOR — shipping docs + GitHub About
 

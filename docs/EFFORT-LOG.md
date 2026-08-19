@@ -29,7 +29,8 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-20 — GROK — IN PR #85 — rebase iOS TestFlight ship workflow onto main.**  Branch `cursor/ios-testflight-ship-workflow-5706`.  Adds `.github/workflows/ios-ship.yml` + `scripts/ios-scheduled-ship-gate.sh` (path `native/ios/`, app key `dealdex`, runner `[self-hosted, macOS, ARM64, xcode26]`).  No bundle/team/Android-package change.  No TestFlight upload from this seat.
+- **2026-08-20 — GROK — rebase #85 onto main.**  Docs-union of STATUS/PLAN/effort log.  Runner `[self-hosted, macOS, ARM64, xcode26]`, path `native/ios/**`, app key `dealdex`.  No bundle/team/Android-package change.  No TestFlight upload.
+- **2026-08-19 — CURSOR — IN PR #85 — iOS TestFlight ship workflow.**  Branch `cursor/ios-testflight-ship-workflow-5706`.  Adds `.github/workflows/ios-ship.yml` + `scripts/ios-scheduled-ship-gate.sh` (path `native/ios/`, app key `dealdex`).  No bundle/team change.  No TestFlight upload from this seat.
 - **2026-08-20 — CURSOR — IN PR #96 — Shipping docs + GitHub About.**  Branch `cursor/shipping-docs-about-9145`.  Vercel is current (not leftover).  About + STATUS public host `https://dealdex.online`.  STATUS GitHub line is public.  Do not migrate to Coolify.  Grok-publish-vs-`main` gap not visible in today's GET.
 
 ## Completed

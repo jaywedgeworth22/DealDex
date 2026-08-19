@@ -30,6 +30,8 @@ from this Linux agent.
 - Offline gate tests + a workflow-contract test so Ubuntu CI can catch a
   broken skip without a Mac.
 
+PR: https://github.com/jaywedgeworth22/DealDex/pull/85
+
 ## Not done
 
 - No TestFlight / ASC upload from this seat.  The Mac runner is what ships,
