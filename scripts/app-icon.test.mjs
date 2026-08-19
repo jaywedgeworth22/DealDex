@@ -1,0 +1,105 @@
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import test from "node:test";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const ICONSET = "native/ios/DealDex/Assets.xcassets/AppIcon.appiconset";
+
+function read(rel) {
+  return readFileSync(join(ROOT, rel), "utf8");
+}
+
+function pngSize(rel) {
+  const buf = readFileSync(join(ROOT, rel));
+  assert.equal(buf.subarray(0, 8).toString("binary"), "\x89PNG\r\n\x1a\n");
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20), bytes: buf.length };
+}
+
+test("Info.plist sets CFBundleIconName to AppIcon", () => {
+  const plist = read("native/ios/DealDex/Info.plist");
+  assert.match(
+    plist,
+    /<key>CFBundleIconName<\/key>\s*<string>AppIcon<\/string>/,
+  );
+});
+
+test("iPad multitasking lists all four orientations including PortraitUpsideDown", () => {
+  const plist = read("native/ios/DealDex/Info.plist");
+  const required = [
+    "UIInterfaceOrientationPortrait",
+    "UIInterfaceOrientationPortraitUpsideDown",
+    "UIInterfaceOrientationLandscapeLeft",
+    "UIInterfaceOrientationLandscapeRight",
+  ];
+  for (const key of [
+    "UISupportedInterfaceOrientations",
+    "UISupportedInterfaceOrientations~ipad",
+  ]) {
+    const block = plist.match(
+      new RegExp(`<key>${key}</key>\\s*<array>([\\s\\S]*?)</array>`),
+    );
+    assert.ok(block, `missing ${key}`);
+    for (const orientation of required) {
+      assert.match(block[1], new RegExp(`<string>${orientation}</string>`));
+    }
+  }
+});
+
+test("XcodeGen spec names the AppIcon catalog", () => {
+  const spec = read("native/ios/project.yml");
+  assert.match(spec, /^\s+ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon$/m);
+  assert.match(spec, /^\s+INFOPLIST_KEY_CFBundleIconName: AppIcon$/m);
+});
+
+test("AppIcon catalog includes 120, 152, and 1024 PNGs", () => {
+  const contents = JSON.parse(read(`${ICONSET}/Contents.json`));
+  const files = new Set(contents.images.map((img) => img.filename));
+  assert.ok(files.has("Icon-60@2x.png"), "120px iPhone app icon");
+  assert.ok(files.has("Icon-76@2x.png"), "152px iPad app icon");
+  assert.ok(files.has("Icon-1024.png"), "1024 marketing icon");
+
+  const iphone120 = pngSize(`${ICONSET}/Icon-60@2x.png`);
+  assert.deepEqual({ width: iphone120.width, height: iphone120.height }, { width: 120, height: 120 });
+  const ipad152 = pngSize(`${ICONSET}/Icon-76@2x.png`);
+  assert.deepEqual({ width: ipad152.width, height: ipad152.height }, { width: 152, height: 152 });
+  const store = pngSize(`${ICONSET}/Icon-1024.png`);
+  assert.deepEqual({ width: store.width, height: store.height }, { width: 1024, height: 1024 });
+  assert.ok(store.bytes > 50_000, "1024 icon should be real artwork, not a stub");
+});
+
+test("generated pbxproj compiles AppIcon from the asset catalog", () => {
+  const pbx = read("native/ios/DealDex.xcodeproj/project.pbxproj");
+  assert.match(pbx, /ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;/);
+  assert.match(pbx, /Assets\.xcassets/);
+  assert.match(pbx, /PBXResourcesBuildPhase/);
+  assert.doesNotMatch(pbx, /R2FAW69NPD/);
+});
+
+test("Android launcher uses the DD adaptive icon and mipmaps", () => {
+  const adaptive = read(
+    "native/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+  );
+  assert.match(adaptive, /@drawable\/ic_launcher_foreground/);
+  assert.match(adaptive, /@color\/launcher_bg/);
+  assert.doesNotMatch(adaptive, /ic_delta/);
+  const colors = read("native/android/app/src/main/res/values/colors.xml");
+  assert.match(colors, /<color name="launcher_bg">#FFFFFF<\/color>/);
+  const xxx = pngSize(
+    "native/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+  );
+  assert.deepEqual({ width: xxx.width, height: xxx.height }, { width: 192, height: 192 });
+  assert.ok(existsSync(join(ROOT, "native/android/app/src/main/res/drawable/ic_launcher_foreground.png")));
+});
+
+test("web favicon and PWA 180 are the DD mark, not the old delta stub", () => {
+  const fav = read("public/favicon.svg");
+  assert.match(fav, /data:image\/png;base64,/);
+  assert.doesNotMatch(fav, /#0c0d0b/);
+  const pwa = pngSize("public/__grok/icon-180.png");
+  assert.deepEqual({ width: pwa.width, height: pwa.height }, { width: 180, height: 180 });
+  assert.ok(pwa.bytes > 8_000, "PWA 180 should be the glossy DD, not the 2 KB delta");
+  const source = pngSize("native/brand/dealdex-dd-icon-1024.png");
+  assert.deepEqual({ width: source.width, height: source.height }, { width: 1024, height: 1024 });
+});

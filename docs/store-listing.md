@@ -3,13 +3,14 @@
 Updated: Wed, Aug 19, 2026.  Two spaces between sentences.  No agent names.
 
 **Wordmark:** official DealDex title mark (red Deal + blue Dex, yellow badge).  Used in the website header, login, and marketing card.  
-**Home-screen icon:** not this wordmark.  App Store / Play / PWA icons wait on a separate DD mark.
+**Home-screen icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, white background.  Not the in-app wordmark.
 
 **iOS bundle:** `online.dealdex`  
 **Apple bundle resource ID:** `R2FAW69NPD` (Developer portal App ID resource; **not** a team ID)  
 **Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`  
 **Android package:** `me.grok.dealdex`  
 **SKU:** `dealdex`  
+**App icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, white background (not the in-app wordmark).
 **Category:** Shopping  
 **Marketing version:** 1.0.1  
 **Privacy:** `https://dealdex.online/privacy`  

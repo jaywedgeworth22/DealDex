@@ -6,6 +6,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 
 ## Completed
+- **2026-08-19 — CURSOR — COMPLETED/MERGED #86 — Official DealDex wordmark (in-app / web).**  Header, login, `dd.svg`, OG card.  Home-screen AppIcon is the follow-up (this PR).
 - **2026-08-18 — CURSOR — COMPLETED/MERGED #82 — iOS bundle ID `online.dealdex`.**  Team `CC8UTF7ATG`.  Resource id `R2FAW69NPD` is not a team id.  No TestFlight / ASC upload.
 - **2026-08-15 — GROK-BUILD — COMPLETED/MERGED #71 — Grok Vercel + GitHub + dealdex.online.** Live host is dealdex.online. Re-link on Grok Vercel if `main` is not auto-building.
 - **2026-08-17 — GROK — COMPLETED — Effort-board hygiene.** Live In Progress already empty; landing this board as the repo mirror so stale GitHub `state:in-progress` issues close.
@@ -26,7 +27,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-19 — CURSOR — IN PROGRESS — Official DealDex wordmark (in-app / web only, PR #86).**  Branch `cursor/dealdex-wordmark-1ce4`.  Header, login, `dd.svg`, OG card.  Home-screen AppIcon / launcher wait on Jay's separate DD mark.
+- **2026-08-19 — CURSOR — IN PR — Official DD AppIcon + TestFlight rejects.**  Branch `cursor/dealdex-dd-appicon-9c3f`.  iOS AppIcon catalog, `CFBundleIconName`, iPad PortraitUpsideDown, Android launcher, web favicon + PWA 180.  In-app wordmark is already on `main` (PR #86).  No TestFlight upload.
 
 ## Completed
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
@@ -35,6 +36,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
+- 2026-08-19 — CURSOR: reserved official DD AppIcon + TestFlight icon/orientation rejects.
 - 2026-08-19 — CURSOR: reserved official DealDex wordmark (in-app / web).  Home-screen icon is a follow-up.
 - 2026-08-18 — CURSOR: reserved iOS bundle switch to `online.dealdex`.
 - 2026-08-17 — GROK: board hygiene. Confirm In Progress empty; #71 recorded Completed; landing mirror.
