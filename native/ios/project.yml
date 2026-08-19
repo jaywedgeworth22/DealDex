@@ -1,3 +1,10 @@
+# iOS identity — do not mix these up:
+#   Bundle ID: online.dealdex
+#   Apple Developer bundle resource ID: R2FAW69NPD
+#     (NOT a team ID. Never put R2FAW69NPD in DEVELOPMENT_TEAM or any team field.)
+#   DEVELOPMENT_TEAM / Apple team ID: CC8UTF7ATG
+# Apple App ID online.dealdex is registered with IAP. ASC app record (SKU dealdex)
+# does not exist yet — do not upload to TestFlight.
 name: DealDex
 options:
   deploymentTarget:
@@ -15,7 +22,7 @@ targets:
   DealDex:
     type: application
     platform: iOS
-    bundleId: me.grok.dealdex
+    bundleId: online.dealdex
     sources:
       - path: DealDex
         excludes:
@@ -24,7 +31,7 @@ targets:
       base:
         INFOPLIST_FILE: DealDex/Info.plist
         GENERATE_INFOPLIST_FILE: NO
-        PRODUCT_BUNDLE_IDENTIFIER: me.grok.dealdex
+        PRODUCT_BUNDLE_IDENTIFIER: online.dealdex
         PRODUCT_NAME: DealDex
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: CC8UTF7ATG

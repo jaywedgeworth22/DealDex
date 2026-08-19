@@ -109,6 +109,7 @@
 				};
 			};
 			buildConfigurationList = 0142A60441FF8451840B82FC /* Build configuration list for PBXProject "DealDex" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -118,7 +119,6 @@
 			mainGroup = 9F6B8204DBAE4AFFF7AFCEE8;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 3ADF03538B5F5916137FEA9A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -163,7 +163,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.grok.dealdex;
+				PRODUCT_BUNDLE_IDENTIFIER = online.dealdex;
 				PRODUCT_NAME = DealDex;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -185,7 +185,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.grok.dealdex;
+				PRODUCT_BUNDLE_IDENTIFIER = online.dealdex;
 				PRODUCT_NAME = DealDex;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

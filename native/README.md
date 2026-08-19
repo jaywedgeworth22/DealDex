@@ -33,4 +33,4 @@ xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
   -destination 'generic/platform=iOS Simulator' build
 ```
 
-Bundle id: `me.grok.dealdex`.  Display name: DealDex.
+Bundle id: `online.dealdex`.  Display name: DealDex.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.

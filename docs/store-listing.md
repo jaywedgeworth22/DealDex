@@ -1,8 +1,11 @@
 # DealDex store listing (iOS + Android)
 
-Updated: Fri, Aug 14, 2026 at 4:20 PM CT.  Two spaces between sentences.  No agent names.
+Updated: Tue, Aug 18, 2026.  Two spaces between sentences.  No agent names.
 
-**Bundle / package:** `me.grok.dealdex`  
+**iOS bundle:** `online.dealdex`  
+**Apple bundle resource ID:** `R2FAW69NPD` (Developer portal App ID resource; **not** a team ID)  
+**Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`  
+**Android package:** `me.grok.dealdex`  
 **SKU:** `dealdex`  
 **Category:** Shopping  
 **Marketing version:** 1.0.1  

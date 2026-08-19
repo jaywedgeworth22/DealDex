@@ -1,9 +1,11 @@
 # DealDex iOS
 
-**Bundle ID:** `me.grok.dealdex`
+**Bundle ID:** `online.dealdex`
+**Apple bundle resource ID:** `R2FAW69NPD` — this is the Developer portal App ID resource, **not** a team ID.  Never put it in `DEVELOPMENT_TEAM`, `DevelopmentTeam`, or any team field.
+**Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`
 **Project:** `native/ios/DealDex.xcodeproj`
 **Scheme:** `DealDex`
-**Team:** `CC8UTF7ATG` (ASC app record may not exist yet — see `/Users/jay/apps/ios-fleet/README.md`)
+**ASC:** Apple bundle `online.dealdex` is registered (IAP capability on).  Jay has not created the App Store Connect app DealDex (SKU `dealdex`) yet.  Do not upload to TestFlight / ASC.
 **XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.
 **Keys:** stay on device. Do not invent a cloud key store.
 

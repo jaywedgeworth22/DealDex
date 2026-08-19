@@ -134,7 +134,7 @@ npm run build          # vite build; db migrate no-ops without DATABASE_URL
 Native:
 
 - Android: `cd native/android && ANDROID_HOME=… ./gradlew :app:assembleDebug --no-daemon`
-- iOS: `xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex -destination 'generic/platform=iOS Simulator' build` (bundle `me.grok.dealdex`). Onboarding: `native/ios/CLAUDE.md`.
+- iOS: `xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex -destination 'generic/platform=iOS Simulator' build` (bundle `online.dealdex`, team `CC8UTF7ATG`). Onboarding: `native/ios/CLAUDE.md`.
 
 ## iOS agent build loop (owner 2026-08-13)
 
@@ -153,7 +153,9 @@ Canonical: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop.
 - Routes: `/` live scan, `/settings` keys, `/alerts`, `/saved` ledger,
   `/install` APK + native source, `/login`.
 - Native: `native/android` (package `me.grok.dealdex`),
-  `native/ios/DealDex.xcodeproj` (same bundle id). Keys stay on device.
+  `native/ios/DealDex.xcodeproj` (bundle `online.dealdex`, team
+  `CC8UTF7ATG`). Keys stay on device.  Apple bundle resource id
+  `R2FAW69NPD` is not a team id — never put it in `DEVELOPMENT_TEAM`.
 - Theme default is **light**. Do not boot into dark from
   `prefers-color-scheme` unless the user chose System or Dark.
 - Two spaces between sentences in every human-facing string (UI, store
