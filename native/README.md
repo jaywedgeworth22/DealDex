@@ -28,6 +28,12 @@ The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your
 2. Open `ios/DealDex.xcodeproj` in Xcode 15+ (team `CC8UTF7ATG`).
 3. Run on a phone or simulator.
 
+Home-screen icon is the official overlapping red + blue DD (yellow rim) in
+`DealDex/Assets.xcassets`.  `CFBundleIconName` is `AppIcon`.  iPad
+`UISupportedInterfaceOrientations` includes PortraitUpsideDown.  Android
+launcher mipmaps and the adaptive icon use the same DD.  Do not put the
+in-app wordmark on the home screen.
+
 ```
 xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
   -destination 'generic/platform=iOS Simulator' build

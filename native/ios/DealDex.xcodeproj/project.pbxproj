@@ -12,6 +12,7 @@
 		82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */; };
 		90341ABD2FBF83991C619ED2 /* AccountApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311B6F98D562C40268CAF219 /* AccountApi.swift */; };
 		91AD53E281BD98AFD212A2BF /* Market.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E96EE4589197B685843AB3 /* Market.swift */; };
+		9AFAB03F7D764259A2719768 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */; };
 		A612C5E54E4042A1F04AF87B /* PaidDesks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CA7FA5A7C93FE00BFF5816 /* PaidDesks.swift */; };
 		BFBD6E80909740C203D5B174 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61487D9B0E035704CAFC1E9 /* SettingsView.swift */; };
 		CDFE44760F4FDE7DB16B293C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F5F676B10407840DA6220C /* ScanView.swift */; };
@@ -31,6 +32,7 @@
 		66E96EE4589197B685843AB3 /* Market.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Market.swift; sourceTree = "<group>"; };
 		79BE02B033E727EE0760B492 /* DeskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskStore.swift; sourceTree = "<group>"; };
 		8027642EE047BC6844FC1731 /* DeskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskModel.swift; sourceTree = "<group>"; };
+		BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
 		D61487D9B0E035704CAFC1E9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E74DAB841052EE8417CAA3FA /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 				22646DB4462EBE054FA5FD1D /* AccountView.swift */,
 				E74DAB841052EE8417CAA3FA /* AlertsView.swift */,
 				CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */,
+				BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */,
 				5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */,
 				8027642EE047BC6844FC1731 /* DeskModel.swift */,
 				79BE02B033E727EE0760B492 /* DeskStore.swift */,
@@ -81,6 +84,7 @@
 			buildConfigurationList = 9D2CCF5414C1BC30C0540204 /* Build configuration list for PBXNativeTarget "DealDex" */;
 			buildPhases = (
 				26796C64882EED1C35E2FE1C /* Sources */,
+				C2B7024DA3D488D52B666C4B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -127,6 +131,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		C2B7024DA3D488D52B666C4B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AFAB03F7D764259A2719768 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		26796C64882EED1C35E2FE1C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -159,6 +174,7 @@
 				DEVELOPMENT_TEAM = CC8UTF7ATG;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DealDex/Info.plist;
+				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -181,6 +197,7 @@
 				DEVELOPMENT_TEAM = CC8UTF7ATG;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DealDex/Info.plist;
+				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

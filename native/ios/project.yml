@@ -31,6 +31,8 @@ targets:
       base:
         INFOPLIST_FILE: DealDex/Info.plist
         GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_CFBundleIconName: AppIcon
         PRODUCT_BUNDLE_IDENTIFIER: online.dealdex
         PRODUCT_NAME: DealDex
         CODE_SIGN_STYLE: Automatic

@@ -7,6 +7,7 @@
 **Scheme:** `DealDex`
 **ASC:** Apple bundle `online.dealdex` is registered (IAP capability on).  Jay has not created the App Store Connect app DealDex (SKU `dealdex`) yet.  Do not upload to TestFlight / ASC.
 **XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.
+**AppIcon:** `DealDex/Assets.xcassets/AppIcon.appiconset` — overlapping red + blue DD with a yellow rim.  `CFBundleIconName` is `AppIcon`.  Home-screen icon is this DD, not the in-app wordmark.
 **Keys:** stay on device. Do not invent a cloud key store.
 
 Binding fleet rule: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop. `xcodebuild` / `xcrun simctl` via bash are pre-approved. Do not ask. Do not stand up or narrate Xcode MCP.
@@ -35,6 +36,7 @@ native/ios/
 ├── project.yml                         # XcodeGen spec
 ├── DealDex.xcodeproj/                  # generated; do not hand-edit
 └── DealDex/
+    ├── Assets.xcassets/AppIcon.appiconset   # official DD launcher
     ├── DealDexApp.swift                # App entry
     ├── DeskStore.swift                 # @Observable desk / session store
     ├── DeskModel.swift                 # Desk types
