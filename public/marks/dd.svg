@@ -1,4 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#3f4a32"/>
-  <text x="16" y="21.5" text-anchor="middle" font-family="Times New Roman, serif" font-size="13" fill="#f6f3ea">DD</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" role="img" aria-label="DealDex">
+  <title>DealDex</title>
+  <defs>
+    <path id="dd-arch" d="M 48 158 Q 400 38 752 158"/>
+    <style>
+      .dd-wm {
+        font-family: "Arial Black", "Franklin Gothic Heavy", Impact, "Helvetica Neue", sans-serif;
+        font-weight: 900;
+        font-size: 92px;
+        letter-spacing: -3.5px;
+      }
+    </style>
+  </defs>
+  <rect width="800" height="220" fill="#ffffff"/>
+  <text class="dd-wm" fill="none" stroke="#111111" stroke-width="34" stroke-linejoin="round" stroke-linecap="round">
+    <textPath href="#dd-arch" startOffset="50%" text-anchor="middle">DealDex</textPath>
+  </text>
+  <text class="dd-wm" fill="none" stroke="#FFD200" stroke-width="24" stroke-linejoin="round" stroke-linecap="round">
+    <textPath href="#dd-arch" startOffset="50%" text-anchor="middle">DealDex</textPath>
+  </text>
+  <text class="dd-wm" stroke="#111111" stroke-width="3.4" stroke-linejoin="round">
+    <textPath href="#dd-arch" startOffset="50%" text-anchor="middle">
+      <tspan fill="#E30613">Deal</tspan><tspan fill="#0066FF">Dex</tspan>
+    </textPath>
+  </text>
 </svg>

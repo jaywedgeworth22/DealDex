@@ -6,8 +6,8 @@
     <style>
       html, body { margin: 0; padding: 0; width: 1200px; height: 630px; overflow: hidden; }
       body {
-        background: #0c0d0b;
-        color: #eceae4;
+        background: #ffffff;
+        color: #1a1b16;
         font-family: "IBM Plex Sans", system-ui, sans-serif;
       }
       .frame {
@@ -15,43 +15,27 @@
         height: 630px;
         box-sizing: border-box;
         padding: 72px 88px;
-        background:
-          radial-gradient(900px 420px at 78% 18%, rgba(228, 223, 210, 0.06), transparent 62%),
-          linear-gradient(180deg, #12130f 0%, #0c0d0b 100%);
+        background: #ffffff;
         position: relative;
       }
       .rule {
         position: absolute;
         inset: 28px;
-        border: 1px solid rgba(236, 234, 228, 0.1);
+        border: 1px solid rgba(26, 27, 22, 0.1);
         pointer-events: none;
       }
-      .mark {
-        width: 44px;
-        height: 44px;
-        border: 1px solid rgba(228, 223, 210, 0.4);
-        border-radius: 6px;
-        display: grid;
-        place-items: center;
-        color: #e4dfd2;
-        font-family: "Fraunces", serif;
-        font-size: 26px;
-        line-height: 1;
-        font-variation-settings: "WONK" 0, "SOFT" 20;
-      }
-      h1 {
-        margin: 48px 0 0;
-        font-family: "Fraunces", serif;
-        font-weight: 500;
-        font-size: 112px;
-        letter-spacing: -0.03em;
-        line-height: 0.92;
-        font-variation-settings: "WONK" 0, "SOFT" 20, "opsz" 72;
+      .wordmark {
+        display: block;
+        height: 132px;
+        width: auto;
+        max-width: 640px;
+        object-fit: contain;
+        object-position: left center;
       }
       p {
-        margin: 22px 0 0;
+        margin: 28px 0 0;
         font-size: 28px;
-        color: #9a978c;
+        color: #5c5a52;
         letter-spacing: 0.01em;
       }
       .foot {
@@ -71,8 +55,7 @@
   <body>
     <div class="frame">
       <div class="rule"></div>
-      <div class="mark">Δ</div>
-      <h1>DealDex</h1>
+      <img class="wordmark" src="../public/marks/dealdex-wordmark.png" alt="DealDex" />
       <p>Find the best listings. Keep the cheap ones.</p>
       <div class="foot">
         <span>eBay · Mercari · TCGPlayer</span>

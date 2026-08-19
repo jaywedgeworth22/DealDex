@@ -10,12 +10,72 @@ import {
 import { cn } from "@/lib/utils";
 import { readAppMark, writeAppMark, type AppMarkId } from "@/lib/settings/mark";
 
+/** Official DealDex title wordmark (red Deal + blue Dex, yellow badge). */
+const DEALDEX_WORDMARK_SRC = "/marks/dealdex-wordmark.png";
+
+export function DealDexWordmark({
+  className,
+}: {
+  className?: string;
+}) {
+  return (
+    <img
+      src={DEALDEX_WORDMARK_SRC}
+      alt="DealDex"
+      className={cn("h-8 w-auto max-w-[11rem] object-contain object-left sm:h-9 sm:max-w-[13rem]", className)}
+    />
+  );
+}
+
 export function AppMark({
   id = "delta",
   className,
 }: {
   id?: AppMarkId;
   className?: string;
+}) {
+  switch (id) {
+    case "dd":
+      return (
+        <span className={cn("inline-flex h-7 items-center overflow-visible", className)} aria-hidden>
+          <img
+            src={DEALDEX_WORDMARK_SRC}
+            alt=""
+            className="h-6 w-auto max-w-[7.5rem] object-contain object-left"
+          />
+        </span>
+      );
+    case "peak":
+      return (
+        <ChipMark className={className}>
+          <PeakIcon />
+        </ChipMark>
+      );
+    case "disc":
+      return (
+        <ChipMark className={className}>
+          <DiscIcon />
+        </ChipMark>
+      );
+    case "delta":
+      return (
+        <ChipMark className={className}>
+          <span className="font-display text-sm leading-none">Δ</span>
+        </ChipMark>
+      );
+    default: {
+      const _exhaustive: never = id;
+      return _exhaustive;
+    }
+  }
+}
+
+function ChipMark({
+  className,
+  children,
+}: {
+  className?: string;
+  children: ReactNode;
 }) {
   return (
     <span
@@ -25,15 +85,7 @@ export function AppMark({
       )}
       aria-hidden
     >
-      {id === "peak" ? (
-        <PeakIcon />
-      ) : id === "dd" ? (
-        <span className="font-display text-xs leading-none tracking-tight">DD</span>
-      ) : id === "disc" ? (
-        <DiscIcon />
-      ) : (
-        <span className="font-display text-sm leading-none">Δ</span>
-      )}
+      {children}
     </span>
   );
 }
