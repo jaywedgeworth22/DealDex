@@ -1,5 +1,12 @@
 # Current Handoff
 
+## 2026-08-19 CURSOR — official DealDex wordmark (in-app / web)
+
+Official title wordmark (red Deal + blue Dex, yellow badge) is the header,
+login, Settings "Wordmark" chip, `public/marks/dd.svg`, and OG card.
+Home-screen AppIcon / Android launcher / store 1024 are **not** in this
+lane.  Jay will send a separate "DD" mark for those.
+
 ## 2026-08-18 CURSOR — iOS bundle ID `online.dealdex`
 
 Switched the iOS target from `me.grok.dealdex` to `online.dealdex`.  Team
@@ -10,7 +17,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-18 (CURSOR — iOS bundle `online.dealdex`)
+Updated: 2026-08-19 (CURSOR — official wordmark, not the app icon)
 
 ## Current state
 
@@ -30,6 +37,9 @@ Updated: 2026-08-18 (CURSOR — iOS bundle `online.dealdex`)
   `PRODUCT_BUNDLE_IDENTIFIER=online.dealdex` and
   `DEVELOPMENT_TEAM=CC8UTF7ATG`.  Apple App ID `online.dealdex` is
   registered (resource `R2FAW69NPD`, IAP on).
+- In-app / web title mark is the official DealDex wordmark.  Home-screen
+  icons are still the old delta / Grok placeholders until the DD icon
+  lands.
 
 ## Blockers
 
@@ -37,6 +47,8 @@ Updated: 2026-08-18 (CURSOR — iOS bundle `online.dealdex`)
   registered; App Manager API cannot CREATE apps).  Account Holder must
   add DealDex once (SKU `dealdex`).  Do not upload to TestFlight until
   that record exists.
+- Home-screen AppIcon / Play launcher / PWA 180 wait on Jay's separate
+  "DD" icon artwork.  Do not invent one from the wordmark.
 - Google Play Console credentials are not in `~/.secrets/`.
 - Custom domain **dealdex.online** is on Grok's Vercel but not tracking
   GitHub `main`.  Re-link the repo on that Grok project.
@@ -51,6 +63,8 @@ Updated: 2026-08-18 (CURSOR — iOS bundle `online.dealdex`)
 
 ## Next
 
+- When Jay sends the home-screen "DD" mark: iOS AppIcon, Android
+  adaptive launcher, favicon / apple-touch / PWA 180.
 - TestFlight / ASC app record when the owner is ready (bundle
   `online.dealdex`, SKU `dealdex`, team `CC8UTF7ATG`).
 - Remaining seats start from `main` in their own worktrees.

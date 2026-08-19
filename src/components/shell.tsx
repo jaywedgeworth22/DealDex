@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { AccountMenu, GuestMenu } from "@/components/account-menu";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AppMark, useAppMark } from "@/components/app-mark";
+import { DealDexWordmark } from "@/components/app-mark";
 import { cn } from "@/lib/utils";
 
 function AuthSlot() {
@@ -27,14 +27,12 @@ function AuthSlot() {
 const PAGE = "mx-auto w-full min-w-0 max-w-7xl px-4";
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { mark } = useAppMark();
   return (
     <div className="min-h-dvh min-w-0 overflow-x-hidden bg-bg text-fg">
       <header className="sticky top-0 z-20 border-b border-border/80 bg-bg/85 backdrop-blur-sm">
         <div className={cn(PAGE, "flex h-14 items-center justify-between gap-3")}>
-          <Link to="/" className="flex shrink-0 items-center gap-2.5">
-            <AppMark id={mark} />
-            <span className="font-display text-lg tracking-tight">DealDex</span>
+          <Link to="/" className="flex shrink-0 items-center" aria-label="DealDex home">
+            <DealDexWordmark />
           </Link>
           <nav className="flex shrink-0 items-center gap-0.5 text-sm sm:gap-1">
             <Link

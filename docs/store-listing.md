@@ -1,6 +1,9 @@
 # DealDex store listing (iOS + Android)
 
-Updated: Tue, Aug 18, 2026.  Two spaces between sentences.  No agent names.
+Updated: Wed, Aug 19, 2026.  Two spaces between sentences.  No agent names.
+
+**Wordmark:** official DealDex title mark (red Deal + blue Dex, yellow badge).  Used in the website header, login, and marketing card.  
+**Home-screen icon:** not this wordmark.  App Store / Play / PWA icons wait on a separate DD mark.
 
 **iOS bundle:** `online.dealdex`  
 **Apple bundle resource ID:** `R2FAW69NPD` (Developer portal App ID resource; **not** a team ID)  
