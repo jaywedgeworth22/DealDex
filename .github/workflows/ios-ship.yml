@@ -1,0 +1,104 @@
+name: iOS TestFlight ship (Mac runner)
+
+# Archive + upload on the owned Mac runner so TestFlight (the phone) actually
+# updates when iOS code lands on main. Ubuntu CI stays web-only.
+#
+# XCODE BUILDS ONLY: this workflow may target mac-runner labels. Web / Android
+# jobs stay off this host. Fork PRs never run here.
+#
+# Secrets stay on the Mac (~/.secrets/appstore-connect.env). Nothing is
+# checked into GitHub. The in-repo wrapper execs the fleet script with app
+# key `dealdex` and --repo-root pointing at this checkout (native/ios).
+#
+# Bundle `online.dealdex` and team `CC8UTF7ATG` are unchanged here.
+# The Apple Developer portal App ID resource is not a team id.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'native/ios/**'
+      - '.github/workflows/ios-ship.yml'
+  workflow_dispatch:
+  schedule:
+    # Twice an hour, offset from Socratic.Trade ('*/30'), Congress.Trade
+    # ('7,37'), and Usage-Monitor ('13,43') so the shared Mac runner is not
+    # asked to start every fleet ship on the same minute.
+    - cron: '22,52 * * * *'
+
+# WHY THE CRON EXISTS, AND WHY IT NEEDS A GATE
+# --------------------------------------------
+# `push:` alone is not a reliable trigger. A PR merged by github-actions[bot]
+# lands on main under GitHub's recursion guard and dispatches NOTHING (measured
+# on Socratic.Trade PR #2675 and Congress.Trade PR #1835). So iOS code can
+# reach main and never reach a phone, and the cron is what notices.
+#
+# But a cron carries no `paths:` filter, and the ship script's own gate only
+# knows "is HEAD the sha I last shipped" plus a time interval -- neither of
+# which knows whether native/ios/ changed. Siblings already paid for that gap
+# (Socratic.Trade run 31723515355 shipped a pure-backend alerts fix). The
+# "Scheduled ship gate" step below is what stops that, and it is why this
+# workflow can keep a 30-minute tick without spamming TestFlight.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-ship-dealdex
+  cancel-in-progress: false
+
+jobs:
+  ship:
+    name: TestFlight archive + upload
+    if: github.event.repository.fork == false
+    runs-on: [self-hosted, macOS, ARM64, xcode26]
+    timeout-minutes: 90
+    env:
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+    steps:
+      # fetch-depth: 0 is load-bearing, not hygiene. The default depth-1
+      # checkout leaves the runner workspace with exactly ONE commit, so
+      # `git log <last-shipped-sha>..HEAD` fails with "unknown revision" and
+      # both the scheduled gate and TestFlight release notes go empty.
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      # Runs FIRST so a tick with nothing to ship costs seconds and cannot go
+      # red on an unrelated environment problem. The logic lives in a script,
+      # not inline YAML, so Ubuntu CI can unit-test it on every PR -- otherwise
+      # it would only ever execute on the one Mac that can ship.
+      - name: Scheduled ship gate (skip unless iOS code changed)
+        id: gate
+        run: |
+          bash "$GITHUB_WORKSPACE/scripts/ios-scheduled-ship-gate.sh" \
+            --event "${{ github.event_name }}" \
+            --path-prefix 'native/ios/' \
+            --repo-root "$GITHUB_WORKSPACE" \
+            dealdex
+
+      - name: Assert stable Xcode 26 (never beta)
+        if: steps.gate.outputs.should_ship == '1'
+        run: |
+          echo "DEVELOPER_DIR=${DEVELOPER_DIR}"
+          xcodebuild -version
+          ver=$(xcodebuild -version | awk 'NR==1{print $2}')
+          case "$ver" in
+            26.*) echo "stable Xcode $ver — OK" ;;
+            *)
+              echo "::error::Expected stable Xcode 26.x, got '$ver'."
+              exit 1
+              ;;
+          esac
+
+      # Route through the in-repo wrapper, not the runtime fleet path directly.
+      # scripts/ios-ship-testflight.sh execs
+      # /Users/jay/apps/ios-fleet/ship-testflight.sh dealdex --repo-root "$ROOT".
+      #
+      # No IOS_TF_MIN_INTERVAL_SEC here. Standing gate is
+      # DEFAULT_MIN_INTERVAL_SEC=3600 (1 hour) in the fleet script. The
+      # 30-minute cron picks up an unbuilt merge on the next eligible hour;
+      # same-HEAD ticks still exit 0 without shipping.
+      - name: Ship DealDex to TestFlight
+        if: steps.gate.outputs.should_ship == '1'
+        run: bash scripts/ios-ship-testflight.sh

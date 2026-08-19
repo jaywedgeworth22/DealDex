@@ -22,9 +22,12 @@ fleet / delivery posture, not card-desk features.
   not invent one.
 - Keep `dealdex.online` on Vercel.  Do not invent a replacement hostname
   and do not move the site to Coolify.
-- iOS TestFlight via `/Users/jay/apps/ios-fleet` once an ASC app record exists
-  for `online.dealdex` (SKU `dealdex`).  Do not upload until Jay creates that
-  app.  Team stays `CC8UTF7ATG`.
+- iOS TestFlight via `.github/workflows/ios-ship.yml` (Mac runner
+  `[self-hosted, macOS, ARM64, xcode26]`, app key `dealdex`, path
+  `native/ios/`) once an ASC app record exists for `online.dealdex` (SKU
+  `dealdex`).  Do not upload until Jay creates that app.  Team stays
+  `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
+  Fleet wrapper remains `/Users/jay/apps/ios-fleet`.
 - Android Play / sideload pipeline as the owner directs.
 
 ## Out of scope until asked

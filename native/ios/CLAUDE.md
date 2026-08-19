@@ -5,7 +5,8 @@
 **Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`
 **Project:** `native/ios/DealDex.xcodeproj`
 **Scheme:** `DealDex`
-**ASC:** Apple bundle `online.dealdex` is registered (IAP capability on).  Jay has not created the App Store Connect app DealDex (SKU `dealdex`) yet.  Do not upload to TestFlight / ASC.
+**ASC:** Apple bundle `online.dealdex` is registered (IAP capability on).  Jay has not created the App Store Connect app DealDex (SKU `dealdex`) yet.  Do not upload to TestFlight / ASC until that record exists.
+**TestFlight ship:** `.github/workflows/ios-ship.yml` on `[self-hosted, macOS, ARM64, xcode26]`.  Wrapper `scripts/ios-ship-testflight.sh` (fleet key `dealdex`).  Cron is gated by `scripts/ios-scheduled-ship-gate.sh` so web-only commits do not ship.  Secrets stay in `~/.secrets/appstore-connect.env` on the Mac.
 **XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.
 **AppIcon:** `DealDex/Assets.xcassets/AppIcon.appiconset` — overlapping red + blue DD with a yellow rim.  `CFBundleIconName` is `AppIcon`.  Home-screen icon is this DD, not the in-app wordmark.
 **Keys:** stay on device. Do not invent a cloud key store.

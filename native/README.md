@@ -42,3 +42,5 @@ xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
 ```
 
 Bundle id: `online.dealdex`.  Display name: DealDex.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
+
+TestFlight archive + upload is `.github/workflows/ios-ship.yml` on the owned Mac runner (app key `dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  Do not upload until the ASC app record exists.
