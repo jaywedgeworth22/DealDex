@@ -29,7 +29,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-20 — CURSOR — IN PR — Shipping docs + GitHub About.**  Branch `cursor/shipping-docs-about-9145`.  README / CONTRIBUTING / About metadata only.  `dealdex-psi.vercel.app` still serves DealDex but is not the unique production host.  Native IDs `me.grok.dealdex` + `online.dealdex` / `CC8UTF7ATG`.  Do not invent a live URL.
+- **2026-08-20 — CURSOR — IN PR #96 — Shipping docs + GitHub About.**  Branch `cursor/shipping-docs-about-9145`.  README / CONTRIBUTING / About metadata only.  About homepage is now `https://dealdex.online`.  `dealdex-psi.vercel.app` still serves DealDex but is not the unique production host.  Native IDs `me.grok.dealdex` + `online.dealdex` / `CC8UTF7ATG`.
 
 ## Completed
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
