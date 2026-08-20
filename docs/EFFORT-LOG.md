@@ -6,6 +6,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 
 ## Completed
+- **2026-08-20 — GROK — COMPLETED/MERGED #103 — iOS desk + 3D title wordmark.**  Official olive eBay/Mercari source chips (website SVG sizes + even-odd holes).  Jay's glossy DealDex title on header/login/OG/iOS/Android.  Isolated DD stored; live AppIcon not swapped.  Unsigned `POST /api/native/scan`, Google `dealdex://`, iOS 18 / Xcode 26.3.  Production heading cache-busted `?v=3d-20260820`.
 - **2026-08-20 — CURSOR — COMPLETED/MERGED #94 — Apache License 2.0 at repo root.**  Official `LICENSE` text plus copyright line.
 - **2026-08-19 — CURSOR — COMPLETED/MERGED #87 — Official DD AppIcon + TestFlight rejects.**  iOS AppIcon catalog, `CFBundleIconName`, iPad PortraitUpsideDown, Android launcher, web favicon + PWA 180.
 - **2026-08-19 — CURSOR — COMPLETED/MERGED #86 — Official DealDex wordmark (in-app / web).**  Header, login, `dd.svg`, OG card.  Home-screen AppIcon is the follow-up (PR #87).
@@ -29,7 +30,6 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-20 — GROK — IN PROGRESS — iOS desk + 3D title wordmark.**  Lane `~/apps/dealdex-grok-ios-desk` @ `grok/ios-desk`.  Board `b302987e`.  Display name DealDex, min iOS 18.0, objectVersion 100.  Official white eBay/Mercari SVG chips.  Scan hits `/api/native/scan` without a session.  Google via `ASWebAuthenticationSession`.  Owner 3D DealDex title on web + iOS + Android.  Isolated DD stored, live AppIcon not swapped.  AppIcon options in `native/brand/icon-options/`.
 - **2026-08-20 — CURSOR — IN PR #96 — Shipping docs + GitHub About.**  Branch `cursor/shipping-docs-about-9145`.  Vercel is current (not leftover).  About + STATUS public host `https://dealdex.online`.  STATUS GitHub line is public.  Do not migrate to Coolify.  Grok-publish-vs-`main` gap not visible in today's GET.
 
 ## Completed
@@ -39,6 +39,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
+- 2026-08-20 — GROK: landed #103 iOS desk + 3D title; production heading is the owner 3D mark.
 - 2026-08-20 — GROK: reserved iOS desk (Xcode 26.3, iOS 18, white marketplace chips, unsigned scan, Google sign-in, AppIcon options).  Owner 3D title wordmark + isolated DD added (live AppIcon left).
 - 2026-08-20 — CURSOR: Vercel current; homepage dealdex.online; STATUS public; no Coolify migrate.
 - 2026-08-20 — CURSOR: reserved shipping docs + GitHub About (psi homepage stale as unique prod).
