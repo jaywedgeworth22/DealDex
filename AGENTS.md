@@ -6,7 +6,7 @@ desks. Website name **DealDex**. Android and iPhone apps scan on the device;
 they do not wrap the website. API keys live on the phone; sign-in is optional
 for backup.
 
-GitHub: `jaywedgeworth22/DealDex` (private). Integration tree:
+GitHub: `jaywedgeworth22/DealDex` (public). Integration tree:
 `/Users/jay/Code/DealDex`. Slack `repo:` name: **`DealDex`**. Acronym: **`DD`**.
 
 Read this before making changes. It exists so the next agent (Claude, Codex,
@@ -102,8 +102,9 @@ Same fleet rules as every other seat: rebase onto `origin/main`, work on a
 STATUS rows **GROK-BUILD**. If the sandbox drifted from GitHub, GitHub wins.
 After merge, Mac Grok should pull `~/apps/dealdex-grok` so the worktree matches.
 
-Live hosting is **not** this preview. Wire Vercel or Coolify to `main` once
-(see CONTRIBUTING.md). After that, a merged PR is what users get.
+Live hosting is **not** this preview.  GitHub `main` is the code.  Vercel
+builds Production on merge (see CONTRIBUTING.md).  Coolify is not wired.
+Do not invent a live URL.  After a green merge, other agents pull `main`.
 
 Do not add a second Grok Build seat. Do not push `main` from this preview.
 
