@@ -27,7 +27,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-20 — CURSOR — IN PR — Apache License 2.0 at repo root.**  Branch `cursor/apache-license-b569`.  Official `LICENSE` text plus copyright line.  No app, CI, or README edits.  PR to `main`; do not merge from this seat.
+- **2026-08-20 — CURSOR — IN PR #94 — Apache License 2.0 at repo root.**  Branch `cursor/apache-license-b569`.  Official `LICENSE` text plus copyright line.  No app, CI, or README edits.  Do not merge from this seat.
 - **2026-08-19 — CURSOR — IN PR — Official DD AppIcon + TestFlight rejects.**  Branch `cursor/dealdex-dd-appicon-9c3f`.  iOS AppIcon catalog, `CFBundleIconName`, iPad PortraitUpsideDown, Android launcher, web favicon + PWA 180.  In-app wordmark is already on `main` (PR #86).  No TestFlight upload.
 
 ## Completed
