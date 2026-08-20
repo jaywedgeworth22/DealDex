@@ -29,6 +29,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
+- **2026-08-20 — CURSOR — POINTER — Cross-app coordination follow-ups (audit #2802).**  Socratic.Trade audit #2802 follow-ups are in ST PR #2941, Congress.Trade #2064, Usage-Monitor #1245.  Pins still CTS v2.5.2.  Pin-check is fail-closed but not a required merge check.  DealDex stays protocol-only / Vercel.  No Infisical, no Coolify, no USAGE_INGEST, no ASC, no Hetzner, no ios-fleet dashboards.  Branch `cursor/cross-app-coordination-followups`.
 - **2026-08-20 — CURSOR — IN PR #96 — Shipping docs + GitHub About.**  Branch `cursor/shipping-docs-about-9145`.  Vercel is current (not leftover).  About + STATUS public host `https://dealdex.online`.  STATUS GitHub line is public.  Do not migrate to Coolify.  Grok-publish-vs-`main` gap not visible in today's GET.
 
 ## Completed
@@ -38,6 +39,8 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
+- 2026-08-20 — GROK: rebased #93 effort-log pointer onto main (docs-union).
+- 2026-08-20 — CURSOR: pointer row for ST audit #2802 follow-ups (DealDex stays protocol-only / Vercel).
 - 2026-08-20 — CURSOR: Vercel current; homepage dealdex.online; STATUS public; no Coolify migrate.
 - 2026-08-20 — CURSOR: reserved shipping docs + GitHub About (psi homepage stale as unique prod).
 - 2026-08-20 — CURSOR: reserved Apache License 2.0 at repo root (`LICENSE`).
