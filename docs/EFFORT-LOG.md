@@ -38,6 +38,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
+- 2026-08-20 — CURSOR: Vercel current; homepage dealdex.online; STATUS public; no Coolify migrate.
 - 2026-08-20 — CURSOR: reserved shipping docs + GitHub About (psi homepage stale as unique prod).
 - 2026-08-20 — CURSOR: reserved Apache License 2.0 at repo root (`LICENSE`).
 - 2026-08-19 — CURSOR: reserved official DD AppIcon + TestFlight icon/orientation rejects.
