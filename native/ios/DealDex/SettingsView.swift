@@ -7,16 +7,20 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("https://your-dealdex.example", text: $desk.origin)
+                    TextField("https://dealdex.online", text: $desk.origin)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
-                    TextField("Email", text: $desk.loginEmail)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.emailAddress)
-                    SecureField("Password", text: $desk.loginPassword)
                     if desk.accountEmail.isEmpty {
-                        Button(desk.accountBusy ? "Working…" : "Sign In") { Task { await desk.signIn(signup: false) } }
+                        Button(desk.accountBusy ? "Working…" : "Sign in with Google") {
+                            Task { await desk.signInGoogle() }
+                        }
+                        .disabled(desk.accountBusy)
+                        TextField("Email", text: $desk.loginEmail)
+                            .textInputAutocapitalization(.never)
+                            .keyboardType(.emailAddress)
+                        SecureField("Password", text: $desk.loginPassword)
+                        Button(desk.accountBusy ? "Working…" : "Sign In with email") { Task { await desk.signIn(signup: false) } }
                             .disabled(desk.accountBusy)
                         Button("Create Account") { Task { await desk.signIn(signup: true) } }
                             .disabled(desk.accountBusy)
@@ -31,7 +35,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Account")
                 } footer: {
-                    Text("Optional. Scan works signed out. Use the same email as the website to back up keys.")
+                    Text("Optional.  Scan works without signing in.  Google website accounts use Sign in with Google — email and password is only for accounts you created that way.")
                 }
 
                 Section {
@@ -42,7 +46,7 @@ struct SettingsView: View {
                 } header: {
                     Text("API Desks")
                 } footer: {
-                    Text("Keys stay on this phone. DealDex talks to eBay, Mercari, TCGDex, and these desks directly.")
+                    Text("Keys stay on this phone.  DealDex talks to eBay, Mercari, TCGDex, and these desks directly.")
                 }
 
                 if let note = desk.accountNote {

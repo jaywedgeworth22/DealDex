@@ -5,19 +5,35 @@
 #   DEVELOPMENT_TEAM / Apple team ID: CC8UTF7ATG
 # Apple App ID online.dealdex is registered with IAP. ASC app record (SKU dealdex)
 # does not exist yet — do not upload to TestFlight.
+#
+# Project Format: Xcode 26.3-compatible (objectVersion / preferredProjectObjectVersion = 100).
+# XcodeGen 2.46 still emits objectVersion 77 for xcodeVersion 26.3; after `xcodegen generate`
+# `xcodegen-post.py` rewrites 77 → 100 and LastUpgradeCheck → 2630 so the File Inspector
+# shows Xcode 26.3, not Xcode 16 / 14.
 name: DealDex
 options:
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "18.0"
   createIntermediateGroups: true
+  groupSortPosition: top
   defaultConfig: Release
+  xcodeVersion: "26.3"
+  postGenCommand: "python3 xcodegen-post.py"
 settings:
   base:
-    SWIFT_VERSION: "5.0"
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     MARKETING_VERSION: "1.0.1"
     CURRENT_PROJECT_VERSION: "1"
     DEVELOPMENT_TEAM: CC8UTF7ATG
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    ENABLE_PREVIEWS: YES
+    SWIFT_STRICT_CONCURRENCY: targeted
+    INFOPLIST_KEY_CFBundleDisplayName: DealDex
+    INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.shopping
+    INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
 targets:
   DealDex:
     type: application
@@ -27,20 +43,70 @@ targets:
       - path: DealDex
         excludes:
           - Info.plist
+    dependencies:
+      - sdk: AuthenticationServices.framework
     settings:
       base:
         INFOPLIST_FILE: DealDex/Info.plist
-        GENERATE_INFOPLIST_FILE: NO
+        GENERATE_INFOPLIST_FILE: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        INFOPLIST_KEY_CFBundleDisplayName: DealDex
         INFOPLIST_KEY_CFBundleIconName: AppIcon
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.shopping
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
         PRODUCT_BUNDLE_IDENTIFIER: online.dealdex
         PRODUCT_NAME: DealDex
+        PRODUCT_MODULE_NAME: DealDex
         CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
         DEVELOPMENT_TEAM: CC8UTF7ATG
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: YES
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: YES
         SDKROOT: iphoneos
         TARGETED_DEVICE_FAMILY: "1,2"
+        IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+        SWIFT_EMIT_LOC_STRINGS: YES
+    info:
+      path: DealDex/Info.plist
+      properties:
+        CFBundleDisplayName: DealDex
+        CFBundleName: DealDex
+        CFBundleIdentifier: online.dealdex
+        CFBundleDevelopmentRegion: en
+        CFBundlePackageType: APPL
+        CFBundleIconName: AppIcon
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.shopping
+        ITSAppUsesNonExemptEncryption: false
+        LSRequiresIPhoneOS: true
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+        CFBundleURLTypes:
+          - CFBundleURLName: online.dealdex
+            CFBundleURLSchemes:
+              - dealdex
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
 schemes:
   DealDex:
     build:

@@ -1,0 +1,97 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { auth, SESSION_TOKEN_COOKIE } from "@/lib/auth/server";
+import { GROK_PROVIDERS } from "@/lib/auth/providers";
+
+const NATIVE_SCHEME = "dealdex";
+const ALLOWED = new Set(GROK_PROVIDERS.map((p) => p.providerId));
+
+function readCookie(request: Request, name: string): string | null {
+  const header = request.headers.get("cookie");
+  if (!header) return null;
+  for (const part of header.split(";")) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq <= 0) continue;
+    if (trimmed.slice(0, eq) !== name) continue;
+    const raw = trimmed.slice(eq + 1);
+    try {
+      return decodeURIComponent(raw);
+    } catch {
+      return raw;
+    }
+  }
+  return null;
+}
+
+function nativeRedirect(params: Record<string, string>): Response {
+  const q = new URLSearchParams(params);
+  const location = `${NATIVE_SCHEME}://auth?${q.toString()}`;
+  return new Response(null, {
+    status: 302,
+    headers: { location, "cache-control": "no-store" },
+  });
+}
+
+export const Route = createFileRoute("/api/native/oauth")({
+  server: {
+    handlers: {
+      GET: async ({ request }) => {
+        const url = new URL(request.url);
+        if (url.searchParams.get("done") === "1") {
+          if (url.searchParams.has("error")) {
+            return nativeRedirect({
+              error: url.searchParams.get("error") || "sign_in_failed",
+            });
+          }
+          const token = readCookie(request, SESSION_TOKEN_COOKIE);
+          if (!token) {
+            return nativeRedirect({ error: "no_session" });
+          }
+          let email = "";
+          try {
+            const session = await auth.api.getSession({ headers: request.headers });
+            email = session?.user?.email ?? "";
+          } catch {
+            /* token still usable as Bearer */
+          }
+          return nativeRedirect({ token, email });
+        }
+
+        const providerId = (url.searchParams.get("provider") ?? "grok-google").trim();
+        if (!ALLOWED.has(providerId)) {
+          return nativeRedirect({ error: "unknown_provider" });
+        }
+
+        const back = `${url.origin}/api/native/oauth?done=1`;
+        try {
+          const apiRes = await auth.api.signInWithOAuth2({
+            body: {
+              providerId,
+              callbackURL: back,
+              errorCallbackURL: `${back}&error=1`,
+            },
+            headers: request.headers,
+            asResponse: true,
+          });
+          if (!apiRes.ok) {
+            return nativeRedirect({ error: `oauth_init_failed_${apiRes.status}` });
+          }
+          const body = (await apiRes.json().catch(() => null)) as { url?: string } | null;
+          const location = body?.url;
+          if (!location) {
+            return nativeRedirect({ error: "oauth_init_missing_url" });
+          }
+          const headers = new Headers({ location, "cache-control": "no-store" });
+          for (const cookie of apiRes.headers.getSetCookie()) {
+            headers.append("set-cookie", cookie);
+          }
+          return new Response(null, { status: 302, headers });
+        } catch (err) {
+          const message = err instanceof Error ? err.message : "oauth_init_threw";
+          return nativeRedirect({ error: message });
+        }
+      },
+    },
+  },
+});

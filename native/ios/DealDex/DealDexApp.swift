@@ -1,12 +1,7 @@
 import SwiftUI
-import UserNotifications
 
 @main
 struct DealDexApp: App {
-    init() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
-    }
-
     var body: some Scene {
         WindowGroup {
             RootView()
@@ -29,6 +24,7 @@ struct RootView: View {
                 .environmentObject(desk)
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }
-        .tint(Color(red: 0.25, green: 0.29, blue: 0.20))
+        .tint(Color(red: 63 / 255, green: 74 / 255, blue: 50 / 255))
+        .preferredColorScheme(.light)
     }
 }

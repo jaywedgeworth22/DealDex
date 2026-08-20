@@ -3,12 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 100;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08D984D57317EDE9DDA948A8 /* MarketplaceMarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1D125C85BFF24812178C0 /* MarketplaceMarks.swift */; };
 		115F5E513207288F44040D12 /* Appraise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */; };
 		4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6ED06FC5E7DA4B309E90F /* Models.swift */; };
+		68974D10BC0FEF2DC8A3A261 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */; };
+		738AFF1EAE0CCF70FB43D190 /* DealDexBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4102913782BABF7A13EFA78 /* DealDexBrand.swift */; };
 		82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */; };
 		90341ABD2FBF83991C619ED2 /* AccountApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311B6F98D562C40268CAF219 /* AccountApi.swift */; };
 		91AD53E281BD98AFD212A2BF /* Market.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E96EE4589197B685843AB3 /* Market.swift */; };
@@ -18,6 +21,7 @@
 		CDFE44760F4FDE7DB16B293C /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9F5F676B10407840DA6220C /* ScanView.swift */; };
 		D69450F58B17C2EECD236C19 /* DeskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE02B033E727EE0760B492 /* DeskStore.swift */; };
 		D956F7DEF8BAB101A87B62F7 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22646DB4462EBE054FA5FD1D /* AccountView.swift */; };
+		DA03BB02896F3FA66E5E36C2 /* NativeAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392D9849BF8E736108C78668 /* NativeAuth.swift */; };
 		E0BFA5839CEC00B3F19EF40B /* DeskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8027642EE047BC6844FC1731 /* DeskModel.swift */; };
 		E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74DAB841052EE8417CAA3FA /* AlertsView.swift */; };
 /* End PBXBuildFile section */
@@ -27,17 +31,32 @@
 		06CA7FA5A7C93FE00BFF5816 /* PaidDesks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaidDesks.swift; sourceTree = "<group>"; };
 		22646DB4462EBE054FA5FD1D /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		311B6F98D562C40268CAF219 /* AccountApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountApi.swift; sourceTree = "<group>"; };
+		392D9849BF8E736108C78668 /* NativeAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuth.swift; sourceTree = "<group>"; };
 		50067F711863E53C8B62C880 /* DealDex.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DealDex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealDexApp.swift; sourceTree = "<group>"; };
 		66E96EE4589197B685843AB3 /* Market.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Market.swift; sourceTree = "<group>"; };
+		6FF1D125C85BFF24812178C0 /* MarketplaceMarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketplaceMarks.swift; sourceTree = "<group>"; };
 		79BE02B033E727EE0760B492 /* DeskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskStore.swift; sourceTree = "<group>"; };
 		8027642EE047BC6844FC1731 /* DeskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeskModel.swift; sourceTree = "<group>"; };
+		97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
 		D61487D9B0E035704CAFC1E9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E4102913782BABF7A13EFA78 /* DealDexBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealDexBrand.swift; sourceTree = "<group>"; };
 		E74DAB841052EE8417CAA3FA /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
 		F9F5F676B10407840DA6220C /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		682B292079E11771C1927183 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68974D10BC0FEF2DC8A3A261 /* AuthenticationServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		3ADF03538B5F5916137FEA9A /* Products */ = {
@@ -48,10 +67,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7B0F2641947954E2816DEDF9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9F6B8204DBAE4AFFF7AFCEE8 = {
 			isa = PBXGroup;
 			children = (
 				FAA4199A8553FE5D93E9D5AC /* DealDex */,
+				7B0F2641947954E2816DEDF9 /* Frameworks */,
 				3ADF03538B5F5916137FEA9A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,10 +93,13 @@
 				CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */,
 				BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */,
 				5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */,
+				E4102913782BABF7A13EFA78 /* DealDexBrand.swift */,
 				8027642EE047BC6844FC1731 /* DeskModel.swift */,
 				79BE02B033E727EE0760B492 /* DeskStore.swift */,
 				66E96EE4589197B685843AB3 /* Market.swift */,
+				6FF1D125C85BFF24812178C0 /* MarketplaceMarks.swift */,
 				04E6ED06FC5E7DA4B309E90F /* Models.swift */,
+				392D9849BF8E736108C78668 /* NativeAuth.swift */,
 				06CA7FA5A7C93FE00BFF5816 /* PaidDesks.swift */,
 				F9F5F676B10407840DA6220C /* ScanView.swift */,
 				D61487D9B0E035704CAFC1E9 /* SettingsView.swift */,
@@ -85,6 +116,7 @@
 			buildPhases = (
 				26796C64882EED1C35E2FE1C /* Sources */,
 				C2B7024DA3D488D52B666C4B /* Resources */,
+				682B292079E11771C1927183 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -104,7 +136,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					BB883C50AFFC936740631EB0 = {
 						DevelopmentTeam = CC8UTF7ATG;
@@ -113,7 +145,6 @@
 				};
 			};
 			buildConfigurationList = 0142A60441FF8451840B82FC /* Build configuration list for PBXProject "DealDex" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -122,7 +153,8 @@
 			);
 			mainGroup = 9F6B8204DBAE4AFFF7AFCEE8;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 100;
+			productRefGroup = 3ADF03538B5F5916137FEA9A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -152,10 +184,13 @@
 				E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */,
 				115F5E513207288F44040D12 /* Appraise.swift in Sources */,
 				82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */,
+				738AFF1EAE0CCF70FB43D190 /* DealDexBrand.swift in Sources */,
 				E0BFA5839CEC00B3F19EF40B /* DeskModel.swift in Sources */,
 				D69450F58B17C2EECD236C19 /* DeskStore.swift in Sources */,
 				91AD53E281BD98AFD212A2BF /* Market.swift in Sources */,
+				08D984D57317EDE9DDA948A8 /* MarketplaceMarks.swift in Sources */,
 				4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */,
+				DA03BB02896F3FA66E5E36C2 /* NativeAuth.swift in Sources */,
 				A612C5E54E4042A1F04AF87B /* PaidDesks.swift in Sources */,
 				CDFE44760F4FDE7DB16B293C /* ScanView.swift in Sources */,
 				BFBD6E80909740C203D5B174 /* SettingsView.swift in Sources */,
@@ -169,21 +204,31 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CC8UTF7ATG;
-				GENERATE_INFOPLIST_FILE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DealDex/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DealDex;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = online.dealdex;
+				PRODUCT_MODULE_NAME = DealDex;
 				PRODUCT_NAME = DealDex;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -192,21 +237,31 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CC8UTF7ATG;
-				GENERATE_INFOPLIST_FILE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DealDex/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DealDex;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = online.dealdex;
+				PRODUCT_MODULE_NAME = DealDex;
 				PRODUCT_NAME = DealDex;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -244,12 +299,15 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CC8UTF7ATG;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -258,7 +316,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				INFOPLIST_KEY_CFBundleDisplayName = DealDex;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -266,7 +327,8 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -304,12 +366,15 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = CC8UTF7ATG;
+				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -324,7 +389,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				INFOPLIST_KEY_CFBundleDisplayName = DealDex;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -333,7 +401,8 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;

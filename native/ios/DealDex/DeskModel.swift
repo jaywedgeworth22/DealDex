@@ -8,6 +8,7 @@ final class DeskModel: ObservableObject {
     @Published var rows: [ScoredListing] = []
     @Published var error: String?
     @Published var view = "all"
+    @Published var sources: Set<String> = ["ebay", "mercari"]
     @Published var rule = AlertRule(id: "default", name: "Steals under $100")
 
     @Published var justTcg = DeskStore.keys.justTcg
@@ -22,7 +23,7 @@ final class DeskModel: ObservableObject {
     @Published var accountBusy = false
     @Published var accountNote: String?
 
-    init() { Task { await scan("") } }
+    init() { Task { await scan("", notify: false) } }
 
     var keys: DeskKeys {
         DeskKeys(justTcg: justTcg, priceCharting: priceCharting, pokemonTcg: pokemonTcg)
@@ -39,29 +40,55 @@ final class DeskModel: ObservableObject {
         }
     }
 
+    func toggleSource(_ market: String) {
+        if sources.contains(market) {
+            if sources.count > 1 { sources.remove(market) }
+        } else {
+            sources.insert(market)
+        }
+    }
+
     func saveKeys() {
         DeskStore.keys = keys
         settingsNote = "Saved on this iPhone. Scan uses them even if the website is down."
     }
 
-    func scan(_ q: String? = nil) async {
+    func scan(_ q: String? = nil, notify: Bool = false) async {
         if let q { query = q }
         loading = true
         error = nil
         do {
-            let found = try await Market.scan(query, keys: keys)
+            let found = try await Market.scan(query, keys: keys, origin: origin, sources: Array(sources))
             rows = found
-            fireAlerts(found)
+            if notify { await fireAlerts(found) }
         } catch {
             self.error = error.localizedDescription
         }
         loading = false
     }
 
+    func signInGoogle() async {
+        accountBusy = true
+        accountNote = nil
+        do {
+            let session = try await NativeAuth.signIn(origin: origin, provider: "grok-google")
+            let site = NativeAuth.normalized(origin)
+            DeskStore.origin = site
+            DeskStore.token = session.token
+            DeskStore.email = session.email
+            self.origin = site
+            accountEmail = session.email.isEmpty ? "Google" : session.email
+            accountNote = "Signed in with Google.  Keys still live on this phone.  Pull or push to sync."
+        } catch {
+            accountNote = error.localizedDescription + "  Scan still works without signing in."
+        }
+        accountBusy = false
+    }
+
     func signIn(signup: Bool) async {
-        let site = origin.trimmingCharacters(in: CharacterSet(charactersIn: "/ "))
-        if site.isEmpty || loginEmail.isEmpty || loginPassword.count < 8 {
-            accountNote = "Website origin, email, and a password of 8+ characters."
+        let site = NativeAuth.normalized(origin)
+        if loginEmail.isEmpty || loginPassword.count < 8 {
+            accountNote = "Email and a password of 8+ characters — or use Sign in with Google if that is how you created the website account.  Scan still works without signing in."
             return
         }
         accountBusy = true
@@ -74,7 +101,7 @@ final class DeskModel: ObservableObject {
             self.origin = site
             accountEmail = session.email
             loginPassword = ""
-            accountNote = "Signed in. Keys still live on this phone. Pull or push to sync."
+            accountNote = "Signed in.  Keys still live on this phone.  Pull or push to sync."
         } catch {
             accountNote = error.localizedDescription + " Scan still works with saved keys."
         }
@@ -118,8 +145,10 @@ final class DeskModel: ObservableObject {
         accountNote = "Signed out. Saved keys stay on this phone."
     }
 
-    private func fireAlerts(_ rows: [ScoredListing]) {
+    private func fireAlerts(_ rows: [ScoredListing]) async {
         guard rule.enabled else { return }
+        let status = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+        guard status == .authorized || status == .provisional else { return }
         for row in rows {
             guard let a = row.appraisal else { continue }
             if let max = rule.maxPrice, (row.listing.price ?? .greatestFiniteMagnitude) > max { continue }
@@ -130,7 +159,7 @@ final class DeskModel: ObservableObject {
             content.title = rule.name
             content.body = "\(row.listing.title) · $\(row.listing.price ?? 0)"
             let req = UNNotificationRequest(identifier: row.id, content: content, trigger: nil)
-            UNUserNotificationCenter.current().add(req)
+            try? await UNUserNotificationCenter.current().add(req)
         }
     }
 }
