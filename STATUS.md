@@ -1,5 +1,13 @@
 # Current Handoff
 
+## 2026-08-20 CURSOR — Apache License 2.0 at repo root
+
+Root `LICENSE` is the official Apache License, Version 2.0 text from
+https://www.apache.org/licenses/LICENSE-2.0.txt with
+`Copyright 2026 Jay Wedgeworth` on the first line.  README has no
+license section, so it was left alone.  PR to `main`; do not merge from
+this seat (PR #94).
+
 ## 2026-08-19 CURSOR — official DD AppIcon + TestFlight rejects
 
 Home-screen icon is the overlapping glossy red + blue DD with a thick yellow
@@ -25,7 +33,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-19 (CURSOR — official DD AppIcon)
+Updated: 2026-08-20 (CURSOR — Apache License 2.0)
 
 ## Current state
 
