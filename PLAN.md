@@ -9,10 +9,10 @@ fleet / delivery posture, not card-desk features.
   registries.  See `docs/rollouts/2026-08-13-fleet-onboard.md`.
 - GROK-BUILD standing seat: Mac lane + `fleet-apps.json`.  See
   `docs/rollouts/2026-08-14-grok-build-seat.md`.
-- Web identity: GitHub `main` plus the hosts recorded in
-  `CONTRIBUTING.md`.  Do not treat `dealdex-psi.vercel.app` as the unique
-  production URL.  Do not point people at `dealdex.vercel.app` (different
-  Next.js product).  Coolify is not wired.
+- Web identity: public host **https://dealdex.online** on **Vercel**.
+  Vercel is current.  GitHub About homepage is that URL, not
+  `dealdex-psi.vercel.app`.  Do not migrate copy to Coolify.  Do not
+  point people at `dealdex.vercel.app` (different Next.js product).
 - Native identity: Android `me.grok.dealdex`.  iOS `online.dealdex`, team
   `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
 
@@ -20,9 +20,8 @@ fleet / delivery posture, not card-desk features.
 
 - Runtime secrets in Infisical (prod env).  Owner creates the project.  Do
   not invent one.
-- Confirm which Vercel project should own `dealdex.online` long term
-  (GitHub Production currently reports team `jaywedgeworth22s-projects`).
-  Do not invent a replacement hostname.
+- Keep `dealdex.online` on Vercel.  Do not invent a replacement hostname
+  and do not move the site to Coolify.
 - iOS TestFlight via `/Users/jay/apps/ios-fleet` once an ASC app record exists
   for `online.dealdex` (SKU `dealdex`).  Do not upload until Jay creates that
   app.  Team stays `CC8UTF7ATG`.

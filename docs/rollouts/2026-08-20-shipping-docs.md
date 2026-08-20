@@ -38,19 +38,25 @@ HTTP GET (curl `--compressed`, no new hostnames invented):
 OG tags on the three DealDex hosts all said `https://dealdex.online/`,
 which matches `VITE_PUBLIC_HOSTNAME` in `src/routes/__root.tsx`.
 
-Conclusion: `dealdex-psi.vercel.app` still serves this app.  It is not
-the unique production identity.  About should use `https://dealdex.online`
-or be cleared.  Do not set About to `dealdex.vercel.app`.
+Conclusion: Vercel is current, not a leftover.  Public host and GitHub
+About homepage are `https://dealdex.online`.  Do not use
+`dealdex-psi.vercel.app` as the homepage.  Do not migrate copy to
+Coolify.  Today's GET showed the same hashed JS on `dealdex.online` and
+the GitHub-linked Vercel `main` alias, so the older "stale Grok publish
+vs `main`" gap is not visible.  Both pages still load
+`grok.com/grok-app-builder/extensions.js`.
 
 ## What changed
 
 - `README.md` — PR loop (not push to `main`).  Verified hosts.  Native
   IDs.  Stack.  Apache 2.0 pointer.
-- `CONTRIBUTING.md` — live-site section rewritten from the GET evidence.
-  Dropped the claim that `jaywedgeworth22s-projects` is unused.
-- `PLAN.md`, `STATUS.md`, `AGENTS.md` (public + no Coolify), 
-  `.github/copilot-instructions.md`, `native/README.md`,
-  `docs/store-listing.md`, `docs/EFFORT-LOG.md`, this note.
+- `CONTRIBUTING.md` — Vercel is the current host.  Public URL
+  `https://dealdex.online`.  Do not migrate to Coolify.
+- `STATUS.md` — `GitHub … (public)` (was private on `main`).  Public
+  host `https://dealdex.online` on Vercel.
+- `PLAN.md`, `AGENTS.md`, `.github/copilot-instructions.md`,
+  `native/README.md`, `docs/store-listing.md`, `docs/EFFORT-LOG.md`,
+  this note.
 
 ## Left alone
 

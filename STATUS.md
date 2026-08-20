@@ -2,14 +2,11 @@
 
 ## 2026-08-20 CURSOR — shipping docs + GitHub About
 
-README, CONTRIBUTING, PLAN, AGENTS, copilot-instructions, store listing,
-and this file now match how DealDex actually ships: optional TanStack /
-Vite website plus native Android (`me.grok.dealdex`) and iOS
-(`online.dealdex`, team `CC8UTF7ATG`).  GitHub About homepage
-`https://dealdex-psi.vercel.app` still served the same DealDex build on
-2026-08-20.  It is a stale alias, not a unique production host.  The
-app's own hostname is `dealdex.online`.  `dealdex.vercel.app` is a
-different Next.js product.  Docs only.  Do not invent a live URL.
+Vercel is the current host, not a leftover.  Public host is
+**https://dealdex.online**.  GitHub About homepage is that URL, not
+`dealdex-psi.vercel.app`.  Repo is **public**.  Keep the site on Vercel.
+Do not migrate copy to Coolify.  Native: Android `me.grok.dealdex`, iOS
+`online.dealdex`, team `CC8UTF7ATG`.  Docs only.
 
 ## 2026-08-20 CURSOR — Apache License 2.0 at repo root
 
@@ -42,7 +39,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-20 (CURSOR — shipping docs + GitHub About)
+Updated: 2026-08-20 (CURSOR — Vercel current, homepage dealdex.online)
 
 ## Current state
 
@@ -53,15 +50,19 @@ Updated: 2026-08-20 (CURSOR — shipping docs + GitHub About)
 - **Grok Build** (`GROK-BUILD`) is a standing seat.  Prefix `grok-build/`.
 - Website is optional.  Stack is React 19, TanStack Start, Tailwind v4,
   Better Auth, Vite.  Not Next.js / Expo / React Native / Capacitor.
-- Hosting (checked 2026-08-20, see CONTRIBUTING.md):
-  GitHub Production deploys `main` on Vercel team
-  `jaywedgeworth22s-projects`.  `https://dealdex.online` and
-  `https://dealdex-psi.vercel.app` both returned HTTP 200 DealDex with
-  the same hashed JS as
-  `https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app`.
-  About should not keep `dealdex-psi` as the unique homepage.
-  `https://dealdex.vercel.app` is a different product.  Coolify is not
-  wired.  Do not invent a URL.
+- **Public host: https://dealdex.online on Vercel.**  Vercel is current,
+  not a leftover.  GitHub About homepage is `https://dealdex.online`.
+  Do not point About at `dealdex-psi.vercel.app`.  Do not migrate the
+  site to Coolify.
+- GitHub `main` is the code.  Vercel Production builds it (team
+  `jaywedgeworth22s-projects`, project `dealdex`).  Checked 2026-08-20:
+  `https://dealdex.online` served the same hashed JS as the GitHub-linked
+  alias `https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app`.
+  The older "stale Grok publish, not tracking `main`" gap is not visible
+  in today's GET.  Both pages still load
+  `grok.com/grok-app-builder/extensions.js` (Grok publish chrome).
+- `https://dealdex.vercel.app` is a different Next.js product.  Do not
+  use it.
 - Native Android debug APK builds with the Gradle 8.7 wrapper.  Package
   remains `me.grok.dealdex`.  Launcher is the official DD.
 - iOS XcodeGen spec (`native/ios/project.yml`) uses
@@ -80,8 +81,6 @@ Updated: 2026-08-20 (CURSOR — shipping docs + GitHub About)
   add DealDex once (SKU `dealdex`).  Do not upload to TestFlight until
   that record exists.
 - Google Play Console credentials are not in `~/.secrets/`.
-- Confirm long-term Vercel project ownership of `dealdex.online`.
-  GitHub Production currently reports `jaywedgeworth22s-projects`.
 - Infisical project (prod env), `SENTRY_FLEET_DSN`, and
   `FLEET_GITHUB_TOKEN` still need the owner.
 - Integration tree `~/Code/DealDex` is dirty (uncommitted
@@ -93,7 +92,6 @@ Updated: 2026-08-20 (CURSOR — shipping docs + GitHub About)
 
 ## Next
 
-- After this docs PR: set GitHub About homepage to `https://dealdex.online`
-  (verified live DealDex) or clear it.  Do not keep `dealdex-psi` as the
-  unique production URL.  Do not use `dealdex.vercel.app`.
+- Keep the public host on Vercel at `https://dealdex.online`.  Do not
+  move copy to Coolify.
 - Remaining seats start from `main` in their own worktrees.

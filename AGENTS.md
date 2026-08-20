@@ -102,9 +102,11 @@ Same fleet rules as every other seat: rebase onto `origin/main`, work on a
 STATUS rows **GROK-BUILD**. If the sandbox drifted from GitHub, GitHub wins.
 After merge, Mac Grok should pull `~/apps/dealdex-grok` so the worktree matches.
 
-Live hosting is **not** this preview.  GitHub `main` is the code.  Vercel
-builds Production on merge (see CONTRIBUTING.md).  Coolify is not wired.
-Do not invent a live URL.  After a green merge, other agents pull `main`.
+Live hosting is **not** this preview.  Public host is
+**https://dealdex.online** on **Vercel** (current, not leftover).  GitHub
+`main` is the code.  Vercel builds Production on merge.  Do not migrate
+the site to Coolify.  Do not invent a live URL.  After a green merge,
+other agents pull `main`.
 
 Do not add a second Grok Build seat. Do not push `main` from this preview.
 
