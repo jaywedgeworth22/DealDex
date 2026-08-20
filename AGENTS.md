@@ -159,7 +159,11 @@ Canonical: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop.
 - Theme default is **light**. Do not boot into dark from
   `prefers-color-scheme` unless the user chose System or Dark.
 - Two spaces between sentences in every human-facing string (UI, store
-  listing, help). Canonical: `/Users/jay/apps/FLEET-UI-COPY.md`.
+  listing, help) — **and in chat replies to the owner, PR titles/bodies,
+  commit messages, Slack posts, and every other paragraph an agent writes**
+  (owner, strengthened 2026-08-19: "For any and all paragraphs in any
+  context, always use 2 spaces..."). Canonical: `/Users/jay/apps/AGENT-SYNC.md`
+  § Two spaces and `/Users/jay/apps/FLEET-UI-COPY.md`.
 - Brand: **DealDex**. Do not reintroduce old product names (SpreadDex) in
   user-facing copy.
 
