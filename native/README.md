@@ -1,10 +1,12 @@
 # DealDex native apps
 
-Android and iPhone apps. They talk to eBay, Mercari, TCGDex, JustTCG, PriceCharting, and pokemontcg.io **from the phone**. The website is optional.
+Android and iPhone apps.  They talk to eBay, Mercari, TCGDex, JustTCG, PriceCharting, and pokemontcg.io **from the phone**.  The website is optional.  These are not React Native, Expo, Capacitor, or a web wrapper.
 
-Keys you paste in **Settings** live on the device. If the website is down, scan still uses those keys.
+Keys you paste in **Settings** live on the device.  If the website is down, scan still uses those keys.
 
-**Settings** also has optional sign-in. Use the same email as the website only when you want to copy keys to or from your account.
+**Settings** also has optional sign-in.  Use the same email as the website only when you want to copy keys to or from your account.
+
+Play and TestFlight are not shipping yet.  Android sideloads as `me.grok.dealdex`.  iOS is `online.dealdex` (team `CC8UTF7ATG`).  Do not upload iOS until the ASC app record exists (SKU `dealdex`).
 
 ## Android
 

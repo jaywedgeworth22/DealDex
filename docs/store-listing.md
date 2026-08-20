@@ -1,6 +1,12 @@
 # DealDex store listing (iOS + Android)
 
-Updated: Wed, Aug 19, 2026.  Two spaces between sentences.  No agent names.
+Updated: Thu, Aug 20, 2026.  Two spaces between sentences.  No agent names.
+
+Privacy and support URLs use `https://dealdex.online` because that is the
+hostname the website emits.  Checked 2026-08-20: `/` and `/privacy` returned
+HTTP 200 DealDex.  `https://dealdex-psi.vercel.app` served the same build.
+`https://dealdex.vercel.app` is a different Next.js product.  Do not point
+the listing at it.
 
 **Wordmark:** official DealDex title mark (red Deal + blue Dex, yellow badge).  Used in the website header, login, and marketing card.  
 **Home-screen icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, white background.  Not the in-app wordmark.
