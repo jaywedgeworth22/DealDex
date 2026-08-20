@@ -1,5 +1,17 @@
 # Current Handoff
 
+## 2026-08-20 GROK — 3D title wordmark + iOS desk
+
+Jay's glossy 3D DealDex title (red Deal + blue Dex, yellow rim) is the
+website header, login, OG card, iPhone Scan title, and Android Scan title.
+Isolated interlocking DD is stored at `public/marks/dealdex-dd.png` and
+`DealDexMark.imageset`.  **Live AppIcon is unchanged** (white-field DD).
+Preview icon options stay in `native/brand/icon-options/`.
+
+iOS desk (same lane): display name DealDex, iOS 18.0, Xcode 26.3
+(objectVersion 100), official white eBay/Mercari SVG chips, unsigned
+`POST /api/native/scan`, Sign in with Google via `dealdex://` OAuth.
+
 ## 2026-08-20 CURSOR — shipping docs + GitHub About
 
 Vercel is the current host, not a leftover.  Public host is

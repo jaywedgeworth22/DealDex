@@ -4,6 +4,10 @@ enum AccountApi {
     struct Session { var token: String; var email: String }
     struct Keys { var justTcg: String; var priceCharting: String; var pokemonTcg: String }
 
+    static func origin(_ raw: String) -> String {
+        NativeAuth.normalized(raw)
+    }
+
     static func signIn(origin: String, email: String, password: String, signup: Bool) async throws -> Session {
         var req = URLRequest(url: URL(string: "\(origin)/api/native/session")!)
         req.httpMethod = "POST"

@@ -50,7 +50,7 @@ function Login() {
             {mode === "up" ? "Create an account" : "Sign in"}
           </h1>
           <p className="mt-2 text-sm text-muted">
-            Guests can scan. An account is optional: it backs up saved deals and API keys. The
+            Guests can scan.  An account is optional: it backs up saved deals and API keys.  The
             Android and iPhone apps work on their own with keys saved on the phone.
           </p>
         </div>

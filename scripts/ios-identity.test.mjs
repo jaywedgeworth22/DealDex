@@ -22,6 +22,31 @@ test("XcodeGen spec uses online.dealdex and team CC8UTF7ATG", () => {
   assert.doesNotMatch(spec, /DEVELOPMENT_TEAM:\s*R2FAW69NPD/);
 });
 
+test("XcodeGen pins display name DealDex, iOS 18.0, and Xcode 26.3 format", () => {
+  const spec = read("native/ios/project.yml");
+  assert.match(spec, /INFOPLIST_KEY_CFBundleDisplayName: DealDex/);
+  assert.match(spec, /iOS: "18\.0"/);
+  assert.match(spec, /IPHONEOS_DEPLOYMENT_TARGET: "18\.0"/);
+  assert.match(spec, /xcodeVersion: "26\.3"/);
+  assert.match(spec, /xcodegen-post\.py/);
+  const plist = read("native/ios/DealDex/Info.plist");
+  assert.match(
+    plist,
+    /<key>CFBundleDisplayName<\/key>\s*<string>DealDex<\/string>/,
+  );
+  assert.match(plist, /<string>dealdex<\/string>/);
+});
+
+test("generated pbxproj is Xcode 26.3 format on iOS 18", () => {
+  const pbx = read("native/ios/DealDex.xcodeproj/project.pbxproj");
+  assert.match(pbx, /objectVersion = 100;/);
+  assert.match(pbx, /preferredProjectObjectVersion = 100;/);
+  assert.match(pbx, /LastUpgradeCheck = 2630;/);
+  assert.match(pbx, /IPHONEOS_DEPLOYMENT_TARGET = 18\.0;/);
+  assert.match(pbx, /INFOPLIST_KEY_CFBundleDisplayName = DealDex;/);
+  assert.doesNotMatch(pbx, /IPHONEOS_DEPLOYMENT_TARGET = 16/);
+});
+
 test("Info.plist CFBundleIdentifier is online.dealdex", () => {
   const plist = read("native/ios/DealDex/Info.plist");
   assert.match(
@@ -47,6 +72,17 @@ test("generated pbxproj matches XcodeGen identity", () => {
   assert.doesNotMatch(pbx, /me\.grok\.dealdex/);
   assert.doesNotMatch(pbx, /DEVELOPMENT_TEAM = R2FAW69NPD;/);
   assert.doesNotMatch(pbx, /DevelopmentTeam = R2FAW69NPD;/);
+});
+
+test("iOS identity includes DealDexWordmark imageset and official marketplace paths", () => {
+  const wordmark = read(
+    "native/ios/DealDex/Assets.xcassets/DealDexWordmark.imageset/Contents.json",
+  );
+  assert.match(wordmark, /dealdex-wordmark\.png/);
+  const marks = read("native/ios/DealDex/MarketplaceMarks.swift");
+  assert.match(marks, /struct EbayWordmark/);
+  assert.match(marks, /struct MercariWordmark/);
+  assert.match(marks, /viewBox\.width/);
 });
 
 test("Apple bundle resource id is documented, never a team setting", () => {

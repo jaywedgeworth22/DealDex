@@ -7,7 +7,7 @@ struct AccountView: View {
         NavigationStack {
             Form {
                 Section("Website (optional)") {
-                    TextField("https://your-dealdex.example", text: $desk.origin)
+                    TextField("https://dealdex.online", text: $desk.origin)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
@@ -18,12 +18,16 @@ struct AccountView: View {
                 }
                 if desk.accountEmail.isEmpty {
                     Section {
+                        Button(desk.accountBusy ? "Working…" : "Sign in with Google") {
+                            Task { await desk.signInGoogle() }
+                        }
+                        .disabled(desk.accountBusy)
                         Button(desk.accountBusy ? "Working…" : "Sign in") { Task { await desk.signIn(signup: false) } }
                             .disabled(desk.accountBusy)
                         Button("Create account") { Task { await desk.signIn(signup: true) } }
                             .disabled(desk.accountBusy)
                     } footer: {
-                        Text("Optional. Scan works signed out with keys saved on this phone.")
+                        Text("Optional.  Scan works signed out with keys saved on this phone.  Google accounts use Sign in with Google.")
                     }
                 } else {
                     Section {
