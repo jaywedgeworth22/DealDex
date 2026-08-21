@@ -2,6 +2,7 @@ package me.grok.dealdex.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -32,11 +33,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import me.grok.dealdex.R
 import me.grok.dealdex.data.ScoredListing
 
 private val chips = listOf("" to "All Pokémon", "charizard" to "charizard", "umbreon vmax" to "umbreon vmax", "151" to "151")
@@ -50,8 +54,14 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
     ) {
+        Image(
+            painter = painterResource(R.drawable.dealdex_wordmark),
+            contentDescription = "DealDex",
+            modifier = Modifier.height(36.dp).fillMaxWidth(),
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.CenterStart,
+        )
         Text("POKÉMON LISTING DESK", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text("Find the best listings.", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(

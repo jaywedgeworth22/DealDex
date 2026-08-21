@@ -4,13 +4,124 @@ enum Market {
     private static let jina = "https://r.jina.ai/"
     private static let tcg = "https://api.tcgdex.net/v2/en"
 
-    static func scan(_ query: String, keys: DeskKeys = DeskKeys()) async throws -> [ScoredListing] {
+    private static let http: URLSession = {
+        let c = URLSessionConfiguration.ephemeral
+        c.timeoutIntervalForRequest = 25
+        c.timeoutIntervalForResource = 45
+        c.waitsForConnectivity = true
+        return URLSession(configuration: c)
+    }()
+
+    static func scan(
+        _ query: String,
+        keys: DeskKeys = DeskKeys(),
+        origin: String = DeskStore.defaultOrigin,
+        sources: [String] = ["ebay", "mercari"]
+    ) async throws -> [ScoredListing] {
+        let site = NativeAuth.normalized(origin)
+        let src = sources.isEmpty ? ["ebay", "mercari"] : sources
+        do {
+            let rows = try await scanViaSite(site, query, keys: keys, sources: src)
+            if !rows.isEmpty { return rows }
+        } catch {
+            // Fall through to on-device scrape.  Scan never requires sign-in.
+        }
+        return try await scanOnDevice(query, keys: keys, sources: src)
+    }
+
+    private static func scanViaSite(_ origin: String, _ query: String, keys: DeskKeys, sources: [String]) async throws -> [ScoredListing] {
+        guard let url = URL(string: "\(origin)/api/native/scan") else {
+            throw NSError(domain: "DealDex", code: 0, userInfo: [NSLocalizedDescriptionKey: "Website origin is not a valid URL."])
+        }
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue("DealDex/1.0 (ios)", forHTTPHeaderField: "User-Agent")
+        req.httpBody = try JSONSerialization.data(withJSONObject: [
+            "q": query,
+            "sources": sources,
+            "keys": [
+                "justtcg": keys.justTcg,
+                "pricecharting": keys.priceCharting,
+                "pokemontcg": keys.pokemonTcg,
+            ],
+        ])
+        let (data, res) = try await http.data(for: req)
+        let code = (res as? HTTPURLResponse)?.statusCode ?? 0
+        let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
+        if code >= 400 {
+            throw NSError(domain: "DealDex", code: code, userInfo: [NSLocalizedDescriptionKey: json["error"] as? String ?? "Scan failed"])
+        }
+        let rows = json["rows"] as? [[String: Any]] ?? []
+        return rows.compactMap(parseNativeRow)
+    }
+
+    private static func parseNativeRow(_ obj: [String: Any]) -> ScoredListing? {
+        let id = obj["id"] as? String ?? ""
+        let market = obj["marketplace"] as? String ?? ""
+        let title = obj["title"] as? String ?? ""
+        guard !id.isEmpty, !title.isEmpty else { return nil }
+        let listing = LiveListing(
+            id: id,
+            marketplace: market,
+            title: title,
+            url: obj["url"] as? String ?? "",
+            price: num(obj["price"]),
+            shipping: num(obj["shipping"]) ?? 0,
+            image: obj["image"] as? String
+        )
+        var card: TcgCard?
+        if let c = obj["card"] as? [String: Any], let cid = c["id"] as? String {
+            card = TcgCard(
+                id: cid,
+                name: c["name"] as? String ?? "",
+                localId: c["localId"] as? String ?? "",
+                setName: c["setName"] as? String ?? "",
+                setId: c["setId"] as? String ?? "",
+                rarity: c["rarity"] as? String,
+                image: c["image"] as? String,
+                finishes: [],
+                cardmarketEur: nil
+            )
+        }
+        var appraisal: Appraisal?
+        if let a = obj["appraisal"] as? [String: Any] {
+            appraisal = Appraisal(
+                market: num(a["market"]),
+                adjusted: num(a["adjusted"]),
+                allIn: num(a["allIn"]) ?? 0,
+                spread: num(a["spread"]),
+                verdict: a["verdict"] as? String ?? "fair"
+            )
+        }
+        return ScoredListing(listing: listing, card: card, appraisal: appraisal, grade: obj["grade"] as? String ?? "raw")
+    }
+
+    private static func num(_ v: Any?) -> Double? {
+        if let d = v as? Double { return d }
+        if let i = v as? Int { return Double(i) }
+        if let n = v as? NSNumber { return n.doubleValue }
+        return nil
+    }
+
+    private static func scanOnDevice(_ query: String, keys: DeskKeys, sources: [String]) async throws -> [ScoredListing] {
         let q = query.trimmingCharacters(in: .whitespaces)
         let ebayQ = Appraise.tokens(q).isEmpty ? "pokemon" : q
         let mercQ = Appraise.tokens(q).isEmpty ? "pokemon card" : "\(q) pokemon card"
-        async let ebayMd = get("\(jina)https://www.ebay.com/sch/183454/i.html?_nkw=\(enc(ebayQ))&LH_BIN=1&_ipg=60&_udlo=3&_sop=10")
-        async let mercMd = get("\(jina)https://www.mercari.com/search/?keyword=\(enc(mercQ))")
-        let listings = parseEbay(try await ebayMd, q) + parseMercari(try await mercMd, q)
+        let wantEbay = sources.contains("ebay")
+        let wantMerc = sources.contains("mercari")
+        let ebayMd: String
+        if wantEbay {
+            do { ebayMd = try await get("\(jina)https://www.ebay.com/sch/183454/i.html?_nkw=\(enc(ebayQ))&LH_BIN=1&_ipg=60&_udlo=3&_sop=10") } catch { ebayMd = "" }
+        } else { ebayMd = "" }
+        let mercMd: String
+        if wantMerc {
+            do { mercMd = try await get("\(jina)https://www.mercari.com/search/?keyword=\(enc(mercQ))") } catch { mercMd = "" }
+        } else { mercMd = "" }
+        let listings = (wantEbay ? parseEbay(ebayMd, q) : []) + (wantMerc ? parseMercari(mercMd, q) : [])
+        if listings.isEmpty && ebayMd.isEmpty && mercMd.isEmpty {
+            throw NSError(domain: "DealDex", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not reach eBay or Mercari.  Try again in a minute."])
+        }
         var cache: [String: [TcgCard]] = [:]
         var extraCache: [String: Double?] = [:]
         var scored: [ScoredListing] = []
@@ -82,7 +193,7 @@ enum Market {
         var req = URLRequest(url: URL(string: url)!)
         req.setValue("DealDex/1.0 (ios)", forHTTPHeaderField: "User-Agent")
         req.setValue(accept, forHTTPHeaderField: "Accept")
-        let (data, _) = try await URLSession.shared.data(for: req)
+        let (data, _) = try await http.data(for: req)
         return String(data: data, encoding: .utf8) ?? ""
     }
 

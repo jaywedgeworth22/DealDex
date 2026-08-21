@@ -9,6 +9,7 @@ struct DeskKeys: Equatable {
 
 enum DeskStore {
     private static let d = UserDefaults.standard
+    static let defaultOrigin = NativeAuth.defaultOrigin
 
     static var keys: DeskKeys {
         get {
@@ -26,8 +27,11 @@ enum DeskStore {
     }
 
     static var origin: String {
-        get { d.string(forKey: "dealdex.origin") ?? "" }
-        set { d.set(newValue.trimmingCharacters(in: CharacterSet(charactersIn: "/")), forKey: "dealdex.origin") }
+        get {
+            let raw = (d.string(forKey: "dealdex.origin") ?? "").trimmingCharacters(in: CharacterSet(charactersIn: "/ "))
+            return raw.isEmpty ? defaultOrigin : raw
+        }
+        set { d.set(NativeAuth.normalized(newValue), forKey: "dealdex.origin") }
     }
 
     static var token: String {

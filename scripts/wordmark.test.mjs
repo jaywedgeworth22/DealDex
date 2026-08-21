@@ -10,6 +10,34 @@ test("official DealDex wordmark PNG is present", () => {
   const png = readFileSync(join(ROOT, "public/marks/dealdex-wordmark.png"));
   assert.ok(png.length > 8);
   assert.equal(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])), true);
+  // IHDR color type 6 = RGBA (transparent field, not a white box)
+  assert.equal(png[25], 6);
+});
+
+test("isolated interlocking DD PNG is present and not the live AppIcon", () => {
+  const png = readFileSync(join(ROOT, "public/marks/dealdex-dd.png"));
+  assert.ok(png.length > 8);
+  assert.equal(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])), true);
+  assert.equal(png[25], 6);
+  const catalog = readFileSync(
+    join(ROOT, "native/ios/DealDex/Assets.xcassets/AppIcon.appiconset/Contents.json"),
+    "utf8",
+  );
+  assert.match(catalog, /Icon-1024\.png/);
+  assert.doesNotMatch(catalog, /dealdex-dd\.png/);
+});
+
+test("iOS title uses DealDexWordmark imageset, not serif Find the best listings", () => {
+  const scan = readFileSync(join(ROOT, "native/ios/DealDex/ScanView.swift"), "utf8");
+  const brand = readFileSync(join(ROOT, "native/ios/DealDex/DealDexBrand.swift"), "utf8");
+  assert.match(brand, /Image\("DealDexWordmark"\)/);
+  assert.match(scan, /DealDexTitle/);
+  assert.doesNotMatch(scan, /Find the best listings/);
+  const imageset = readFileSync(
+    join(ROOT, "native/ios/DealDex/Assets.xcassets/DealDexWordmark.imageset/Contents.json"),
+    "utf8",
+  );
+  assert.match(imageset, /dealdex-wordmark\.png/);
 });
 
 test("dd.svg is the official title wordmark, not a DD monogram", () => {
@@ -28,4 +56,9 @@ test("header and login use DealDexWordmark, not a chip plus serif title", () => 
   assert.doesNotMatch(shell, /<AppMark/);
   assert.match(login, /DealDexWordmark/);
   assert.doesNotMatch(login, /<AppMark/);
+});
+
+test("header wordmark PNG is cache-busted so the 3D title replaces the arched mark", () => {
+  const mark = readFileSync(join(ROOT, "src/components/app-mark.tsx"), "utf8");
+  assert.match(mark, /dealdex-wordmark\.png\?v=/);
 });

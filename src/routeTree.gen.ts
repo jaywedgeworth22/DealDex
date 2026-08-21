@@ -13,12 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiNativeKeysRouteImport } from './routes/api/native/keys'
+import { Route as ApiNativeOauthRouteImport } from './routes/api/native/oauth'
+import { Route as ApiNativeScanRouteImport } from './routes/api/native/scan'
 import { Route as ApiNativeSessionRouteImport } from './routes/api/native/session'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +43,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
@@ -49,11 +56,6 @@ const SavedRoute = SavedRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CardCardIdRoute = CardCardIdRouteImport.update({
@@ -71,6 +73,16 @@ const ApiNativeKeysRoute = ApiNativeKeysRouteImport.update({
   path: '/api/native/keys',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiNativeOauthRoute = ApiNativeOauthRouteImport.update({
+  id: '/api/native/oauth',
+  path: '/api/native/oauth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiNativeScanRoute = ApiNativeScanRouteImport.update({
+  id: '/api/native/scan',
+  path: '/api/native/scan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNativeSessionRoute = ApiNativeSessionRouteImport.update({
   id: '/api/native/session',
   path: '/api/native/session',
@@ -82,12 +94,14 @@ export interface FileRoutesByFullPath {
   '/alerts': typeof AlertsRoute
   '/install': typeof InstallRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
-  '/privacy': typeof PrivacyRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
+  '/api/native/oauth': typeof ApiNativeOauthRoute
+  '/api/native/scan': typeof ApiNativeScanRoute
   '/api/native/session': typeof ApiNativeSessionRoute
 }
 export interface FileRoutesByTo {
@@ -95,12 +109,14 @@ export interface FileRoutesByTo {
   '/alerts': typeof AlertsRoute
   '/install': typeof InstallRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
-  '/privacy': typeof PrivacyRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
+  '/api/native/oauth': typeof ApiNativeOauthRoute
+  '/api/native/scan': typeof ApiNativeScanRoute
   '/api/native/session': typeof ApiNativeSessionRoute
 }
 export interface FileRoutesById {
@@ -109,12 +125,14 @@ export interface FileRoutesById {
   '/alerts': typeof AlertsRoute
   '/install': typeof InstallRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
-  '/privacy': typeof PrivacyRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
+  '/api/native/oauth': typeof ApiNativeOauthRoute
+  '/api/native/scan': typeof ApiNativeScanRoute
   '/api/native/session': typeof ApiNativeSessionRoute
 }
 export interface FileRouteTypes {
@@ -124,12 +142,14 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/install'
     | '/login'
+    | '/privacy'
     | '/saved'
     | '/settings'
-    | '/privacy'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/keys'
+    | '/api/native/oauth'
+    | '/api/native/scan'
     | '/api/native/session'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -137,12 +157,14 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/install'
     | '/login'
+    | '/privacy'
     | '/saved'
     | '/settings'
-    | '/privacy'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/keys'
+    | '/api/native/oauth'
+    | '/api/native/scan'
     | '/api/native/session'
   id:
     | '__root__'
@@ -150,12 +172,14 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/install'
     | '/login'
+    | '/privacy'
     | '/saved'
     | '/settings'
-    | '/privacy'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/keys'
+    | '/api/native/oauth'
+    | '/api/native/scan'
     | '/api/native/session'
   fileRoutesById: FileRoutesById
 }
@@ -164,12 +188,14 @@ export interface RootRouteChildren {
   AlertsRoute: typeof AlertsRoute
   InstallRoute: typeof InstallRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
-  PrivacyRoute: typeof PrivacyRoute
   CardCardIdRoute: typeof CardCardIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiNativeKeysRoute: typeof ApiNativeKeysRoute
+  ApiNativeOauthRoute: typeof ApiNativeOauthRoute
+  ApiNativeScanRoute: typeof ApiNativeScanRoute
   ApiNativeSessionRoute: typeof ApiNativeSessionRoute
 }
 
@@ -203,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/saved': {
       id: '/saved'
       path: '/saved'
@@ -215,13 +248,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/card/$cardId': {
@@ -245,6 +271,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiNativeKeysRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/native/oauth': {
+      id: '/api/native/oauth'
+      path: '/api/native/oauth'
+      fullPath: '/api/native/oauth'
+      preLoaderRoute: typeof ApiNativeOauthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/native/scan': {
+      id: '/api/native/scan'
+      path: '/api/native/scan'
+      fullPath: '/api/native/scan'
+      preLoaderRoute: typeof ApiNativeScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/native/session': {
       id: '/api/native/session'
       path: '/api/native/session'
@@ -260,12 +300,14 @@ const rootRouteChildren: RootRouteChildren = {
   AlertsRoute: AlertsRoute,
   InstallRoute: InstallRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
-  PrivacyRoute: PrivacyRoute,
   CardCardIdRoute: CardCardIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiNativeKeysRoute: ApiNativeKeysRoute,
+  ApiNativeOauthRoute: ApiNativeOauthRoute,
+  ApiNativeScanRoute: ApiNativeScanRoute,
   ApiNativeSessionRoute: ApiNativeSessionRoute,
 }
 export const routeTree = rootRouteImport

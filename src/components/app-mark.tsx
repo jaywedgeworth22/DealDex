@@ -10,8 +10,8 @@ import {
 import { cn } from "@/lib/utils";
 import { readAppMark, writeAppMark, type AppMarkId } from "@/lib/settings/mark";
 
-/** Official DealDex title wordmark (red Deal + blue Dex, yellow badge). */
-const DEALDEX_WORDMARK_SRC = "/marks/dealdex-wordmark.png";
+/** Official DealDex title wordmark (glossy 3D red Deal + blue Dex, yellow rim). */
+const DEALDEX_WORDMARK_SRC = "/marks/dealdex-wordmark.png?v=3d-20260820";
 
 export function DealDexWordmark({
   className,
@@ -22,7 +22,7 @@ export function DealDexWordmark({
     <img
       src={DEALDEX_WORDMARK_SRC}
       alt="DealDex"
-      className={cn("h-8 w-auto max-w-[11rem] object-contain object-left sm:h-9 sm:max-w-[13rem]", className)}
+      className={cn("h-9 w-auto max-w-[13rem] object-contain object-left sm:h-10 sm:max-w-[16rem]", className)}
     />
   );
 }
