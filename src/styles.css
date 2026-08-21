@@ -100,11 +100,6 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
-
-  img {
-    outline: 1px solid color-mix(in oklab, var(--color-fg) 10%, transparent);
-    outline-offset: -1px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -30,11 +30,13 @@ The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your
 2. Open `DealDex.xcodeproj` in Xcode 26.3 (team `CC8UTF7ATG`).  Display name **DealDex**.  Minimum iOS **18.0**.
 3. Run on a phone or simulator.  Scan talks to `https://dealdex.online/api/native/scan` and does not require sign-in.  Google website accounts use **Sign in with Google**.
 
-Home-screen icon is the official overlapping red + blue DD (yellow rim) in
-`DealDex/Assets.xcassets`.  `CFBundleIconName` is `AppIcon`.  iPad
-`UISupportedInterfaceOrientations` includes PortraitUpsideDown.  Android
-launcher mipmaps and the adaptive icon use the same DD.  Do not put the
-in-app wordmark on the home screen.
+Home-screen icon is the official overlapping red + blue DD (yellow rim) on
+the Socratic.Trade tiled field (soft top-left light, recessed grout, no
+candlesticks) in `DealDex/Assets.xcassets`.  `CFBundleIconName` is
+`AppIcon`.  iPad `UISupportedInterfaceOrientations` includes
+PortraitUpsideDown.  Android launcher mipmaps and the adaptive icon use
+the same DD-on-grid mark.  Do not put the in-app wordmark on the home
+screen.
 
 In-app / web **title** is `DealDexWordmark` (glossy 3D DealDex PNG).  Scan on
 iPhone and Android shows that mark, not serif "Find the best listings."
@@ -48,4 +50,5 @@ Bundle id: `online.dealdex`.  Display name: DealDex.  Min iOS: 18.0.  Project fo
 
 TestFlight archive + upload is `.github/workflows/ios-ship.yml` on the owned Mac runner (app key `dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  Do not upload until the ASC app record exists.
 
-AppIcon options (not live): `native/brand/icon-options/`.  Do not swap the catalog until the owner picks one.
+AppIcon catalog is the DD on the ST tiled field.  Older preview variants
+live in `native/brand/icon-options/`.

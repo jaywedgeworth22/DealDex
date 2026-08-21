@@ -23,7 +23,7 @@ export function showNativeHit(hit: AlertHit) {
     const n = new Notification(hit.ruleName || "DealDex", {
       body: `${hit.title}\n${body}`,
       tag: hit.id,
-      icon: "/favicon.svg",
+      icon: "/favicon.png",
     });
     n.onclick = () => {
       window.focus();

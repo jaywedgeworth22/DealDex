@@ -22,7 +22,10 @@ export function DealDexWordmark({
     <img
       src={DEALDEX_WORDMARK_SRC}
       alt="DealDex"
-      className={cn("h-9 w-auto max-w-[13rem] object-contain object-left sm:h-10 sm:max-w-[16rem]", className)}
+      className={cn(
+        "block h-9 w-auto max-w-[13rem] bg-transparent object-contain object-left outline-none sm:h-10 sm:max-w-[16rem]",
+        className,
+      )}
     />
   );
 }
