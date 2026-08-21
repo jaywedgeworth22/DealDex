@@ -1,5 +1,19 @@
 # Current Handoff
 
+## 2026-08-21 GROK — merge origin/main into iOS TestFlight ship workflow (#85)
+
+Union of the TestFlight ship-workflow handoff and the 3D title / iOS desk
+handoff.  Workflow contract unchanged.  No TestFlight upload from this seat.
+
+## 2026-08-20 GROK — rebase iOS TestFlight ship workflow (#85)
+
+Added `.github/workflows/ios-ship.yml` plus a scheduled-ship gate so cron
+cannot ship web-only commits.  Path filter is `native/ios/**`.  Fleet app
+key is `dealdex`.  Runner `[self-hosted, macOS, ARM64, xcode26]`.  Secrets
+stay on the Mac.  Bundle `online.dealdex` and team `CC8UTF7ATG` are
+unchanged.  Android package `me.grok.dealdex` is unchanged.  This seat
+does not upload to TestFlight.  Rebased onto current `main`.  PR #85.
+
 ## 2026-08-20 GROK — 3D title wordmark + iOS desk
 
 Jay's glossy 3D DealDex title (red Deal + blue Dex, yellow rim) is the
@@ -51,7 +65,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-20 (CURSOR — Vercel current, homepage dealdex.online)
+Updated: 2026-08-20 (GROK — rebased #85 iOS ship workflow onto current main)
 
 ## Current state
 
@@ -85,6 +99,10 @@ Updated: 2026-08-20 (CURSOR — Vercel current, homepage dealdex.online)
 - In-app / web title mark is the official DealDex wordmark (PR #86).
   Home-screen AppIcon / Android launcher / PWA 180 are the overlapping
   red + blue DD (PR #87).
+- iOS TestFlight ship workflow (`.github/workflows/ios-ship.yml`) runs on
+  `[self-hosted, macOS, ARM64, xcode26]`, calls
+  `scripts/ios-ship-testflight.sh` (fleet key `dealdex`), and gates cron
+  on `native/ios/` changes.  Secrets stay on the Mac.
 
 ## Blockers
 
@@ -106,4 +124,8 @@ Updated: 2026-08-20 (CURSOR — Vercel current, homepage dealdex.online)
 
 - Keep the public host on Vercel at `https://dealdex.online`.  Do not
   move copy to Coolify.
+- TestFlight / ASC app record when the owner is ready (bundle
+  `online.dealdex`, SKU `dealdex`, team `CC8UTF7ATG`).  After that record
+  exists, the Mac `ios-ship` workflow (or
+  `bash scripts/ios-ship-testflight.sh --force-ship`) can upload.
 - Remaining seats start from `main` in their own worktrees.
