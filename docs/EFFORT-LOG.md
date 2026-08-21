@@ -32,6 +32,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
+- **2026-08-21 — CURSOR — iOS first-launch update prompt (fleet) — IN PROGRESS (branch `cursor/ios-update-prompt-9992`, worktree `~/apps/dealdex-cursor-ios-update`).**  TestFlight opens TestFlight; App Store opens the App Store.  Manifest `jaywedgeworth22/ios-app-versions`.
 - **2026-08-20 — GROK — rebase #85 onto main.**  Docs-union of STATUS/PLAN/effort log.  Runner `[self-hosted, macOS, ARM64, xcode26]`, path `native/ios/**`, app key `dealdex`.  No bundle/team/Android-package change.  No TestFlight upload.
 - **2026-08-19 — CURSOR — IN PR #85 — iOS TestFlight ship workflow.**  Branch `cursor/ios-testflight-ship-workflow-5706`.  Adds `.github/workflows/ios-ship.yml` + `scripts/ios-scheduled-ship-gate.sh` (path `native/ios/`, app key `dealdex`).  No bundle/team change.  No TestFlight upload from this seat.
 - **2026-08-20 — CURSOR — POINTER — Cross-app coordination follow-ups (audit #2802).**  Socratic.Trade audit #2802 follow-ups are in ST PR #2941, Congress.Trade #2064, Usage-Monitor #1245.  Pins still CTS v2.5.2.  Pin-check is fail-closed but not a required merge check.  DealDex stays protocol-only / Vercel.  No Infisical, no Coolify, no USAGE_INGEST, no ASC, no Hetzner, no ios-fleet dashboards.  Branch `cursor/cross-app-coordination-followups`.

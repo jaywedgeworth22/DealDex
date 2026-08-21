@@ -24,6 +24,7 @@
 		DA03BB02896F3FA66E5E36C2 /* NativeAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392D9849BF8E736108C78668 /* NativeAuth.swift */; };
 		E0BFA5839CEC00B3F19EF40B /* DeskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8027642EE047BC6844FC1731 /* DeskModel.swift */; };
 		E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74DAB841052EE8417CAA3FA /* AlertsView.swift */; };
+		E8B752A76C0F2F91BBF49151 /* AppUpdatePrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E39A8CE869FC4AB1931CB1DF /* AppUpdatePrompt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
 		D61487D9B0E035704CAFC1E9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E39A8CE869FC4AB1931CB1DF /* AppUpdatePrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdatePrompt.swift; sourceTree = "<group>"; };
 		E4102913782BABF7A13EFA78 /* DealDexBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealDexBrand.swift; sourceTree = "<group>"; };
 		E74DAB841052EE8417CAA3FA /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
 		F9F5F676B10407840DA6220C /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				22646DB4462EBE054FA5FD1D /* AccountView.swift */,
 				E74DAB841052EE8417CAA3FA /* AlertsView.swift */,
 				CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */,
+				E39A8CE869FC4AB1931CB1DF /* AppUpdatePrompt.swift */,
 				BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */,
 				5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */,
 				E4102913782BABF7A13EFA78 /* DealDexBrand.swift */,
@@ -182,6 +185,7 @@
 				90341ABD2FBF83991C619ED2 /* AccountApi.swift in Sources */,
 				D956F7DEF8BAB101A87B62F7 /* AccountView.swift in Sources */,
 				E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */,
+				E8B752A76C0F2F91BBF49151 /* AppUpdatePrompt.swift in Sources */,
 				115F5E513207288F44040D12 /* Appraise.swift in Sources */,
 				82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */,
 				738AFF1EAE0CCF70FB43D190 /* DealDexBrand.swift in Sources */,
