@@ -73,7 +73,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-20 (CURSOR — transparent DD favicon + ST-grid AppIcon)
+Updated: 2026-08-21 (CURSOR — #113 merged, transparent DD favicon + ST-grid AppIcon)
 
 ## Current state
 
