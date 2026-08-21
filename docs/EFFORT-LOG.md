@@ -36,6 +36,8 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
 
 ## Planned / Reserved
+- **2026-08-21 — KIMI — PLANNED — [P1] Refresh stale package-lock.json, return CI to `npm ci`.**  Board item a9cc97ba.  `.github/workflows/ci.yml` admits the lockfile 'predates this fleet CI and is out of sync on npm 10 (Node 22)' — non-reproducible builds until the lockfile refresh lands.
+- **2026-08-21 — KIMI — PLANNED — [P2] Mobile CI + move DB migrations out of the Vercel build + dependabot.**  Board item a9cc97ba.  Native Android+iOS are the product but no Gradle/xcodebuild/TestFlight workflow exists (CT/ST/UM have ios-*.yml).  `vercel.json` build runs `vite build && npm run db:migrate` — production schema migrations during build; a failed deploy can leave schema ahead of code.  No dependabot/security workflow despite the widest third-party API surface (eBay/Mercari/TCGPlayer).
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
