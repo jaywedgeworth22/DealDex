@@ -1,6 +1,6 @@
 # DealDex store listing (iOS + Android)
 
-Updated: Thu, Aug 20, 2026.  Two spaces between sentences.  No agent names.
+Updated: Fri, Aug 21, 2026.  Two spaces between sentences.  No agent names.
 
 Privacy and support URLs use `https://dealdex.online` because that is the
 hostname the website emits.  Checked 2026-08-20: `/` and `/privacy` returned
@@ -28,15 +28,18 @@ DealDex
 
 ## Subtitle (30)
 
-Pokémon listing desk
+Best-priced card listings
+
+App Store subtitle is capped at 30 characters.  The in-app, website, and OG
+subtitle is Identify Best-Priced Pokémon Card Listings (43 characters).
 
 ## Promotional text
 
-Scan live eBay and Mercari singles, then score the ask against TCGPlayer, Cardmarket, sold comps, and PriceCharting.
+Identify Best-Priced Pokémon Card Listings.  Scan live eBay and Mercari singles, then score the ask against TCGPlayer, Cardmarket, sold comps, and PriceCharting.
 
 ## Description
 
-DealDex is a Pokémon listing desk.  Scan live eBay and Mercari Buy It Now singles, then score the ask against TCGPlayer, Cardmarket, TCGCSV, eBay solds, and optional paid desks.
+DealDex identifies best-priced Pokémon card listings.  Scan live eBay and Mercari Buy It Now singles, then score the ask against TCGPlayer, Cardmarket, TCGCSV, eBay solds, and optional paid desks.
 
 Keys you paste in Settings stay on the device.  The phone apps scan from the phone.  They do not wrap the website.  If the website is down, scan still uses those keys.
 

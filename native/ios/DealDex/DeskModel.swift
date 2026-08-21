@@ -40,6 +40,12 @@ final class DeskModel: ObservableObject {
         }
     }
 
+    var ebayCount: Int { rows.filter { $0.listing.marketplace == "ebay" }.count }
+    var mercariCount: Int { rows.filter { $0.listing.marketplace == "mercari" }.count }
+    var dealCount: Int {
+        rows.filter { $0.appraisal?.verdict == "steal" || $0.appraisal?.verdict == "good" }.count
+    }
+
     func toggleSource(_ market: String) {
         if sources.contains(market) {
             if sources.count > 1 { sources.remove(market) }

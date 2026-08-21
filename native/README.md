@@ -38,8 +38,8 @@ PortraitUpsideDown.  Android launcher mipmaps and the adaptive icon use
 the same DD-on-grid mark.  Do not put the in-app wordmark on the home
 screen.
 
-In-app / web **title** is `DealDexWordmark` (glossy 3D DealDex PNG).  Scan on
-iPhone and Android shows that mark, not serif "Find the best listings."
+In-app / web **title** is `DealDexWordmark` (glossy 3D DealDex PNG).  Scan subtitle
+is Identify Best-Priced Pokémon Card Listings, not serif "Find the best listings."
 
 ```
 xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \

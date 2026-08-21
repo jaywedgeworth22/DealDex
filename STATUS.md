@@ -1,5 +1,21 @@
 # Current Handoff
 
+## 2026-08-21 CURSOR — scan layout, OG wordmark, subtitle (#117)
+
+User-facing subtitle is **Identify Best-Priced Pokémon Card Listings** on the
+site, login, OG card, iOS, Android, store listing (in-app; App Store 30-char
+field is `Best-priced card listings`), and README.
+
+Scan box: no suggested Pokémon chips.  One large eBay/Mercari pair with listing
+counts on the toggles (those are the scan sources; no second filter pair).
+All / Deals / Verified plus compact filter selects stay in the same card.
+Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
+`horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
+
+OG wordmark is 840px (~70% of 1200), capped at 75%.  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=subtitle-20260821`.
+
+
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
 
 Safari tab icon is a transparent interlocking DD (`favicon.ico` /
@@ -73,7 +89,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-21 (CURSOR — #113 merged, transparent DD favicon + ST-grid AppIcon)
+Updated: 2026-08-21 (CURSOR — #117 scan layout, OG wordmark, subtitle)
 
 ## Current state
 

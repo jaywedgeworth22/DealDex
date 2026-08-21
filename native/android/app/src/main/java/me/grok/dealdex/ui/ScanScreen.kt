@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,11 +29,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -43,11 +42,14 @@ import androidx.compose.ui.unit.dp
 import me.grok.dealdex.R
 import me.grok.dealdex.data.ScoredListing
 
-private val chips = listOf("" to "All Pokémon", "charizard" to "charizard", "umbreon vmax" to "umbreon vmax", "151" to "151")
-
 @Composable
 fun ScanScreen(vm: DeskViewModel, state: DeskState) {
     val rows = vm.visible()
+    val ebayCount = state.rows.count { it.listing.marketplace == "ebay" }
+    val mercariCount = state.rows.count { it.listing.marketplace == "mercari" }
+    val dealCount = state.rows.count { it.appraisal?.verdict == "steal" || it.appraisal?.verdict == "good" }
+    val width = LocalConfiguration.current.screenWidthDp
+    val cols = if (width >= 600) 2 else 1
     Column(
         Modifier
             .fillMaxSize()
@@ -61,48 +63,95 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
             contentScale = ContentScale.Fit,
             alignment = Alignment.CenterStart,
         )
-        Text("POKÉMON LISTING DESK", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(12.dp))
+        Text(
+            stringResource(R.string.app_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(10.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = state.query,
                 onValueChange = vm::setQuery,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
-                placeholder = { Text("All Pokémon") },
+                placeholder = { Text("Card, set, or leave blank") },
             )
             Spacer(Modifier.width(8.dp))
             Button(onClick = { vm.scan() }, enabled = !state.loading) {
-                Text(if (state.query.isBlank()) "Scan" else "Scan")
+                Text("Scan")
             }
         }
-        Row(Modifier.horizontalScroll(rememberScrollState()).padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            chips.forEach { (q, label) ->
-                FilterChip(
-                    selected = state.query == q,
-                    onClick = { vm.scan(q) },
-                    label = { Text(label) },
-                )
-            }
+        Row(
+            Modifier.padding(top = 8.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            MarketplaceSourceToggle(
+                marketplace = "ebay",
+                selected = "ebay" in state.sources,
+                count = ebayCount,
+                modifier = Modifier.weight(1f),
+            ) { vm.toggleSource("ebay") }
+            MarketplaceSourceToggle(
+                marketplace = "mercari",
+                selected = "mercari" in state.sources,
+                count = mercariCount,
+                modifier = Modifier.weight(1f),
+            ) { vm.toggleSource("mercari") }
         }
-        Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             FilterChip(selected = state.view == "all", onClick = { vm.setView("all") }, label = { Text("All ${state.rows.size}") })
-            FilterChip(selected = state.view == "deals", onClick = { vm.setView("deals") }, label = { Text("Deals") })
-            FilterChip(selected = state.view == "ebay", onClick = { vm.setView("ebay") }, label = { MarketplaceMark("ebay") })
-            FilterChip(selected = state.view == "mercari", onClick = { vm.setView("mercari") }, label = { MarketplaceMark("mercari") })
+            FilterChip(selected = state.view == "deals", onClick = { vm.setView("deals") }, label = { Text("Deals $dealCount") })
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(10.dp))
         when {
-            state.loading -> {
+            state.loading && state.rows.isEmpty() -> {
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
                     Text("Reading eBay and Mercari…", color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 8.dp))
                 }
             }
             state.error != null -> Text(state.error, color = DealBad)
-            else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            else -> LazyVerticalGrid(
+                columns = GridCells.Fixed(cols),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
                 items(rows, key = { it.listing.marketplace + it.listing.id }) { ListingCard(it) }
             }
+        }
+    }
+}
+
+@Composable
+private fun MarketplaceSourceToggle(
+    marketplace: String,
+    selected: Boolean,
+    count: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val bg = if (selected) Color(0xFF3F4A32) else Color(0xCC1A1B16)
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = bg,
+        modifier = modifier
+            .height(56.dp)
+            .clickable(onClick = onClick),
+    ) {
+        Row(
+            Modifier.fillMaxSize().padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            MarketplaceMark(marketplace, onDark = true)
+            Text(
+                "$count",
+                color = Color.White,
+                style = MaterialTheme.typography.titleSmall,
+                fontFamily = FontFamily.Monospace,
+            )
         }
     }
 }
@@ -144,18 +193,22 @@ private fun Mono(text: String) {
 }
 
 @Composable
-fun MarketplaceMark(marketplace: String, modifier: Modifier = Modifier) {
+fun MarketplaceMark(marketplace: String, modifier: Modifier = Modifier, onDark: Boolean = false) {
     if (marketplace == "ebay") {
+        val e = if (onDark) Color.White else Color(0xFFE53238)
+        val b = if (onDark) Color.White else Color(0xFF0064D2)
+        val a = if (onDark) Color.White else Color(0xFFF5AF02)
+        val y = if (onDark) Color.White else Color(0xFF86B817)
         Row(modifier) {
-            Text("e", color = Color(0xFFE53238), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-            Text("b", color = Color(0xFF0064D2), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-            Text("a", color = Color(0xFFF5AF02), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-            Text("y", color = Color(0xFF86B817), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("e", color = e, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("b", color = b, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("a", color = a, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text("y", color = y, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
         }
     } else {
         Text(
             "MERCARI",
-            color = Color(0xFF5356EE),
+            color = if (onDark) Color.White else Color(0xFF5356EE),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelLarge,
             modifier = modifier,

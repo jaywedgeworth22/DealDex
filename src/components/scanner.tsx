@@ -27,17 +27,7 @@ import {
   saveScanCache,
 } from "@/lib/marketplaces/memory";
 
-const CHIPS = [
-  { label: "All Pokémon", q: "" },
-  { label: "charizard", q: "charizard" },
-  { label: "umbreon vmax", q: "umbreon vmax" },
-  { label: "pikachu ex", q: "pikachu ex" },
-  { label: "151", q: "151" },
-  { label: "base set holo", q: "base set holo" },
-  { label: "moonbreon", q: "moonbreon" },
-];
-
-type ViewFilter = "all" | "deals" | "verified" | "ebay" | "mercari";
+type ViewFilter = "all" | "deals" | "verified";
 type VerdictFilter = "any" | Verdict;
 type PriceFilter = "any" | "25" | "50" | "100" | "250";
 type ConditionFilter = "any" | "raw" | "graded";
@@ -109,17 +99,15 @@ export function Scanner() {
   }, []);
 
   function toggle(src: ScanSource) {
-    setSources((prev) => {
-      const next = prev.includes(src) ? prev.filter((s) => s !== src) : [...prev, src];
-      return next.length ? next : prev;
-    });
+    const next = sources.includes(src) ? sources.filter((s) => s !== src) : [...sources, src];
+    if (!next.length) return;
+    setSources(next);
+    void run(q, next);
   }
 
   const visible = useMemo(() => {
     if (!rows) return [];
     return rows.filter((row) => {
-      if (view === "ebay") return row.listing.marketplace === "ebay";
-      if (view === "mercari") return row.listing.marketplace === "mercari";
       if (view === "deals") {
         return row.appraisal?.verdict === "steal" || row.appraisal?.verdict === "good";
       }
@@ -162,31 +150,21 @@ export function Scanner() {
         r.appraisal.confidence !== "low" &&
         r.appraisal.sourcesUsed >= 2,
     ).length ?? 0;
+  const ebayCount = rows?.filter((r) => r.listing.marketplace === "ebay").length ?? meta.ebay;
+  const mercariCount = rows?.filter((r) => r.listing.marketplace === "mercari").length ?? meta.mercari;
 
   return (
-    <section className="min-w-0 space-y-5">
-      <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</h2>
-          <div className="flex flex-wrap gap-2">
-            {(["ebay", "mercari"] as const).map((src) => (
-              <MarketplaceToggle
-                key={src}
-                marketplace={src}
-                selected={sources.includes(src)}
-                onClick={() => toggle(src)}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+    <section className="min-w-0 space-y-4">
+      <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-4">
+        <h2 className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</h2>
+        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") void run();
             }}
-            placeholder="All Pokémon — or type a name to narrow"
+            placeholder="Card, set, or leave blank for the whole market"
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
@@ -195,44 +173,29 @@ export function Scanner() {
             inputMode="search"
             className="sm:flex-1"
           />
-          <Button onClick={() => void run()} disabled={loading} className="sm:w-40">
+          <Button onClick={() => void run()} disabled={loading} className="sm:w-36">
             {loading ? <LoaderCircle className="animate-spin" /> : <Radar />}
-            {q.trim() ? "Scan Listings" : "Scan Market"}
+            Scan
           </Button>
         </div>
-        <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {CHIPS.map((c) => (
-            <button
-              key={c.label}
-              type="button"
-              onClick={() => {
-                setQ(c.q);
-                void run(c.q);
-              }}
-              className={cn(
-                "h-11 shrink-0 rounded-full border px-3 text-xs transition-colors duration-150",
-                q.trim().toLowerCase() === c.q
-                  ? "border-accent bg-accent text-accent-fg"
-                  : "border-border text-muted hover:bg-elevated hover:text-fg",
-              )}
-            >
-              {c.label}
-            </button>
-          ))}
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <MarketplaceToggle
+            marketplace="ebay"
+            selected={sources.includes("ebay")}
+            onClick={() => toggle("ebay")}
+            count={ebayCount}
+            size="lg"
+          />
+          <MarketplaceToggle
+            marketplace="mercari"
+            selected={sources.includes("mercari")}
+            onClick={() => toggle("mercari")}
+            count={mercariCount}
+            size="lg"
+          />
         </div>
-      </div>
-
-      {loading && !rows && (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-28 rounded-lg" />
-          ))}
-        </div>
-      )}
-
-      {rows && (
-        <>
-          <div className="grid grid-cols-2 gap-1 rounded-lg bg-elevated p-1 sm:grid-cols-5">
+        {rows && (
+          <div className="mt-2 flex flex-wrap gap-1">
             {(
               [
                 ["all", `All ${rows.length}`],
@@ -245,26 +208,17 @@ export function Scanner() {
                 type="button"
                 onClick={() => setView(key)}
                 className={cn(
-                  "h-11 rounded-md px-1 text-xs tabular-nums transition-colors duration-150",
-                  view === key ? "bg-surface text-fg shadow-[var(--shadow-border)]" : "text-muted hover:text-fg",
+                  "h-9 rounded-md px-3 text-xs tabular-nums transition-colors duration-150",
+                  view === key ? "bg-accent text-accent-fg" : "bg-elevated text-muted hover:text-fg",
                 )}
               >
                 {label}
               </button>
             ))}
-            {(["ebay", "mercari"] as const).map((key) => (
-              <MarketplaceToggle
-                key={key}
-                marketplace={key}
-                selected={view === key}
-                onClick={() => setView(key)}
-                count={key === "ebay" ? meta.ebay : meta.mercari}
-                className="w-full justify-center rounded-md"
-              />
-            ))}
           </div>
-
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        )}
+        {rows && (
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
             <FilterSelect
               label="Verdict"
               value={verdict}
@@ -323,16 +277,28 @@ export function Scanner() {
               ]}
             />
           </div>
+        )}
+      </div>
 
+      {loading && !rows && (
+        <div className="grid gap-3 md:grid-cols-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-28 rounded-lg" />
+          ))}
+        </div>
+      )}
+
+      {rows && (
+        <>
           {meta.notes.length > 0 && (
             <p className="text-xs text-subtle">{meta.notes.join(" ")}</p>
           )}
           {!visible.length && (
             <div className="rounded-xl bg-surface p-6 text-sm text-muted shadow-[var(--shadow-border)]">
-              {view === "mercari"
+              {sources.length === 1 && sources[0] === "mercari"
                 ? "No Mercari hits leaked through. Use Open Mercari search, then paste a title here."
                 : "Nothing in this filter. Widen the sliders, or scan the whole market."}
-              {view === "mercari" && (
+              {sources.length === 1 && sources[0] === "mercari" && (
                 <a
                   href={mercariSearchPage(q)}
                   target="_blank"
@@ -344,7 +310,7 @@ export function Scanner() {
               )}
             </div>
           )}
-          <div className="grid min-w-0 gap-3">
+          <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2">
             {visible.map((row) => (
               <ScanRow key={`${row.listing.marketplace}-${row.listing.id}`} row={row} />
             ))}
@@ -368,11 +334,11 @@ function FilterSelect<T extends string>({
 }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">{label}</span>
+      <span className="mb-0.5 block text-[10px] uppercase tracking-[0.12em] text-subtle">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
-        className="h-11 w-full rounded-md border border-border bg-surface px-3 text-sm text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+        className="h-9 w-full rounded-md border border-border bg-surface px-2 text-sm text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
       >
         {options.map(([v, name]) => (
           <option key={v} value={v}>

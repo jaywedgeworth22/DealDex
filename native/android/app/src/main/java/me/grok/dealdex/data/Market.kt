@@ -30,16 +30,19 @@ object Market {
 
     private fun enc(s: String) = URLEncoder.encode(s, "UTF-8")
 
-    fun scan(query: String, keys: DeskKeys = DeskKeys()): List<ScoredListing> {
+    fun scan(query: String, keys: DeskKeys = DeskKeys(), sources: Collection<String> = listOf("ebay", "mercari")): List<ScoredListing> {
         val q = query.trim()
         val ebayQ = if (Appraise.significantTokens(q).isEmpty()) "pokemon" else
             if (q.contains("pokemon", true) || q.contains("tcg", true)) q else "$q pokemon"
         val mercQ = if (Appraise.significantTokens(q).isEmpty()) "pokemon card" else "$q pokemon card"
-        val ebayMd = get(
+        val wantEbay = sources.contains("ebay")
+        val wantMercari = sources.contains("mercari")
+        val ebayMd = if (wantEbay) get(
             JINA + "https://www.ebay.com/sch/183454/i.html?_nkw=${enc(ebayQ)}&LH_BIN=1&_ipg=60&_udlo=3&_sop=10",
-        )
-        val mercMd = get(JINA + "https://www.mercari.com/search/?keyword=${enc(mercQ)}")
-        val listings = parseEbay(ebayMd, q) + parseMercari(mercMd, q)
+        ) else ""
+        val mercMd = if (wantMercari) get(JINA + "https://www.mercari.com/search/?keyword=${enc(mercQ)}") else ""
+        val listings = (if (wantEbay) parseEbay(ebayMd, q) else emptyList()) +
+            (if (wantMercari) parseMercari(mercMd, q) else emptyList())
         val cache = HashMap<String, List<TcgCard>>()
         val extraCache = HashMap<String, Double?>()
         return listings.map { listing ->

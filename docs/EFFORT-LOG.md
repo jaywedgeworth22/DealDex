@@ -31,6 +31,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
+- **2026-08-21 — CURSOR — IN PROGRESS — Scan layout + OG wordmark + subtitle (#117).**  Branch `cursor/scan-layout-og-subtitle`, worktree `~/apps/dealdex-cursor`.  Subtitle Identify Best-Priced Pokémon Card Listings everywhere.  Compact scan box, one eBay/Mercari pair with counts, 2 listings/row on desktop and iPad.  OG wordmark ~70% width.
 - **2026-08-20 — GROK — rebase #85 onto main.**  Docs-union of STATUS/PLAN/effort log.  Runner `[self-hosted, macOS, ARM64, xcode26]`, path `native/ios/**`, app key `dealdex`.  No bundle/team/Android-package change.  No TestFlight upload.
 - **2026-08-19 — CURSOR — IN PR #85 — iOS TestFlight ship workflow.**  Branch `cursor/ios-testflight-ship-workflow-5706`.  Adds `.github/workflows/ios-ship.yml` + `scripts/ios-scheduled-ship-gate.sh` (path `native/ios/`, app key `dealdex`).  No bundle/team change.  No TestFlight upload from this seat.
 - **2026-08-20 — CURSOR — POINTER — Cross-app coordination follow-ups (audit #2802).**  Socratic.Trade audit #2802 follow-ups are in ST PR #2941, Congress.Trade #2064, Usage-Monitor #1245.  Pins still CTS v2.5.2.  Pin-check is fail-closed but not a required merge check.  DealDex stays protocol-only / Vercel.  No Infisical, no Coolify, no USAGE_INGEST, no ASC, no Hetzner, no ios-fleet dashboards.  Branch `cursor/cross-app-coordination-followups`.
@@ -45,6 +46,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
 
 ## Changelog of this log
+- 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.
 - 2026-08-21 — CURSOR: landed #113 / #112 transparent DD favicon + ST-grid AppIcon.
 - 2026-08-21 — GROK: merged origin/main (incl. #93) into #85.  Kept POINTER + iOS ship-workflow rows.
 - 2026-08-21 — GROK: merged origin/main into #85 (docs-union).  Kept #103/#101 rows and the iOS ship-workflow In Progress rows.

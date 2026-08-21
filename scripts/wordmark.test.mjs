@@ -31,8 +31,11 @@ test("iOS title uses DealDexWordmark imageset, not serif Find the best listings"
   const scan = readFileSync(join(ROOT, "native/ios/DealDex/ScanView.swift"), "utf8");
   const brand = readFileSync(join(ROOT, "native/ios/DealDex/DealDexBrand.swift"), "utf8");
   assert.match(brand, /Image\("DealDexWordmark"\)/);
+  assert.match(brand, /Identify Best-Priced Pokémon Card Listings/);
   assert.match(scan, /DealDexTitle/);
+  assert.match(scan, /DealDexCopy\.subtitle/);
   assert.doesNotMatch(scan, /Find the best listings/);
+  assert.doesNotMatch(scan, /POKÉMON LISTING DESK/);
   const imageset = readFileSync(
     join(ROOT, "native/ios/DealDex/Assets.xcassets/DealDexWordmark.imageset/Contents.json"),
     "utf8",

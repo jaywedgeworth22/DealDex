@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DealDexWordmark } from "@/components/app-mark";
+import { APP_SUBTITLE } from "@/lib/copy";
 
 export const Route = createFileRoute("/login")({ component: Login });
 
@@ -46,6 +47,7 @@ function Login() {
       <div className="w-full max-w-sm space-y-5 rounded-xl bg-surface p-6 shadow-[var(--shadow-border)]">
         <div>
           <DealDexWordmark className="h-10 max-w-[14rem] sm:h-11 sm:max-w-[16rem]" />
+          <p className="mt-2 text-sm text-muted">{APP_SUBTITLE}</p>
           <h1 className="mt-1 text-lg font-medium">
             {mode === "up" ? "Create an account" : "Sign in"}
           </h1>
