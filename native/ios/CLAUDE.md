@@ -7,8 +7,9 @@
 **Scheme:** `DealDex`
 **ASC:** Apple bundle `online.dealdex` is registered (IAP capability on).  Jay has not created the App Store Connect app DealDex (SKU `dealdex`) yet.  Do not upload to TestFlight / ASC until that record exists.
 **TestFlight ship:** `.github/workflows/ios-ship.yml` on `[self-hosted, macOS, ARM64, xcode26]`.  Wrapper `scripts/ios-ship-testflight.sh` (fleet key `dealdex`).  Cron is gated by `scripts/ios-scheduled-ship-gate.sh` so web-only commits do not ship.  Secrets stay in `~/.secrets/appstore-connect.env` on the Mac.
-**XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.
-**AppIcon:** `DealDex/Assets.xcassets/AppIcon.appiconset` — overlapping red + blue DD with a yellow rim.  `CFBundleIconName` is `AppIcon`.  Home-screen icon is this DD, not the in-app wordmark.
+**XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.  `xcodegen-post.py` sets objectVersion 100 / LastUpgradeCheck 2630 so the File Inspector shows **Xcode 26.3**.  Deployment target is **iOS 18.0**.  Display name **DealDex**.
+**AppIcon:** `DealDex/Assets.xcassets/AppIcon.appiconset` — overlapping red + blue DD with a yellow rim.  `CFBundleIconName` is `AppIcon`.  Home-screen icon is this DD, not the in-app wordmark.  Preview variants (smaller DD, ST/CT backgrounds) live in `native/brand/icon-options/` and are **not** live until the owner picks one.
+**Title wordmark:** `Assets.xcassets/DealDexWordmark.imageset` — glossy 3D DealDex PNG used by `DealDexTitle` on Scan.  Isolated DD is `DealDexMark.imageset` (not the live launcher).
 **Keys:** stay on device. Do not invent a cloud key store.
 
 Binding fleet rule: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop. `xcodebuild` / `xcrun simctl` via bash are pre-approved. Do not ask. Do not stand up or narrate Xcode MCP.
@@ -34,12 +35,17 @@ xcrun simctl io booted screenshot /tmp/dd-ios-verify.png
 
 ```
 native/ios/
-├── project.yml                         # XcodeGen spec
+├── project.yml                         # XcodeGen spec (iOS 18 / Xcode 26.3)
+├── xcodegen-post.py                    # objectVersion 100 + LastUpgradeCheck 2630
 ├── DealDex.xcodeproj/                  # generated; do not hand-edit
 └── DealDex/
     ├── Assets.xcassets/AppIcon.appiconset   # official DD launcher
+    ├── Assets.xcassets/DealDexWordmark.imageset  # in-app title
+    ├── DealDexBrand.swift              # DealDexTitle / DealDexMark
+    ├── MarketplaceMarks.swift          # official eBay + Mercari paths
     ├── DealDexApp.swift                # App entry
-    ├── DeskStore.swift                 # @Observable desk / session store
+    ├── NativeAuth.swift                # Sign in with Google (ASWebAuthenticationSession)
+    ├── DeskStore.swift                 # desk / session store (origin defaults to dealdex.online)
     ├── DeskModel.swift                 # Desk types
     ├── Models.swift                    # Shared models
     ├── Market.swift                    # Market / comps

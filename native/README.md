@@ -26,9 +26,9 @@ The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your
 
 ## iOS
 
-1. From `native/ios`, run `xcodegen generate` after editing `project.yml`.
-2. Open `ios/DealDex.xcodeproj` in Xcode 15+ (team `CC8UTF7ATG`).
-3. Run on a phone or simulator.
+1. From `native/ios`, run `xcodegen generate` after editing `project.yml` (then `xcodegen-post.py` sets Xcode 26.3 / objectVersion 100).
+2. Open `DealDex.xcodeproj` in Xcode 26.3 (team `CC8UTF7ATG`).  Display name **DealDex**.  Minimum iOS **18.0**.
+3. Run on a phone or simulator.  Scan talks to `https://dealdex.online/api/native/scan` and does not require sign-in.  Google website accounts use **Sign in with Google**.
 
 Home-screen icon is the official overlapping red + blue DD (yellow rim) in
 `DealDex/Assets.xcassets`.  `CFBundleIconName` is `AppIcon`.  iPad
@@ -36,11 +36,16 @@ Home-screen icon is the official overlapping red + blue DD (yellow rim) in
 launcher mipmaps and the adaptive icon use the same DD.  Do not put the
 in-app wordmark on the home screen.
 
+In-app / web **title** is `DealDexWordmark` (glossy 3D DealDex PNG).  Scan on
+iPhone and Android shows that mark, not serif "Find the best listings."
+
 ```
 xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
   -destination 'generic/platform=iOS Simulator' build
 ```
 
-Bundle id: `online.dealdex`.  Display name: DealDex.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
+Bundle id: `online.dealdex`.  Display name: DealDex.  Min iOS: 18.0.  Project format: Xcode 26.3.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
 
 TestFlight archive + upload is `.github/workflows/ios-ship.yml` on the owned Mac runner (app key `dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  Do not upload until the ASC app record exists.
+
+AppIcon options (not live): `native/brand/icon-options/`.  Do not swap the catalog until the owner picks one.

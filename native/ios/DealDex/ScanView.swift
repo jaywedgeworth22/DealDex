@@ -7,16 +7,15 @@ struct ScanView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12) {
+                DealDexTitle(height: 38)
                 Text("POKÉMON LISTING DESK")
                     .font(.caption)
                     .tracking(1.4)
                     .foregroundStyle(.secondary)
-                Text("Find the best listings.")
-                    .font(.system(.title, design: .serif))
                 HStack {
                     TextField("All Pokémon", text: $desk.query)
                         .textFieldStyle(.roundedBorder)
-                    Button("Scan") { Task { await desk.scan() } }
+                    Button("Scan") { Task { await desk.scan(notify: false) } }
                         .buttonStyle(.borderedProminent)
                         .disabled(desk.loading)
                 }
@@ -28,15 +27,24 @@ struct ScanView: View {
                         }
                     }
                 }
-                HStack {
-                    chip("all", "All \(desk.rows.count)")
-                    chip("deals", "Deals")
-                    Button { desk.view = "ebay" } label: { MarketplaceMark(market: "ebay") }
-                        .buttonStyle(.bordered)
-                        .tint(desk.view == "ebay" ? Color(red: 0.25, green: 0.29, blue: 0.20) : .secondary)
-                    Button { desk.view = "mercari" } label: { MarketplaceMark(market: "mercari") }
-                        .buttonStyle(.bordered)
-                        .tint(desk.view == "mercari" ? Color(red: 0.25, green: 0.29, blue: 0.20) : .secondary)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        MarketplaceToggle(
+                            market: "ebay",
+                            selected: desk.sources.contains("ebay")
+                        ) { desk.toggleSource("ebay") }
+                        MarketplaceToggle(
+                            market: "mercari",
+                            selected: desk.sources.contains("mercari")
+                        ) { desk.toggleSource("mercari") }
+                    }
+                    .fixedSize(horizontal: true, vertical: false)
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        chip("all", "All \(desk.rows.count)")
+                        chip("deals", "Deals")
+                    }
                 }
                 if desk.loading {
                     Spacer()
@@ -103,29 +111,6 @@ struct ListingRow: View {
         case "steal", "good": return Color(red: 0.25, green: 0.35, blue: 0.22)
         case "high", "avoid": return Color(red: 0.56, green: 0.31, blue: 0.27)
         default: return Color(red: 0.48, green: 0.40, blue: 0.22)
-        }
-    }
-}
-
-struct MarketplaceMark: View {
-    let market: String
-
-    var body: some View {
-        if market == "ebay" {
-            HStack(spacing: 0) {
-                Text("e").foregroundStyle(Color(red: 0.90, green: 0.17, blue: 0.18))
-                Text("b").foregroundStyle(Color(red: 0.04, green: 0.41, blue: 0.96))
-                Text("a").foregroundStyle(Color(red: 1.0, green: 0.74, blue: 0.07))
-                Text("y").foregroundStyle(Color(red: 0.58, green: 0.78, blue: 0.13))
-            }
-            .font(.caption.weight(.bold))
-            .accessibilityLabel("eBay")
-        } else {
-            Text("MERCARI")
-                .font(.caption.weight(.bold))
-                .tracking(0.4)
-                .foregroundStyle(Color(red: 83 / 255, green: 86 / 255, blue: 238 / 255))
-                .accessibilityLabel("Mercari")
         }
     }
 }
