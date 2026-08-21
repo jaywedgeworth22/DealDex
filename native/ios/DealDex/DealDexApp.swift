@@ -26,5 +26,6 @@ struct RootView: View {
         }
         .tint(Color(red: 63 / 255, green: 74 / 255, blue: 50 / 255))
         .preferredColorScheme(.light)
+        .appUpdatePrompt()
     }
 }
