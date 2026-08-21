@@ -1,8 +1,8 @@
 # Current Handoff
 
-## 2026-08-21 CURSOR — scan layout, OG wordmark, subtitle (#117)
+## 2026-08-21 CURSOR — scan layout, OG wordmark, subtitle (#118 / #117)
 
-User-facing subtitle is **Identify Best-Priced Pokémon Card Listings** on the
+Merged squash `5474ef1`.  User-facing subtitle is **Identify Best-Priced Pokémon Card Listings** on the
 site, login, OG card, iOS, Android, store listing (in-app; App Store 30-char
 field is `Best-priced card listings`), and README.
 
@@ -89,7 +89,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-21 (CURSOR — #117 scan layout, OG wordmark, subtitle)
+Updated: 2026-08-21 (CURSOR — #118 deployed, scan layout + subtitle)
 
 ## Current state
 
