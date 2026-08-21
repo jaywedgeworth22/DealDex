@@ -1,5 +1,9 @@
 import SwiftUI
 
+enum DealDexCopy {
+    static let subtitle = "Identify Best-Priced Pokémon Card Listings"
+}
+
 /// Official title wordmark (red Deal + blue Dex, yellow rim). Not the home-screen AppIcon.
 struct DealDexTitle: View {
     var height: CGFloat = 36

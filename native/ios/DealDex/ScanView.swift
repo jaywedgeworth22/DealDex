@@ -2,61 +2,74 @@ import SwiftUI
 
 struct ScanView: View {
     @EnvironmentObject var desk: DeskModel
-    private let chips: [(String, String)] = [("", "All Pokémon"), ("charizard", "charizard"), ("umbreon vmax", "umbreon vmax"), ("151", "151")]
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var twoUp: Bool { sizeClass == .regular }
+    private var columns: [GridItem] {
+        if twoUp {
+            [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+        } else {
+            [GridItem(.flexible())]
+        }
+    }
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 DealDexTitle(height: 38)
-                Text("POKÉMON LISTING DESK")
-                    .font(.caption)
-                    .tracking(1.4)
+                Text(DealDexCopy.subtitle)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
-                HStack {
-                    TextField("All Pokémon", text: $desk.query)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 8) {
+                    TextField("Card, set, or leave blank", text: $desk.query)
                         .textFieldStyle(.roundedBorder)
                     Button("Scan") { Task { await desk.scan(notify: false) } }
                         .buttonStyle(.borderedProminent)
                         .disabled(desk.loading)
                 }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(chips, id: \.0) { q, label in
-                            Button(label) { Task { await desk.scan(q) } }
-                                .buttonStyle(.bordered)
-                        }
+                HStack(spacing: 8) {
+                    MarketplaceToggle(
+                        market: "ebay",
+                        selected: desk.sources.contains("ebay"),
+                        count: desk.ebayCount,
+                        large: true
+                    ) {
+                        desk.toggleSource("ebay")
+                        Task { await desk.scan(notify: false) }
+                    }
+                    MarketplaceToggle(
+                        market: "mercari",
+                        selected: desk.sources.contains("mercari"),
+                        count: desk.mercariCount,
+                        large: true
+                    ) {
+                        desk.toggleSource("mercari")
+                        Task { await desk.scan(notify: false) }
                     }
                 }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        MarketplaceToggle(
-                            market: "ebay",
-                            selected: desk.sources.contains("ebay")
-                        ) { desk.toggleSource("ebay") }
-                        MarketplaceToggle(
-                            market: "mercari",
-                            selected: desk.sources.contains("mercari")
-                        ) { desk.toggleSource("mercari") }
-                    }
-                    .fixedSize(horizontal: true, vertical: false)
+                HStack(spacing: 8) {
+                    chip("all", "All \(desk.rows.count)")
+                    chip("deals", "Deals \(desk.dealCount)")
                 }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        chip("all", "All \(desk.rows.count)")
-                        chip("deals", "Deals")
-                    }
-                }
-                if desk.loading {
+                if desk.loading && desk.rows.isEmpty {
                     Spacer()
                     ProgressView("Reading eBay and Mercari…")
                     Spacer()
                 } else if let err = desk.error {
                     Text(err).foregroundStyle(.red)
+                    Spacer()
                 } else {
-                    List(desk.visible) { row in
-                        ListingRow(row: row)
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 12) {
+                            ForEach(desk.visible) { row in
+                                ListingRow(row: row)
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
+                            }
+                        }
                     }
-                    .listStyle(.plain)
                 }
             }
             .padding()

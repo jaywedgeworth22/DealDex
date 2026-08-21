@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DealDex</string>
+    <string name="app_subtitle">Identify Best-Priced Pokémon Card Listings</string>
 </resources>

@@ -4,7 +4,8 @@ import { scanMarketplaces } from "@/lib/server/scan";
 import type { ScoredListing } from "@/lib/marketplaces/types";
 import { cn, formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
-import { MarketplaceLogo } from "@/components/market-logo";
+import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
+import { APP_SUBTITLE } from "@/lib/copy";
 
 type Platform = "android" | "ios";
 
@@ -164,11 +165,23 @@ function ScanPane({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col px-3 pb-2">
-      <p className="text-xs uppercase tracking-[0.16em] text-subtle">Pokémon listing desk</p>
-      <h2 className="mt-0.5 font-display text-xl leading-tight tracking-tight">Find the best listings.</h2>
+      <p className="text-xs leading-snug text-muted">{APP_SUBTITLE}</p>
       <p className="mt-1 text-xs text-muted">Scans eBay and Mercari on this phone.</p>
-      <div className="mt-2 flex gap-1.5 overflow-x-auto">
-        {(["All Pokémon", "Deals"] as const).map((label, i) => (
+      <div className="mt-2 grid grid-cols-2 gap-1.5">
+        {(["ebay", "mercari"] as const).map((m) => (
+          <MarketplaceToggle
+            key={m}
+            marketplace={m}
+            selected
+            onClick={() => {}}
+            count={rows.filter((r) => r.listing.marketplace === m).length}
+            size="lg"
+            className="pointer-events-none h-10 rounded-lg px-2"
+          />
+        ))}
+      </div>
+      <div className="mt-1.5 flex gap-1.5">
+        {(["All", "Deals"] as const).map((label, i) => (
           <span
             key={label}
             className={cn(
@@ -178,18 +191,7 @@ function ScanPane({
             )}
           >
             {label}
-            {label === "Deals" ? ` ${deals.length}` : ""}
-          </span>
-        ))}
-        {(["ebay", "mercari"] as const).map((m) => (
-          <span
-            key={m}
-            className={cn(
-              "inline-flex shrink-0 items-center bg-elevated px-2.5 py-1",
-              platform === "ios" ? "rounded-full" : "rounded-sm",
-            )}
-          >
-            <MarketplaceLogo marketplace={m} />
+            {label === "Deals" ? ` ${deals.length}` : ` ${rows.length}`}
           </span>
         ))}
       </div>

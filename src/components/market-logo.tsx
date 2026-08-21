@@ -2,6 +2,12 @@ import { cn } from "@/lib/utils";
 
 type Market = "ebay" | "mercari";
 type Tone = "color" | "white";
+type MarkSize = "sm" | "lg";
+
+const MARK: Record<MarkSize, { ebay: { w: number; h: number }; mercari: { w: number; h: number } }> = {
+  sm: { ebay: { w: 35, h: 14 }, mercari: { w: 64, h: 14 } },
+  lg: { ebay: { w: 52, h: 21 }, mercari: { w: 96, h: 21 } },
+};
 
 const LABEL: Record<Market, string> = {
   ebay: "eBay",
@@ -13,22 +19,27 @@ const EBAY_FILLS = {
   white: ["#ffffff", "#ffffff", "#ffffff", "#ffffff"],
 } as const;
 
-/** Locked box so viewBox 1000×401 never paints at intrinsic size. */
-const EBAY = { w: 35, h: 14 } as const;
-const MERCARI = { w: 64, h: 14 } as const;
-
 /** Official four-color eBay wordmark. */
-function EbayWordmark({ className, tone = "color" }: { className?: string; tone?: Tone }) {
+function EbayWordmark({
+  className,
+  tone = "color",
+  size = "sm",
+}: {
+  className?: string;
+  tone?: Tone;
+  size?: MarkSize;
+}) {
   const fill = EBAY_FILLS[tone];
+  const dim = MARK[size].ebay;
   return (
     <span
       className={cn("inline-flex shrink-0 overflow-hidden", className)}
-      style={{ width: EBAY.w, height: EBAY.h }}
+      style={{ width: dim.w, height: dim.h }}
     >
       <svg
         viewBox="0 0 1000 400.751"
-        width={EBAY.w}
-        height={EBAY.h}
+        width={dim.w}
+        height={dim.h}
         role="img"
         aria-label={LABEL.ebay}
         className="block h-full w-full"
@@ -56,16 +67,25 @@ function EbayWordmark({ className, tone = "color" }: { className?: string; tone?
 }
 
 /** Official Mercari wordmark — blue #5356EE, or solid white on dark chips. */
-function MercariWordmark({ className, tone = "color" }: { className?: string; tone?: Tone }) {
+function MercariWordmark({
+  className,
+  tone = "color",
+  size = "sm",
+}: {
+  className?: string;
+  tone?: Tone;
+  size?: MarkSize;
+}) {
+  const dim = MARK[size].mercari;
   return (
     <span
       className={cn("inline-flex shrink-0 overflow-hidden", className)}
-      style={{ width: MERCARI.w, height: MERCARI.h }}
+      style={{ width: dim.w, height: dim.h }}
     >
       <svg
         viewBox="0 0 251.1 55"
-        width={MERCARI.w}
-        height={MERCARI.h}
+        width={dim.w}
+        height={dim.h}
         role="img"
         aria-label={LABEL.mercari}
         className="block h-full w-full"
@@ -99,13 +119,15 @@ export function MarketplaceLogo({
   marketplace,
   className,
   tone = "color",
+  size = "sm",
 }: {
   marketplace: Market;
   className?: string;
   tone?: Tone;
+  size?: MarkSize;
 }) {
-  if (marketplace === "ebay") return <EbayWordmark className={className} tone={tone} />;
-  return <MercariWordmark className={className} tone={tone} />;
+  if (marketplace === "ebay") return <EbayWordmark className={className} tone={tone} size={size} />;
+  return <MercariWordmark className={className} tone={tone} size={size} />;
 }
 
 export function MarketplaceToggle({
@@ -114,13 +136,16 @@ export function MarketplaceToggle({
   onClick,
   count,
   className,
+  size = "sm",
 }: {
   marketplace: Market;
   selected: boolean;
   onClick: () => void;
   count?: number;
   className?: string;
+  size?: MarkSize;
 }) {
+  const large = size === "lg";
   return (
     <button
       type="button"
@@ -128,15 +153,22 @@ export function MarketplaceToggle({
       aria-pressed={selected}
       aria-label={count != null ? `${LABEL[marketplace]} ${count}` : LABEL[marketplace]}
       className={cn(
-        "inline-flex h-11 items-center gap-2 rounded-full border px-3 transition-colors duration-150",
+        "inline-flex items-center gap-2 border transition-colors duration-150",
+        large
+          ? "h-14 w-full justify-between rounded-xl px-4"
+          : "h-11 rounded-full px-3",
         selected
           ? "border-accent bg-accent"
           : "border-fg/20 bg-fg/80 opacity-70 hover:opacity-100",
         className,
       )}
     >
-      <MarketplaceLogo marketplace={marketplace} tone="white" />
-      {count != null && <span className="text-xs tabular-nums text-white/80">{count}</span>}
+      <MarketplaceLogo marketplace={marketplace} tone="white" size={size} />
+      {count != null && (
+        <span className={cn("tabular-nums text-white", large ? "text-sm font-medium" : "text-xs text-white/80")}>
+          {count}
+        </span>
+      )}
     </button>
   );
 }

@@ -26,6 +26,7 @@ data class DeskState(
     val rows: List<ScoredListing> = emptyList(),
     val error: String? = null,
     val view: String = "all",
+    val sources: Set<String> = setOf("ebay", "mercari"),
     val rules: List<AlertRule> = listOf(AlertRule("default", "Steals under $100")),
     val justTcg: String = "",
     val priceCharting: String = "",
@@ -68,6 +69,16 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setQuery(q: String) { _state.value = _state.value.copy(query = q) }
     fun setView(v: String) { _state.value = _state.value.copy(view = v) }
+    fun toggleSource(market: String) {
+        val current = _state.value.sources
+        val next = if (market in current) {
+            if (current.size <= 1) current else current - market
+        } else {
+            current + market
+        }
+        _state.value = _state.value.copy(sources = next)
+        scan()
+    }
     fun setJustTcg(v: String) { _state.value = _state.value.copy(justTcg = v, settingsNote = null) }
     fun setPriceCharting(v: String) { _state.value = _state.value.copy(priceCharting = v, settingsNote = null) }
     fun setPokemonTcg(v: String) { _state.value = _state.value.copy(pokemonTcg = v, settingsNote = null) }
@@ -85,9 +96,10 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
     fun scan(q: String = _state.value.query) {
         _state.value = _state.value.copy(loading = true, error = null, query = q)
         val desk = keys()
+        val sources = _state.value.sources
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val rows = Market.scan(q, desk)
+                val rows = Market.scan(q, desk, sources)
                 _state.value = _state.value.copy(loading = false, rows = rows)
                 fireAlerts(rows)
             } catch (e: Exception) {

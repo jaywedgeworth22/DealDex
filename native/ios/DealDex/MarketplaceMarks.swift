@@ -310,6 +310,7 @@ private struct ScaledFill: View {
 /// the same way the website SVG does — do not fill the bowl as a second solid.
 struct EbayWordmark: View {
     var white = false
+    var scale: CGFloat = 1
     private let box = CGSize(width: 1000, height: 400.751)
 
     var body: some View {
@@ -320,7 +321,7 @@ struct EbayWordmark: View {
             ScaledFill(path: WordmarkPaths.ebayA(), viewBox: box, fill: fills[2], eoFill: true)
             ScaledFill(path: WordmarkPaths.ebayY(), viewBox: box, fill: fills[3])
         }
-        .frame(width: 35, height: 14)
+        .frame(width: 35 * scale, height: 14 * scale)
         .fixedSize()
         .accessibilityLabel("eBay")
     }
@@ -329,6 +330,7 @@ struct EbayWordmark: View {
 /// Official Mercari wordmark (website `MercariWordmark`). White on chips, blue on rows.
 struct MercariWordmark: View {
     var white = false
+    var scale: CGFloat = 1
     private let box = CGSize(width: 251.1, height: 55)
 
     var body: some View {
@@ -343,7 +345,7 @@ struct MercariWordmark: View {
             ScaledFill(path: WordmarkPaths.mercariI(), viewBox: box, fill: fill)
             ScaledFill(path: WordmarkPaths.mercariDot(), viewBox: box, fill: fill)
         }
-        .frame(width: 64, height: 14)
+        .frame(width: 64 * scale, height: 14 * scale)
         .fixedSize()
         .accessibilityLabel("Mercari")
     }
@@ -352,21 +354,24 @@ struct MercariWordmark: View {
 struct MarketplaceMark: View {
     let market: String
     var white: Bool = false
+    var scale: CGFloat = 1
 
     var body: some View {
         if market == "ebay" {
-            EbayWordmark(white: white)
+            EbayWordmark(white: white, scale: scale)
         } else {
-            MercariWordmark(white: white)
+            MercariWordmark(white: white, scale: scale)
         }
     }
 }
 
 /// Website source `MarketplaceToggle`: olive when that market is on, charcoal idle.
-/// Logos only — counts live on the All/Deals filter row, same as the site header chips.
+/// Listing counts sit on these toggles.  Do not add a second eBay/Mercari filter row.
 struct MarketplaceToggle: View {
     let market: String
     let selected: Bool
+    var count: Int? = nil
+    var large: Bool = false
     let action: () -> Void
 
     private let accent = Color(red: 63 / 255, green: 74 / 255, blue: 50 / 255)
@@ -374,16 +379,50 @@ struct MarketplaceToggle: View {
 
     var body: some View {
         Button(action: action) {
-            MarketplaceMark(market: market, white: true)
-                .padding(.horizontal, 12)
-                .frame(height: 44)
-                .fixedSize(horizontal: true, vertical: false)
-                .background(Capsule().fill(selected ? accent : idle))
-                .overlay(Capsule().stroke(selected ? accent : Color.primary.opacity(0.12), lineWidth: 1))
-                .opacity(selected ? 1 : 0.7)
+            HStack(spacing: 10) {
+                MarketplaceMark(market: market, white: true, scale: large ? 1.45 : 1)
+                if let count {
+                    Spacer(minLength: 0)
+                    Text("\(count)")
+                        .font(.body.monospacedDigit())
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                }
+            }
+            .padding(.horizontal, large ? 16 : 12)
+            .frame(maxWidth: large ? .infinity : nil, minHeight: large ? 56 : 44, alignment: .leading)
+            .background(chipFill)
+            .overlay(chipStroke)
+            .opacity(selected ? 1 : 0.7)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(market == "ebay" ? "eBay" : "Mercari")
+        .accessibilityLabel(label)
         .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+
+    private var fillColor: Color { selected ? accent : idle }
+
+    @ViewBuilder
+    private var chipFill: some View {
+        if large {
+            RoundedRectangle(cornerRadius: 14).fill(fillColor)
+        } else {
+            Capsule().fill(fillColor)
+        }
+    }
+
+    @ViewBuilder
+    private var chipStroke: some View {
+        if large {
+            RoundedRectangle(cornerRadius: 14).stroke(selected ? accent : Color.primary.opacity(0.12), lineWidth: 1)
+        } else {
+            Capsule().stroke(selected ? accent : Color.primary.opacity(0.12), lineWidth: 1)
+        }
+    }
+
+    private var label: String {
+        let name = market == "ebay" ? "eBay" : "Mercari"
+        if let count { return "\(name) \(count)" }
+        return name
     }
 }

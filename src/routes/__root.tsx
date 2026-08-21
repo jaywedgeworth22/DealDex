@@ -5,12 +5,13 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { ThemeProvider, THEME_BOOT, useTheme } from "@/lib/theme";
 import { MarkProvider } from "@/components/app-mark";
 import { listenForInstallPrompt, registerServiceWorker } from "@/lib/pwa";
+import { APP_SUBTITLE } from "@/lib/copy";
 import { useEffect } from "react";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "DealDex";
 const host = import.meta.env.VITE_PUBLIC_HOSTNAME || "dealdex.online";
-const ogImage = `https://${host}/og.jpg`;
+const ogImage = `https://${host}/og.jpg?v=subtitle-20260821`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -20,7 +21,7 @@ export const Route = createRootRoute({
       { title: APP_NAME },
       {
         name: "description",
-        content: "Scan eBay and Mercari Pokémon listings and score each ask against TCGPlayer, Cardmarket, sold comps, and PriceCharting.",
+        content: `${APP_SUBTITLE}.  Scan eBay and Mercari Pokémon listings and score each ask against TCGPlayer, Cardmarket, sold comps, and PriceCharting.`,
       },
       { name: "apple-mobile-web-app-title", content: APP_NAME },
       { name: "apple-mobile-web-app-capable", content: "yes" },
@@ -32,7 +33,7 @@ export const Route = createRootRoute({
       { property: "og:title", content: APP_NAME },
       {
         property: "og:description",
-        content: "Find the best listings.",
+        content: APP_SUBTITLE,
       },
       { property: "og:url", content: `https://${host}/` },
       { property: "og:image", content: ogImage },
