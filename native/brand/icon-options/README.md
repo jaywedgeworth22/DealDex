@@ -1,9 +1,14 @@
-# DealDex AppIcon options (not live)
+# DealDex AppIcon options (archive)
 
-Live launcher stays `native/brand/dealdex-dd-icon-1024.png` (white field) until the owner picks one of these.
+Live launcher is `native/brand/dealdex-dd-icon-1024.png` — interlocking DD on
+the Socratic.Trade tiled field.  Rebuild it with
+`python3 scripts/generate-app-icons.py`.
 
-| File | Background | DD scale vs current |
-|------|------------|---------------------|
+These files are leftover scale/background previews from before the owner
+picked the ST grid:
+
+| File | Background | DD scale vs edge-to-edge |
+|------|------------|--------------------------|
 | `ct-gray-90.png` | Congress.Trade light gray + oval shadow | 10% smaller |
 | `ct-gray-80.png` | same | 20% smaller |
 | `ct-gray-72.png` | same | extra padding (closer to the CT eagle) |
@@ -12,5 +17,4 @@ Live launcher stays `native/brand/dealdex-dd-icon-1024.png` (white field) until 
 | `st-grid-72.png` | same | extra padding |
 | `sheet.png` | contact sheet of all six | — |
 
-Regenerate: `python3 scripts/generate-icon-options.py`
-Do not run `scripts/generate-app-icons.py` against an option until the owner picks it.
+Regenerate this folder: `python3 scripts/generate-icon-options.py`

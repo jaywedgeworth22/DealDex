@@ -9,14 +9,14 @@ HTTP 200 DealDex.  `https://dealdex-psi.vercel.app` served the same build.
 the listing at it.
 
 **Wordmark:** official DealDex title mark (red Deal + blue Dex, yellow badge).  Used in the website header, login, and marketing card.  
-**Home-screen icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, white background.  Not the in-app wordmark.
+**Home-screen icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, on the Socratic.Trade tiled field (no candlesticks).  Not the in-app wordmark.
 
 **iOS bundle:** `online.dealdex`  
 **Apple bundle resource ID:** `R2FAW69NPD` (Developer portal App ID resource; **not** a team ID)  
 **Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`  
 **Android package:** `me.grok.dealdex`  
 **SKU:** `dealdex`  
-**App icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, white background (not the in-app wordmark).
+**App icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, on the Socratic.Trade tiled field (not the in-app wordmark).
 **Category:** Shopping  
 **Marketing version:** 1.0.1  
 **Privacy:** `https://dealdex.online/privacy`  

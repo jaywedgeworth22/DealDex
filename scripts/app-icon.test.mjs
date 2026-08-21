@@ -93,13 +93,29 @@ test("Android launcher uses the DD adaptive icon and mipmaps", () => {
   assert.ok(existsSync(join(ROOT, "native/android/app/src/main/res/drawable/ic_launcher_foreground.png")));
 });
 
-test("web favicon and PWA 180 are the DD mark, not the old delta stub", () => {
-  const fav = read("public/favicon.svg");
-  assert.match(fav, /data:image\/png;base64,/);
-  assert.doesNotMatch(fav, /#0c0d0b/);
+test("web favicon is a transparent DD PNG/ICO, not an SVG letter tile", () => {
+  const png = readFileSync(join(ROOT, "public/favicon.png"));
+  assert.equal(png.subarray(0, 8).toString("binary"), "\x89PNG\r\n\x1a\n");
+  assert.equal(png[25], 6, "favicon.png must be RGBA");
+  const fav32 = pngSize("public/favicon-32.png");
+  assert.deepEqual({ width: fav32.width, height: fav32.height }, { width: 32, height: 32 });
+  const fav16 = pngSize("public/favicon-16.png");
+  assert.deepEqual({ width: fav16.width, height: fav16.height }, { width: 16, height: 16 });
+  assert.ok(existsSync(join(ROOT, "public/favicon.ico")), "Safari looks up /favicon.ico");
+  const head = read("src/routes/__root.tsx");
+  assert.match(head, /favicon\.ico/);
+  assert.match(head, /favicon-32\.png/);
+  assert.doesNotMatch(head, /rel: "icon", type: "image\/svg\+xml"/);
   const pwa = pngSize("public/__grok/icon-180.png");
   assert.deepEqual({ width: pwa.width, height: pwa.height }, { width: 180, height: 180 });
   assert.ok(pwa.bytes > 8_000, "PWA 180 should be the glossy DD, not the 2 KB delta");
   const source = pngSize("native/brand/dealdex-dd-icon-1024.png");
   assert.deepEqual({ width: source.width, height: source.height }, { width: 1024, height: 1024 });
+});
+
+test("header wordmark is not wrapped in a global img outline", () => {
+  const css = read("src/styles.css");
+  assert.doesNotMatch(css, /img\s*\{[^}]*outline:/);
+  const mark = read("src/components/app-mark.tsx");
+  assert.match(mark, /outline-none/);
 });

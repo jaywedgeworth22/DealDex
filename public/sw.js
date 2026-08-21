@@ -1,5 +1,5 @@
-const CACHE = "dealdex-v2";
-const PRECACHE = ["/favicon.svg", "/__grok/icon-180.png"];
+const CACHE = "dealdex-v3";
+const PRECACHE = ["/favicon.png", "/favicon.ico", "/__grok/icon-180.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
@@ -42,7 +42,7 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || "DealDex", {
       body: data.body || "A listing just dropped into range.",
-      icon: "/favicon.svg",
+      icon: "/favicon.png",
       data: { url: data.url || "/" },
     }),
   );

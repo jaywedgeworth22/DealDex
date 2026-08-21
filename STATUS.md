@@ -1,5 +1,13 @@
 # Current Handoff
 
+## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
+
+Safari tab icon is a transparent interlocking DD (`favicon.ico` /
+`favicon-32.png`), not the old SVG that showed a letter tile.  Header
+wordmark no longer has a rectangular `img` outline.  iOS AppIcon is the
+DD on the Socratic.Trade tiled field (soft top-left light, recessed
+grout, no candlesticks).  Rebuild: `python3 scripts/generate-app-icons.py`.
+
 ## 2026-08-21 GROK — merge origin/main into iOS TestFlight ship workflow (#85)
 
 Union of the TestFlight ship-workflow handoff and the 3D title / iOS desk
@@ -65,7 +73,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-20 (GROK — rebased #85 iOS ship workflow onto current main)
+Updated: 2026-08-20 (CURSOR — transparent DD favicon + ST-grid AppIcon)
 
 ## Current state
 
@@ -98,7 +106,8 @@ Updated: 2026-08-20 (GROK — rebased #85 iOS ship workflow onto current main)
   `CFBundleIconName` is `AppIcon`.
 - In-app / web title mark is the official DealDex wordmark (PR #86).
   Home-screen AppIcon / Android launcher / PWA 180 are the overlapping
-  red + blue DD (PR #87).
+  red + blue DD on the ST tiled field.  Tab favicon is the isolated DD
+  on a transparent field.
 - iOS TestFlight ship workflow (`.github/workflows/ios-ship.yml`) runs on
   `[self-hosted, macOS, ARM64, xcode26]`, calls
   `scripts/ios-ship-testflight.sh` (fleet key `dealdex`), and gates cron

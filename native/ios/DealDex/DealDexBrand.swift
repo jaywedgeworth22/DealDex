@@ -13,7 +13,7 @@ struct DealDexTitle: View {
     }
 }
 
-/// Isolated interlocking DD. Preview / in-app mark only — live AppIcon stays the white-field catalog.
+/// Isolated interlocking DD. Preview / in-app mark only — live AppIcon is the ST-grid catalog.
 struct DealDexMark: View {
     var size: CGFloat = 36
 

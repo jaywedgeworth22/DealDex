@@ -4,7 +4,7 @@ export const MARK_KEY = "dealdex:mark";
 
 export const APP_MARKS: { id: AppMarkId; label: string; blurb: string }[] = [
   { id: "delta", label: "Delta", blurb: "The square Δ we already use." },
-  { id: "peak", label: "Peak", blurb: "The A / mountain from the favicon." },
+  { id: "peak", label: "Peak", blurb: "The A / mountain mark." },
   { id: "dd", label: "Wordmark", blurb: "Official DealDex title mark." },
   { id: "disc", label: "Disc", blurb: "Filled circle with a Δ." },
 ];

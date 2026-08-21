@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Preview AppIcon options — does NOT replace the live catalog.
 
-The live mark stays native/brand/dealdex-dd-icon-1024.png (plain white).
-This writes native/brand/icon-options/ so the owner can pick:
+The live mark is native/brand/dealdex-dd-icon-1024.png (DD on the ST tiled field).
+This writes native/brand/icon-options/ as leftover scale previews:
 
   ct-gray-90 / ct-gray-80  — Congress.Trade light gray + oval ground shadow
   st-grid-90 / st-grid-80  — Socratic.Trade light grid + oval ground shadow
   ct-gray-72              — extra CT-like padding (28% smaller)
 
-90 = 10% smaller than the current edge-to-edge DD.  80 = 20% smaller.
+90 = 10% smaller than an edge-to-edge DD.  80 = 20% smaller.
 """
 
 from __future__ import annotations
@@ -19,18 +19,21 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "native/brand/dealdex-dd-icon-1024.png"
+SOURCE = ROOT / "native/brand/dealdex-dd-isolated.png"
 OUT = ROOT / "native/brand/icon-options"
 SIZE = 1024
 
 
 def isolate_mark(im: Image.Image) -> Image.Image:
-    """Flood-fill corner white so the DD sits on a transparent canvas."""
+    """Return the DD on a transparent canvas (already isolated, or flood-fill white)."""
     rgba = im.convert("RGBA")
+    alpha = rgba.getchannel("A")
+    if alpha.getextrema()[0] < 255:
+        return rgba
     w, h = rgba.size
     px = rgba.load()
-    alpha = Image.new("L", (w, h), 255)
-    ap = alpha.load()
+    mask = Image.new("L", (w, h), 255)
+    ap = mask.load()
     visited = bytearray(w * h)
 
     def is_bg(x: int, y: int) -> bool:
@@ -50,7 +53,7 @@ def isolate_mark(im: Image.Image) -> Image.Image:
             continue
         ap[x, y] = 0
         stack.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
-    rgba.putalpha(alpha)
+    rgba.putalpha(mask)
     return rgba
 
 
@@ -172,8 +175,10 @@ def main() -> None:
     save_png(contact_sheet(options), OUT / "sheet.png")
     (OUT / "README.md").write_text(
         "# DealDex AppIcon options (not live)\n\n"
-        "Live launcher stays `native/brand/dealdex-dd-icon-1024.png` (white field) "
-        "until the owner picks one of these.\n\n"
+        "Live launcher is `native/brand/dealdex-dd-icon-1024.png` (DD on the ST tiled "
+        "field).  Rebuild it with `python3 scripts/generate-app-icons.py`.\n\n"
+        "These files are leftover scale/background previews from before the owner "
+        "picked the ST grid.\n\n"
         "| File | Background | DD scale vs current |\n"
         "|------|------------|---------------------|\n"
         "| `ct-gray-90.png` | Congress.Trade light gray + oval shadow | 10% smaller |\n"
@@ -183,8 +188,7 @@ def main() -> None:
         "| `st-grid-80.png` | same | 20% smaller |\n"
         "| `st-grid-72.png` | same | extra padding |\n"
         "| `sheet.png` | contact sheet of all six | — |\n\n"
-        "Regenerate: `python3 scripts/generate-icon-options.py`\n"
-        "Do not run `scripts/generate-app-icons.py` against an option until the owner picks it.\n",
+        "Regenerate this folder: `python3 scripts/generate-icon-options.py`\n",
         encoding="utf-8",
     )
     print(f"wrote {len(options)} options + sheet to {OUT}")
