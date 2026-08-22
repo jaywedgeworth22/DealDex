@@ -132,6 +132,53 @@ export function verdictCopy(verdict: Verdict) {
   }
 }
 
+export function isRepackOrProxy(title: string): { suspicious: boolean; reason?: string } {
+  const t = title.toLowerCase();
+  if (/\b(proxy|custom\s*card|replica|fake|fan\s*made|orica)\b/i.test(t)) {
+    return { suspicious: true, reason: "Likely proxy or replica card." };
+  }
+  if (/\b(mystery\s*(?:pack|box|bundle|lot)|repack|god\s*pack|chance\s*at|chase\s*card\?)\b/i.test(t)) {
+    return { suspicious: true, reason: "Mystery pack or repack lot." };
+  }
+  if (/\b(digital|tcgl|tcg\s*live|code\s*card|code\s*only|online\s*code)\b/i.test(t)) {
+    return { suspicious: true, reason: "Digital item or code card." };
+  }
+  if (/\b(empty\s*(?:tin|box|pack|wrapper)|booster\s*art|read\s*desc(?:ription)?)\b/i.test(t)) {
+    return { suspicious: true, reason: "Packaging only or suspicious condition." };
+  }
+  return { suspicious: false };
+}
+
+export function calculateGradingArbitrage(
+  card: TcgCard,
+  rawMarket: number | null,
+  allIn: number,
+  condition: Condition,
+): import("./types").GradingArbitrage | null {
+  if (rawMarket == null || rawMarket <= 0) return null;
+  const psa10Mult = gradeMultiplier(card, "PSA 10");
+  const psa9Mult = gradeMultiplier(card, "PSA 9");
+  const gradingCost = 22.0; // standard submission fee + insurance/shipping
+  const psa10Value = rawMarket * psa10Mult;
+  const psa9Value = rawMarket * psa9Mult;
+  const psa10Net = psa10Value * (1 - TCGPLAYER_SELL_FEE) - (allIn + gradingCost);
+  const psa9Net = psa9Value * (1 - TCGPLAYER_SELL_FEE) - (allIn + gradingCost);
+  const totalInvested = allIn + gradingCost;
+  const psa10Roi = totalInvested > 0 ? psa10Net / totalInvested : null;
+  const worthGrading =
+    condition === "NM" && psa10Net > 20 && (psa10Roi ?? 0) >= 0.35 && psa10Value >= 50;
+
+  return {
+    psa10Value,
+    psa9Value,
+    gradingCost,
+    psa10NetProfit: psa10Net,
+    psa9NetProfit: psa9Net,
+    psa10Roi,
+    worthGrading,
+  };
+}
+
 export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
   const finish = listing.finish
     ? (card.finishes.find((f) => f.key === listing.finish) ?? pickFinish(card, listing.finish))
@@ -146,23 +193,30 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
   const sellFeeRate = TCGPLAYER_SELL_FEE;
   const estimatedNetIfSold = adjustedMarket == null ? null : adjustedMarket * (1 - sellFeeRate);
   const flipProfit = estimatedNetIfSold == null ? null : estimatedNetIfSold - allIn;
+  const netMarginRate = allIn > 0 && flipProfit != null ? flipProfit / allIn : null;
   const mult = conditionMult * gradeMult;
   const rawLow = finish?.low ?? (rawMarket != null ? rawMarket * 0.85 : null);
   const rawHigh = finish?.mid ?? finish?.high ?? (rawMarket != null ? rawMarket * 1.15 : null);
   const rangeLow = rawLow == null ? null : rawLow * mult;
   const rangeHigh = rawHigh == null ? null : rawHigh * mult;
+
+  const repackCheck = isRepackOrProxy(listing.title);
+  const grading =
+    listing.grade === "raw" ? calculateGradingArbitrage(card, rawMarket, allIn, listing.condition) : null;
+
   return {
     market: rawMarket,
     allIn,
     spread,
     dollarsOff,
-    verdict: verdictFromSpread(spread),
+    verdict: repackCheck.suspicious ? "avoid" : verdictFromSpread(spread),
     conditionMult,
     gradeMult,
     adjustedMarket,
     sellFeeRate,
     estimatedNetIfSold,
     flipProfit,
+    netMarginRate,
     finish,
     verifiedMarket: adjustedMarket,
     rangeLow:
@@ -172,10 +226,18 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
     confidence: rawMarket == null ? "low" : "medium",
     sourcesUsed: rawMarket == null ? 0 : 1,
     conflict: false,
-    verifyNote: rawMarket == null ? "No desk market on this printing." : "Single-desk start — cross-check still running.",
+    verifyNote: repackCheck.suspicious
+      ? repackCheck.reason ?? "Flagged listing"
+      : rawMarket == null
+        ? "No desk market on this printing."
+        : "Single-desk start — cross-check still running.",
     conflictDetail: null,
+    grading,
+    isSuspiciousRepack: repackCheck.suspicious,
+    repackReason: repackCheck.reason ?? null,
   };
 }
+
 
 export function tcgplayerUrl(card: TcgCard, finish: FinishPrices | null) {
   if (finish?.productId) return `https://www.tcgplayer.com/product/${finish.productId}`;

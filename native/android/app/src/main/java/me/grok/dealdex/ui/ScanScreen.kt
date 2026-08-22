@@ -18,9 +18,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -43,11 +47,14 @@ import me.grok.dealdex.R
 import me.grok.dealdex.data.ScoredListing
 
 @Composable
-fun ScanScreen(vm: DeskViewModel, state: DeskState) {
+fun ScanScreen(
+    vm: DeskViewModel,
+    state: DeskState,
+    onOpenDossier: (me.grok.dealdex.data.TcgCard) -> Unit = {},
+) {
     val rows = vm.visible()
     val ebayCount = state.rows.count { it.listing.marketplace == "ebay" }
     val mercariCount = state.rows.count { it.listing.marketplace == "mercari" }
-    val dealCount = state.rows.count { it.appraisal?.verdict == "steal" || it.appraisal?.verdict == "good" }
     val width = LocalConfiguration.current.screenWidthDp
     val cols = if (width >= 600) 2 else 1
     Column(
@@ -59,7 +66,9 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
         Image(
             painter = painterResource(R.drawable.dealdex_wordmark),
             contentDescription = "DealDex",
-            modifier = Modifier.height(36.dp).fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .height(38.dp),
             contentScale = ContentScale.Fit,
             alignment = Alignment.CenterStart,
         )
@@ -67,15 +76,16 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
             stringResource(R.string.app_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp),
         )
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
                 value = state.query,
                 onValueChange = vm::setQuery,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
-                placeholder = { Text("Card, set, or leave blank") },
+                placeholder = { Text("All Pokémon") },
             )
             Spacer(Modifier.width(8.dp))
             Button(onClick = { vm.scan() }, enabled = !state.loading) {
@@ -83,7 +93,9 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
             }
         }
         Row(
-            Modifier.padding(top = 8.dp).fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             MarketplaceSourceToggle(
@@ -99,10 +111,6 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
                 modifier = Modifier.weight(1f),
             ) { vm.toggleSource("mercari") }
         }
-        Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = state.view == "all", onClick = { vm.setView("all") }, label = { Text("All ${state.rows.size}") })
-            FilterChip(selected = state.view == "deals", onClick = { vm.setView("deals") }, label = { Text("Deals $dealCount") })
-        }
         Spacer(Modifier.height(10.dp))
         when {
             state.loading && state.rows.isEmpty() -> {
@@ -111,14 +119,20 @@ fun ScanScreen(vm: DeskViewModel, state: DeskState) {
                     Text("Reading eBay and Mercari…", color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 8.dp))
                 }
             }
-            state.error != null -> Text(state.error, color = DealBad)
+            state.error != null -> Text(state.error, color = Color.Red)
             else -> LazyVerticalGrid(
                 columns = GridCells.Fixed(cols),
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                items(rows, key = { it.listing.marketplace + it.listing.id }) { ListingCard(it) }
+                items(items = rows, key = { it.listing.marketplace + it.listing.id }) { row ->
+                    ListingCard(
+                        row = row,
+                        onOpenDossier = onOpenDossier,
+                        onSave = { item -> vm.saveAppraisal(item) },
+                    )
+                }
             }
         }
     }
@@ -157,7 +171,11 @@ private fun MarketplaceSourceToggle(
 }
 
 @Composable
-private fun ListingCard(row: ScoredListing) {
+private fun ListingCard(
+    row: ScoredListing,
+    onOpenDossier: (me.grok.dealdex.data.TcgCard) -> Unit,
+    onSave: (me.grok.dealdex.data.SavedAppraisal) -> Unit,
+) {
     val ctx = LocalContext.current
     val a = row.appraisal
     val color = when (a?.verdict) {
@@ -167,9 +185,32 @@ private fun ListingCard(row: ScoredListing) {
     }
     Surface(shape = RoundedCornerShape(12.dp), tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 MarketplaceMark(row.listing.marketplace)
-                if (a != null) Text(a.verdict.uppercase(), color = color, style = MaterialTheme.typography.labelSmall)
+                if (a != null) Text(a.verdict.uppercase(), color = color, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.weight(1f))
+                IconButton(onClick = {
+                    val card = row.card
+                    if (card != null && row.listing.price != null) {
+                        val item = me.grok.dealdex.data.SavedAppraisal(
+                            cardId = card.id,
+                            cardName = card.name,
+                            setName = card.setName,
+                            localId = card.localId,
+                            marketplace = row.listing.marketplace,
+                            listingTitle = row.listing.title,
+                            listingPrice = row.listing.price,
+                            marketPrice = a?.adjusted,
+                            spread = a?.spread,
+                            verdict = a?.verdict ?: "fair",
+                            grade = row.grade,
+                        )
+                        onSave(item)
+                        android.widget.Toast.makeText(ctx, "Saved to Ledger", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }) {
+                    Icon(androidx.compose.material.icons.Icons.Default.BookmarkBorder, contentDescription = "Save", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
             Text(row.listing.title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
             if (row.card != null) {
@@ -178,11 +219,18 @@ private fun ListingCard(row: ScoredListing) {
             Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Mono("${row.listing.price?.let { "$%.2f".format(it) } ?: "—"} ask")
                 Mono("${a?.adjusted?.let { "$%.2f".format(it) } ?: "—"} TCGP")
-                if (a?.spread != null) Text("%+.1f%%".format(a.spread * 100), color = color, fontFamily = FontFamily.Monospace)
+                if (a?.spread != null) Text("%+.1f%%".format(a.spread * 100), color = color, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
             }
-            TextButton(onClick = {
-                ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(row.listing.url)))
-            }) { Text("Open listing") }
+            Row(Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (row.card != null) {
+                    TextButton(onClick = { onOpenDossier(row.card) }) {
+                        Text("Card Dossier")
+                    }
+                }
+                TextButton(onClick = {
+                    ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(row.listing.url)))
+                }) { Text("Open Listing") }
+            }
         }
     }
 }

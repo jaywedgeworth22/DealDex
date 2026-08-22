@@ -85,6 +85,16 @@ export type ListingInput = {
   finish: string | null;
 };
 
+export type GradingArbitrage = {
+  psa10Value: number | null;
+  psa9Value: number | null;
+  gradingCost: number;
+  psa10NetProfit: number | null;
+  psa9NetProfit: number | null;
+  psa10Roi: number | null;
+  worthGrading: boolean;
+};
+
 export type Appraisal = {
   market: number | null;
   allIn: number;
@@ -97,6 +107,7 @@ export type Appraisal = {
   sellFeeRate: number;
   estimatedNetIfSold: number | null;
   flipProfit: number | null;
+  netMarginRate?: number | null;
   finish: FinishPrices | null;
   verifiedMarket: number | null;
   rangeLow: number | null;
@@ -106,4 +117,8 @@ export type Appraisal = {
   conflict: boolean;
   verifyNote: string | null;
   conflictDetail: string | null;
+  grading?: GradingArbitrage | null;
+  isSuspiciousRepack?: boolean;
+  repackReason?: string | null;
 };
+

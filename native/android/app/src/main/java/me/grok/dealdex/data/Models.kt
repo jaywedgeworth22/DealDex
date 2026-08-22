@@ -65,3 +65,21 @@ data class AlertRule(
     val minSpread: Double? = 0.15,
     val keyword: String = "",
 )
+
+data class SavedAppraisal(
+    val id: String = java.util.UUID.randomUUID().toString(),
+    val cardId: String,
+    val cardName: String,
+    val setName: String,
+    val localId: String,
+    val marketplace: String,
+    val listingTitle: String,
+    val listingPrice: Double,
+    val marketPrice: Double?,
+    val spread: Double?,
+    val verdict: String,
+    val condition: String = "NM",
+    val grade: String = "raw",
+    val status: String = "watching",
+    val createdAt: Long = System.currentTimeMillis(),
+)

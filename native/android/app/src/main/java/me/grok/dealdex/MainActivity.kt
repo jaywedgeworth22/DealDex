@@ -30,6 +30,12 @@ import me.grok.dealdex.ui.ScanScreen
 import me.grok.dealdex.ui.SettingsScreen
 import me.grok.dealdex.ui.DealDexTheme
 
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Tune
+import me.grok.dealdex.ui.CardDossierScreen
+import me.grok.dealdex.ui.EvaluatorScreen
+import me.grok.dealdex.ui.SavedScreen
+
 class MainActivity : ComponentActivity() {
     private val vm: DeskViewModel by viewModels()
     private val askNotify = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
@@ -52,6 +58,18 @@ class MainActivity : ComponentActivity() {
                                 label = { Text("Scan") },
                             )
                             NavigationBarItem(
+                                selected = route == "evaluator",
+                                onClick = { nav.navigate("evaluator") { launchSingleTop = true } },
+                                icon = { Icon(Icons.Outlined.Tune, contentDescription = null) },
+                                label = { Text("Evaluator") },
+                            )
+                            NavigationBarItem(
+                                selected = route == "saved",
+                                onClick = { nav.navigate("saved") { launchSingleTop = true } },
+                                icon = { Icon(Icons.Outlined.BookmarkBorder, contentDescription = null) },
+                                label = { Text("Saved") },
+                            )
+                            NavigationBarItem(
                                 selected = route == "alerts",
                                 onClick = { nav.navigate("alerts") { launchSingleTop = true } },
                                 icon = { Icon(Icons.Outlined.Notifications, contentDescription = null) },
@@ -67,7 +85,31 @@ class MainActivity : ComponentActivity() {
                     },
                 ) { pad ->
                     NavHost(nav, startDestination = "scan", modifier = Modifier.padding(pad)) {
-                        composable("scan") { ScanScreen(vm, state) }
+                        composable("scan") {
+                            ScanScreen(
+                                vm,
+                                state,
+                                onOpenDossier = { card ->
+                                    vm.openDossier(card)
+                                    nav.navigate("dossier")
+                                },
+                            )
+                        }
+                        composable("evaluator") { EvaluatorScreen(vm, state.evaluatorCard) }
+                        composable("saved") { SavedScreen(vm, state) }
+                        composable("dossier") {
+                            val card = state.activeDossierCard
+                            if (card != null) {
+                                CardDossierScreen(
+                                    card = card,
+                                    onBack = { nav.popBackStack() },
+                                    onOpenEvaluator = { c: me.grok.dealdex.data.TcgCard ->
+                                        vm.openEvaluator(c)
+                                        nav.navigate("evaluator")
+                                    },
+                                )
+                            }
+                        }
                         composable("alerts") { AlertsScreen(vm, state) }
                         composable("settings") { SettingsScreen(vm, state) }
                     }

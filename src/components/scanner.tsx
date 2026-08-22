@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, LoaderCircle, Radar } from "lucide-react";
+import { ArrowUpRight, Copy, LoaderCircle, Radar } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,7 @@ export function Scanner() {
   const [condition, setCondition] = useState<ConditionFilter>("any");
   const [spreadMin, setSpreadMin] = useState<SpreadFilter>("any");
   const [finish, setFinish] = useState<FinishFilter>("any");
+  const [hideRepacks, setHideRepacks] = useState(true);
 
   async function run(query = q, src = sources) {
     const term = query.trim();
@@ -108,6 +109,7 @@ export function Scanner() {
   const visible = useMemo(() => {
     if (!rows) return [];
     return rows.filter((row) => {
+      if (hideRepacks && row.appraisal?.isSuspiciousRepack) return false;
       if (view === "deals") {
         return row.appraisal?.verdict === "steal" || row.appraisal?.verdict === "good";
       }
@@ -136,7 +138,8 @@ export function Scanner() {
       }
       return true;
     });
-  }, [rows, view, verdict, priceCap, condition, spreadMin, finish]);
+  }, [rows, view, verdict, priceCap, condition, spreadMin, finish, hideRepacks]);
+
 
   const dealCount =
     rows?.filter((r) => r.appraisal?.verdict === "steal" || r.appraisal?.verdict === "good").length ??
@@ -276,6 +279,15 @@ export function Scanner() {
                 ["promo", "Promo"],
               ]}
             />
+            <label className="flex h-11 items-center gap-2 rounded-md border border-border bg-surface px-3 text-xs text-muted hover:text-fg cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={hideRepacks}
+                onChange={(e) => setHideRepacks(e.target.checked)}
+                className="rounded"
+              />
+              <span className="truncate">Hide Repacks / Proxies</span>
+            </label>
           </div>
         )}
       </div>
@@ -382,6 +394,16 @@ function ScanRow({ row }: { row: ScoredListing }) {
         <div className="flex flex-wrap items-center gap-2">
           <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
           {copy && appraisal && <Badge variant={verdictVariant(appraisal.verdict)}>{copy.label}</Badge>}
+          {appraisal?.isSuspiciousRepack && (
+            <Badge variant="bad" title={appraisal.repackReason ?? undefined}>
+              Repack / Proxy
+            </Badge>
+          )}
+          {appraisal?.grading?.worthGrading && (
+            <Badge variant="good" title={`PSA 10 Net Profit est: $${Math.round(appraisal.grading.psa10NetProfit ?? 0)}`}>
+              Slab Upside
+            </Badge>
+          )}
           {confidence && (
             <Badge
               variant={appraisal?.conflict ? "bad" : appraisal?.confidence === "high" ? "good" : "fair"}
@@ -420,15 +442,35 @@ function ScanRow({ row }: { row: ScoredListing }) {
             <span className="text-xs text-subtle"> ask</span>
           </p>
         )}
-        {card && (
-          <Link
-            to="/card/$cardId"
-            params={{ cardId: card.id }}
-            className="mt-1 inline-flex h-11 items-center text-sm text-muted hover:text-fg"
-          >
-            Card Dossier
-          </Link>
-        )}
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+          {card && (
+            <Link
+              to="/card/$cardId"
+              params={{ cardId: card.id }}
+              className="inline-flex h-8 items-center text-muted hover:text-fg"
+            >
+              Card Dossier
+            </Link>
+          )}
+          {appraisal && (
+            <button
+              type="button"
+              onClick={() => {
+                const spreadPct =
+                  appraisal.spread != null
+                    ? `${appraisal.spread >= 0 ? "-" : "+"}${Math.abs(Math.round(appraisal.spread * 100))}%`
+                    : "";
+                const cName = card ? `${card.name} (${card.setName} #${card.localId})` : listing.title;
+                const text = `🔥 DealDex: ${cName} · Ask: ${formatUsd(ask ?? appraisal.allIn)} · Book: ${formatUsd(appraisal.adjustedMarket)} (${spreadPct}) · Net Flip: ${formatUsd(appraisal.flipProfit)} · ${listing.url}`;
+                void navigator.clipboard.writeText(text);
+                toast("Deal link copied to clipboard!");
+              }}
+              className="inline-flex h-8 items-center gap-1 text-muted hover:text-fg"
+            >
+              <Copy className="size-3" /> Share
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );

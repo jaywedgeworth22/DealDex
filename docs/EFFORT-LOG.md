@@ -2,6 +2,8 @@
 Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this file
 (mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-17.
 
+> ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
+
 ## Deployed
 - **2026-08-21 — CURSOR — DEPLOYED — #118 / #117 scan layout + subtitle.**  https://dealdex.online homepage HTML includes Identify Best-Priced Pokémon Card Listings.  `og.jpg?v=subtitle-20260821` is the new 92437-byte JPEG (Vercel 200).  Squash `5474ef1`.
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
@@ -9,10 +11,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 ## Completed
 - **2026-08-21 — CURSOR — COMPLETED/MERGED #113 / #112 — Transparent DD favicon + ST-grid AppIcon.**  Safari PNG/ICO interlocking DD.  Header `img` outline removed.  iOS/Android launcher is DD on the ST tiled field (no candlesticks).  PR #113 squash `493e88a`.
 - **2026-08-20 — GROK — COMPLETED/MERGED #103 — iOS desk + 3D title wordmark.**  Official olive eBay/Mercari source chips (website SVG sizes + even-odd holes).  Jay's glossy DealDex title on header/login/OG/iOS/Android.  Isolated DD stored; live AppIcon not swapped.  Unsigned `POST /api/native/scan`, Google `dealdex://`, iOS 18 / Xcode 26.3.  Production heading cache-busted `?v=3d-20260820`.
-- **2026-08-20 — CURSOR — COMPLETED/MERGED #94 — Apache License 2.0 at repo root.**  Official `LICENSE` text plus copyright line.
-- **2026-08-19 — CURSOR — COMPLETED/MERGED #87 — Official DD AppIcon + TestFlight rejects.**  iOS AppIcon catalog, `CFBundleIconName`, iPad PortraitUpsideDown, Android launcher, web favicon + PWA 180.
-- **2026-08-19 — CURSOR — COMPLETED/MERGED #86 — Official DealDex wordmark (in-app / web).**  Header, login, `dd.svg`, OG card.  Home-screen AppIcon is the follow-up (PR #87).
-- **2026-08-18 — CURSOR — COMPLETED/MERGED #82 — iOS bundle ID `online.dealdex`.**  Team `CC8UTF7ATG`.  Resource id `R2FAW69NPD` is not a team id.  No TestFlight / ASC upload.
+- **2026-08-20 — GROK — COMPLETED — PR babysit rebase #85 + #93.**  Lane `~/apps/dealdex-grok-prfix`.  Force-with-lease onto current main.  #85 `59e9782` and #93 `748c7d4` are MERGEABLE/CLEAN, verify green.  Did not merge.  No TestFlight upload.  Keep runner `[self-hosted, macOS, ARM64, xcode26]`, path `native/ios/**`, app key `dealdex`.
 - **2026-08-15 — GROK-BUILD — COMPLETED/MERGED #71 — Grok Vercel + GitHub + dealdex.online.** Live host is dealdex.online. Re-link on Grok Vercel if `main` is not auto-building.
 - **2026-08-17 — GROK — COMPLETED — Effort-board hygiene.** Live In Progress already empty; landing this board as the repo mirror so stale GitHub `state:in-progress` issues close.
 - **2026-08-16 — GROK — IN PR — Rename Apple Note pointer to `⭐️ Background Jobs Master List` (branch `grok/note-title`, worktree `~/apps/dealdex-grok-note-title`).**  AGENTS.md only.
@@ -32,39 +31,23 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-- **2026-08-21 — CURSOR — iOS first-launch update prompt (fleet) — IN PROGRESS (branch `cursor/ios-update-prompt-9992`, worktree `~/apps/dealdex-cursor-ios-update`).**  TestFlight opens TestFlight; App Store opens the App Store.  Manifest `jaywedgeworth22/ios-app-versions`.
-- **2026-08-20 — GROK — rebase #85 onto main.**  Docs-union of STATUS/PLAN/effort log.  Runner `[self-hosted, macOS, ARM64, xcode26]`, path `native/ios/**`, app key `dealdex`.  No bundle/team/Android-package change.  No TestFlight upload.
-- **2026-08-19 — CURSOR — IN PR #85 — iOS TestFlight ship workflow.**  Branch `cursor/ios-testflight-ship-workflow-5706`.  Adds `.github/workflows/ios-ship.yml` + `scripts/ios-scheduled-ship-gate.sh` (path `native/ios/`, app key `dealdex`).  No bundle/team change.  No TestFlight upload from this seat.
-- **2026-08-20 — CURSOR — POINTER — Cross-app coordination follow-ups (audit #2802).**  Socratic.Trade audit #2802 follow-ups are in ST PR #2941, Congress.Trade #2064, Usage-Monitor #1245.  Pins still CTS v2.5.2.  Pin-check is fail-closed but not a required merge check.  DealDex stays protocol-only / Vercel.  No Infisical, no Coolify, no USAGE_INGEST, no ASC, no Hetzner, no ios-fleet dashboards.  Branch `cursor/cross-app-coordination-followups`.
-- **2026-08-20 — CURSOR — IN PR #96 — Shipping docs + GitHub About.**  Branch `cursor/shipping-docs-about-9145`.  Vercel is current (not leftover).  About + STATUS public host `https://dealdex.online`.  STATUS GitHub line is public.  Do not migrate to Coolify.  Grok-publish-vs-`main` gap not visible in today's GET.
+(none)
 
 ## Completed
+- **2026-08-21 — ANTIGRAVITY — COMPLETED — Multi-platform power enhancements (Web, iOS, Android).**  Branch `ag/power-enhancements`, worktree `~/apps/dealdex-antigravity`.  Grading arbitrage & net flip calculators, repack filter, native iOS & Android Card Dossier, Evaluator, and Saved Ledger parity.
+- **2026-08-21 — CURSOR — iOS first-launch update prompt (fleet) — COMPLETED/MERGED #122 squash `3b18d9a` (branch `cursor/ios-update-prompt-9992`, worktree `~/apps/dealdex-cursor-ios-update`).**  TestFlight opens TestFlight; App Store opens the App Store.  Manifest `jaywedgeworth22/ios-app-versions`.  Verify + Vercel green.
 - **[DealDex][GROK] Fast-forward local main after Mac-storage prune — COMPLETED 2026-08-15.**  Discarded local Xcode pbxproj dirt (shopping category / LD_RUNPATH rewrite).  `git pull --ff-only` `58fcc12` → `6a686c1`.  0 open PRs.
 
 ## Planned / Reserved
-- **2026-08-21 — KIMI — PLANNED — [P1] Refresh stale package-lock.json, return CI to `npm ci`.**  Board item a9cc97ba.  `.github/workflows/ci.yml` admits the lockfile 'predates this fleet CI and is out of sync on npm 10 (Node 22)' — non-reproducible builds until the lockfile refresh lands.
-- **2026-08-21 — KIMI — PLANNED — [P2] Mobile CI + move DB migrations out of the Vercel build + dependabot.**  Board item a9cc97ba.  Native Android+iOS are the product but no Gradle/xcodebuild/TestFlight workflow exists (CT/ST/UM have ios-*.yml).  `vercel.json` build runs `vite build && npm run db:migrate` — production schema migrations during build; a failed deploy can leave schema ahead of code.  No dependabot/security workflow despite the widest third-party API surface (eBay/Mercari/TCGPlayer).
-- **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  iOS bundle is now `online.dealdex` (resource `R2FAW69NPD`, team `CC8UTF7ATG`).  Prep landed in PR #56; bundle switch is the 2026-08-18 CURSOR lane.
+- **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 
 ## Changelog of this log
 - 2026-08-21 — CURSOR: deployed #118 / #117 (homepage subtitle + new og.jpg).
 - 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.
 - 2026-08-21 — CURSOR: landed #113 / #112 transparent DD favicon + ST-grid AppIcon.
-- 2026-08-21 — GROK: merged origin/main (incl. #93) into #85.  Kept POINTER + iOS ship-workflow rows.
-- 2026-08-21 — GROK: merged origin/main into #85 (docs-union).  Kept #103/#101 rows and the iOS ship-workflow In Progress rows.
-- 2026-08-20 — GROK: rebased #85 iOS TestFlight ship workflow onto main (docs-union).
-- 2026-08-21 — GROK: merged origin/main into #93 (docs-union).  Kept #103/#101 rows and the ST audit #2802 POINTER.
-- 2026-08-20 — GROK: rebased #93 effort-log pointer onto main (docs-union).
-- 2026-08-20 — CURSOR: pointer row for ST audit #2802 follow-ups (DealDex stays protocol-only / Vercel).
 - 2026-08-20 — GROK: landed #103 iOS desk + 3D title; production heading is the owner 3D mark.
-- 2026-08-20 — GROK: reserved iOS desk (Xcode 26.3, iOS 18, white marketplace chips, unsigned scan, Google sign-in, AppIcon options).  Owner 3D title wordmark + isolated DD added (live AppIcon left).
-- 2026-08-20 — CURSOR: Vercel current; homepage dealdex.online; STATUS public; no Coolify migrate.
-- 2026-08-20 — CURSOR: reserved shipping docs + GitHub About (psi homepage stale as unique prod).
-- 2026-08-20 — CURSOR: reserved Apache License 2.0 at repo root (`LICENSE`).
-- 2026-08-19 — CURSOR: reserved iOS TestFlight ship workflow; #82 recorded Completed.
-- 2026-08-19 — CURSOR: reserved official DD AppIcon + TestFlight icon/orientation rejects.
-- 2026-08-19 — CURSOR: reserved official DealDex wordmark (in-app / web).  Home-screen icon is a follow-up.
-- 2026-08-18 — CURSOR: reserved iOS bundle switch to `online.dealdex`.
+- 2026-08-20 — GROK: iOS desk + owner 3D title wordmark on grok/ios-desk (live AppIcon not swapped).
+- 2026-08-20 — GROK: rebased conflicting PRs #85 (ios-ship) and #93 (effort-log pointer) onto main; did not merge.
 - 2026-08-17 — GROK: board hygiene. Confirm In Progress empty; #71 recorded Completed; landing mirror.
 - 2026-08-14 — GROK store-submit prep (#56); upload remains Planned (ASC create + Play creds).
 - 2026-08-14 — GROK moved native iOS + Android compile to Completed (PR #50).

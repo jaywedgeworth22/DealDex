@@ -1,5 +1,25 @@
 # Current Handoff
 
+## 2026-08-21 ANTIGRAVITY — Cross-Platform Power Enhancements (#119)
+
+Cross-platform power valuation engine, Mobile Card Dossier, Evaluator desk, Saved Appraisals ledger, and camera OCR integration across Web, iOS, and Android.
+
+- **Web Appraisal Engine**: Added PSA 10 and PSA 9 grading arbitrage calculator, net margin % factoring seller fees, proxy/repack heuristic banner & filter toggle, and 1-tap "Share Deal" clipboard badge.
+- **Native iOS Parity**:
+  - `CardDossierView.swift`: High-res artwork, multi-finish pricing, Cardmarket EUR comps, direct deep links to TCGPlayer, eBay Solds, and Mercari.
+  - `EvaluatorView.swift`: Interactive ad-hoc listing calculator with condition/grade selectors, net flip margin, and PSA grading arbitrage matrix.
+  - `SavedStore.swift` + `SavedView.swift`: Saved Appraisals ledger persisting portfolio deals with status (`Watching`, `Bought`, `Passed`) to `UserDefaults`.
+  - `CameraScannerView.swift`: Vision-based OCR camera scanner extracting card names/numbers and opening directly in Evaluator.
+  - Updated `DealDexApp.swift` TabView with Scan, Evaluator, Saved, Alerts, and Settings tabs.
+- **Native Android Parity**:
+  - `CardDossierScreen.kt`, `EvaluatorScreen.kt`, and `SavedScreen.kt` Jetpack Compose screens.
+  - Bottom navigation bar updated with Scan, Evaluator, Saved, Alerts, and Settings.
+  - Direct Card Dossier navigation and save-to-ledger actions added to `ListingCard`.
+- **Build & Test Verification**:
+  - Web: `npm run lint` (0 errors), `npm run typecheck` (0 errors), `npm test` (72/72 passing), `npm run build` (clean Vercel build).
+  - iOS: `xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex -destination 'generic/platform=iOS Simulator' build` (**BUILD SUCCEEDED**).
+  - Android: `gradlew :app:assembleDebug` with OpenJDK 17 & Android SDK 34 (**BUILD SUCCESSFUL**).
+
 ## 2026-08-21 CURSOR — scan layout, OG wordmark, subtitle (#118 / #117)
 
 Merged squash `5474ef1`.  User-facing subtitle is **Identify Best-Priced Pokémon Card Listings** on the
