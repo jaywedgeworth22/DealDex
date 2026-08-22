@@ -1,5 +1,12 @@
 # Current Handoff
 
+## 2026-08-22 CURSOR — OG logo-only card
+
+Social sharing image (`public/og.jpg`) is logo-only: centered DealDex wordmark
+fills ~88% width on white, no subtitle or footer.  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
+Branch `cursor/og-logo-only-4780`.
+
 ## 2026-08-22 CURSOR — Vercel Speed Insights
 
 Mount `@vercel/speed-insights` on the TanStack Start root
@@ -86,8 +93,8 @@ All / Deals / Verified plus compact filter selects stay in the same card.
 Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
 `horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
 
-OG wordmark is 840px (~70% of 1200), capped at 75%.  Re-render:
-`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=subtitle-20260821`.
+OG wordmark fills ~88% width, centered on white (logo only).  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
 
 
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
