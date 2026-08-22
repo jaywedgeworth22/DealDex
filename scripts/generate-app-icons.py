@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Build iOS / Android / web launcher slots from the isolated DD mark.
+"""Resize owner artwork into iOS / Android / web launcher and favicon slots.
 
-The live 1024 AppIcon is the interlocking DD on a Socratic.Trade-style tiled
-field (soft top-left light, recessed grout, no candlesticks).  Favicons stay
-the isolated DD on a transparent field so Safari does not fall back to a
-letter tile.
+AppIcon source of truth: native/brand/dealdex-dd-icon-1024.png
+  Jay's rendered 3D DD (tight crop).  Do not composite a fake tiled field.
 
-Source of truth: native/brand/dealdex-dd-isolated.png
+Favicon source of truth: native/brand/dealdex-dd-isolated.png
+  Isolated transparent DD.  Black in previews is alpha.
+
 Run from the repo root:  python3 scripts/generate-app-icons.py
-Requires Pillow and numpy (dev-only; generated PNGs are committed).
+Requires Pillow (dev-only; generated PNGs are committed).
 """
 
 from __future__ import annotations
@@ -17,12 +17,11 @@ import base64
 from io import BytesIO
 from pathlib import Path
 
-import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-MARK_SOURCE = ROOT / "native/brand/dealdex-dd-isolated.png"
 ICON_SOURCE = ROOT / "native/brand/dealdex-dd-icon-1024.png"
+MARK_SOURCE = ROOT / "native/brand/dealdex-dd-isolated.png"
 
 IOS_ICONSET = ROOT / "native/ios/DealDex/Assets.xcassets/AppIcon.appiconset"
 ANDROID_RES = ROOT / "native/android/app/src/main/res"
@@ -35,13 +34,6 @@ FAVICON_ICO = ROOT / "public/favicon.ico"
 
 SIZE = 1024
 
-# Lighting sampled from the four corners of Jay's ST iOS icon (no candlesticks).
-ST_TL = (254, 254, 254)
-ST_TR = (233, 236, 243)
-ST_BL = (227, 229, 234)
-ST_BR = (223, 226, 232)
-
-# (filename, pixel size) — modern iPhone + iPad + marketing set.
 IOS_SIZES: list[tuple[str, int]] = [
     ("Icon-20.png", 20),
     ("Icon-20@2x.png", 40),
@@ -68,34 +60,23 @@ ANDROID_MIPMAP = {
     "mipmap-xxxhdpi": 192,
 }
 
-# Adaptive foreground is 108dp; xxxhdpi = 432px.
 FOREGROUND_PX = 432
 
-# DD scale vs the 1024 canvas.  Padding matches the ST home-screen icon.
-MARK_SCALE = 0.78
+
+def resize_square(src: Image.Image, size: int) -> Image.Image:
+    return src.resize((size, size), Image.Resampling.LANCZOS)
 
 
-def st_background(size: int = SIZE, tile: int = 32, grout: int = 2) -> Image.Image:
-    """Reconstruct the ST tiled field from corner lighting.  No candlesticks."""
-    last = size - 1
-    ys, xs = np.mgrid[0:size, 0:size]
-    tx = xs / last
-    ty = ys / last
-    tl = np.array(ST_TL, dtype=np.float64)
-    tr = np.array(ST_TR, dtype=np.float64)
-    bl = np.array(ST_BL, dtype=np.float64)
-    br = np.array(ST_BR, dtype=np.float64)
-    top = tl + (tr - tl) * tx[..., None]
-    bot = bl + (br - bl) * tx[..., None]
-    base = top + (bot - top) * ty[..., None]
-    lx = xs % tile
-    ly = ys % tile
-    grout_mask = (lx < grout) | (ly < grout)
-    shade = 0.965 - 0.035 * ty
-    bevel = 1.0 + 0.018 * (1 - ly / tile) + 0.012 * (1 - lx / tile)
-    scale = np.where(grout_mask, shade, bevel)[..., None]
-    rgb = np.clip(base * scale, 0, 255).astype(np.uint8)
-    return Image.fromarray(rgb, mode="RGB")
+def save_png(im: Image.Image, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rgb = im.convert("RGB")
+    rgb.save(path, format="PNG", optimize=True)
+
+
+def save_png_rgba(im: Image.Image, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rgba = im.convert("RGBA")
+    rgba.save(path, format="PNG", optimize=True)
 
 
 def alpha_crop(im: Image.Image, pad: int = 0, threshold: int = 8) -> Image.Image:
@@ -120,63 +101,6 @@ def fit_mark(mark: Image.Image, box: int) -> Image.Image:
     return mark.resize((nw, nh), Image.Resampling.LANCZOS)
 
 
-def oval_shadow(size: int, box: tuple[int, int, int, int]) -> Image.Image:
-    x0, y0, x1, y1 = box
-    cx = (x0 + x1) / 2
-    cy = y1 - 4
-    rw = max(8, (x1 - x0) * 0.40)
-    rh = 36
-    pad = 96
-    bw = int(rw * 2) + pad * 2
-    bh = int(rh * 2) + pad * 2
-    blob = Image.new("L", (bw, bh), 0)
-    draw = ImageDraw.Draw(blob)
-    draw.ellipse((pad, pad, pad + int(rw * 2), pad + int(rh * 2)), fill=140)
-    blob = blob.filter(ImageFilter.GaussianBlur(radius=26))
-    layer = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    ox = int(cx - bw / 2)
-    oy = int(cy - bh / 2) + 16
-    colored = Image.merge(
-        "RGBA",
-        (
-            Image.new("L", blob.size, 0),
-            Image.new("L", blob.size, 0),
-            Image.new("L", blob.size, 0),
-            blob,
-        ),
-    )
-    layer.paste(colored, (ox, oy), colored)
-    return layer
-
-
-def compose_app_icon(mark: Image.Image, size: int = SIZE) -> Image.Image:
-    bg = st_background(size).convert("RGBA")
-    cropped = alpha_crop(mark, pad=2)
-    inner = max(1, int(size * MARK_SCALE))
-    fitted = fit_mark(cropped, inner)
-    ox = (size - fitted.width) // 2
-    oy = (size - fitted.height) // 2 - 6
-    canvas = Image.alpha_composite(bg, oval_shadow(size, (ox, oy, ox + fitted.width, oy + fitted.height)))
-    canvas.alpha_composite(fitted, (ox, oy))
-    return canvas.convert("RGB")
-
-
-def resize_square(src: Image.Image, size: int) -> Image.Image:
-    return src.resize((size, size), Image.Resampling.LANCZOS)
-
-
-def save_png(im: Image.Image, path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    rgb = im.convert("RGB")
-    rgb.save(path, format="PNG", optimize=True)
-
-
-def save_png_rgba(im: Image.Image, path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    rgba = im.convert("RGBA")
-    rgba.save(path, format="PNG", optimize=True)
-
-
 def favicon_mark(mark: Image.Image, size: int, margin_frac: float = 0.08) -> Image.Image:
     cropped = alpha_crop(mark, pad=2)
     canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
@@ -186,11 +110,6 @@ def favicon_mark(mark: Image.Image, size: int, margin_frac: float = 0.08) -> Ima
     oy = (size - fitted.height) // 2
     canvas.alpha_composite(fitted, (ox, oy))
     return canvas
-
-
-def adaptive_foreground(icon: Image.Image) -> Image.Image:
-    """Full ST-grid + DD icon.  Adaptive mask crops the outer 18%."""
-    return resize_square(icon, FOREGROUND_PX).convert("RGBA")
 
 
 def write_favicon_svg(mark: Image.Image) -> None:
@@ -218,7 +137,6 @@ def write_favicons(mark: Image.Image) -> None:
 
 
 def write_contents_json() -> None:
-    # Explicit slots so TestFlight sees 60@2x (120) and 76@2x (152) in the catalog.
     entries = [
         ("20x20", "iphone", "Icon-20@2x.png", "2x"),
         ("20x20", "iphone", "Icon-20@3x.png", "3x"),
@@ -272,12 +190,15 @@ def write_catalog_root() -> None:
 
 
 def main() -> None:
+    if not ICON_SOURCE.is_file():
+        raise SystemExit(f"missing AppIcon source: {ICON_SOURCE}")
     if not MARK_SOURCE.is_file():
-        raise SystemExit(f"missing isolated mark: {MARK_SOURCE}")
-    mark = Image.open(MARK_SOURCE).convert("RGBA")
-    icon = compose_app_icon(mark, SIZE)
-    ICON_SOURCE.parent.mkdir(parents=True, exist_ok=True)
-    save_png(icon, ICON_SOURCE)
+        raise SystemExit(f"missing isolated favicon mark: {MARK_SOURCE}")
+
+    icon = Image.open(ICON_SOURCE).convert("RGB")
+    if icon.size != (SIZE, SIZE):
+        icon = resize_square(icon, SIZE)
+        save_png(icon, ICON_SOURCE)
 
     write_catalog_root()
     IOS_ICONSET.mkdir(parents=True, exist_ok=True)
@@ -290,10 +211,18 @@ def main() -> None:
         save_png(slot, ANDROID_RES / folder / "ic_launcher.png")
         save_png(slot, ANDROID_RES / folder / "ic_launcher_round.png")
 
-    save_png_rgba(adaptive_foreground(icon), ANDROID_RES / "drawable" / "ic_launcher_foreground.png")
+    save_png_rgba(resize_square(icon, FOREGROUND_PX).convert("RGBA"), ANDROID_RES / "drawable" / "ic_launcher_foreground.png")
     save_png(resize_square(icon, 180), WEB_ICON_180)
+
+    mark = Image.open(MARK_SOURCE).convert("RGBA")
     write_favicons(mark)
-    print("wrote ST-grid AppIcon, Android mipmaps, PWA 180, transparent favicon PNG/ICO")
+    mark_path = ROOT / "public/marks/dealdex-dd.png"
+    mark_path.parent.mkdir(parents=True, exist_ok=True)
+    save_png_rgba(mark, mark_path)
+    imageset = ROOT / "native/ios/DealDex/Assets.xcassets/DealDexMark.imageset/dealdex-dd.png"
+    if imageset.parent.is_dir():
+        save_png_rgba(mark, imageset)
+    print("wrote owner AppIcon sizes, Android mipmaps, PWA 180, transparent favicon")
 
 
 if __name__ == "__main__":

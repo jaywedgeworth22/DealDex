@@ -113,6 +113,14 @@ test("web favicon is a transparent DD PNG/ICO, not an SVG letter tile", () => {
   assert.deepEqual({ width: source.width, height: source.height }, { width: 1024, height: 1024 });
 });
 
+test("AppIcon generator resizes owner art and does not invent a tiled field", () => {
+  const gen = read("scripts/generate-app-icons.py");
+  assert.match(gen, /dealdex-dd-icon-1024\.png/);
+  assert.doesNotMatch(gen, /st_background/);
+  assert.doesNotMatch(gen, /MARK_SCALE/);
+  assert.doesNotMatch(gen, /compose_app_icon/);
+});
+
 test("header wordmark is not wrapped in a global img outline", () => {
   const css = read("src/styles.css");
   assert.doesNotMatch(css, /img\s*\{[^}]*outline:/);

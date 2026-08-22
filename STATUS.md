@@ -1,5 +1,10 @@
 # Current Handoff
 
+## 2026-08-22 GROK — Tighter DD AppIcon
+
+AppIcon is the owner 1024 DD PNG, resized to iOS/Android/PWA slots.
+Favicon is the isolated transparent DD.  Branch `grok/dd-appicon-tight`.
+
 ## 2026-08-22 GROK — Vercel Web Analytics
 
 Mount `@vercel/analytics` on the TanStack Start root (`@vercel/analytics/react`, not the Next.js import).  Service worker skips `/_vercel/` so insight beacons are not intercepted.  Privacy page discloses cookie-less page-view counting.  After merge, Vercel Production on `dealdex.online` collects visits.  Branch `grok/vercel-analytics`.
