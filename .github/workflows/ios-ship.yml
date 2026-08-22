@@ -10,7 +10,7 @@ name: iOS TestFlight ship (Mac runner)
 # checked into GitHub. The in-repo wrapper execs the fleet script with app
 # key `dealdex` and --repo-root pointing at this checkout (native/ios).
 #
-# Bundle `online.dealdex` and team `CC8UTF7ATG` are unchanged here.
+# Bundle `net.dealdex` and team `CC8UTF7ATG` are unchanged here.
 # The Apple Developer portal App ID resource is not a team id.
 
 on:

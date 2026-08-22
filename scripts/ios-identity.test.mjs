@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const BUNDLE_ID = "online.dealdex";
+const BUNDLE_ID = "net.dealdex";
 const TEAM_ID = "CC8UTF7ATG";
 const BUNDLE_RESOURCE_ID = "R2FAW69NPD";
 
@@ -13,20 +13,20 @@ function read(rel) {
   return readFileSync(join(ROOT, rel), "utf8");
 }
 
-test("XcodeGen spec uses online.dealdex and team CC8UTF7ATG", () => {
+test("XcodeGen spec uses net.dealdex and team CC8UTF7ATG", () => {
   const spec = read("native/ios/project.yml");
-  assert.match(spec, /^\s{4}bundleId: online\.dealdex$/m);
-  assert.match(spec, /^\s+PRODUCT_BUNDLE_IDENTIFIER: online\.dealdex$/m);
+  assert.match(spec, /^\s{4}bundleId: net\.dealdex$/m);
+  assert.match(spec, /^\s+PRODUCT_BUNDLE_IDENTIFIER: net\.dealdex$/m);
   assert.match(spec, /^\s+DEVELOPMENT_TEAM: CC8UTF7ATG$/m);
   assert.doesNotMatch(spec, /me\.grok\.dealdex/);
   assert.doesNotMatch(spec, /DEVELOPMENT_TEAM:\s*R2FAW69NPD/);
 });
 
-test("XcodeGen pins display name DealDex, iOS 18.0, and Xcode 26.3 format", () => {
+test("XcodeGen pins display name DealDex, iOS 17.0, and Xcode 26.3 format", () => {
   const spec = read("native/ios/project.yml");
   assert.match(spec, /INFOPLIST_KEY_CFBundleDisplayName: DealDex/);
-  assert.match(spec, /iOS: "18\.0"/);
-  assert.match(spec, /IPHONEOS_DEPLOYMENT_TARGET: "18\.0"/);
+  assert.match(spec, /iOS: "17\.0"/);
+  assert.match(spec, /IPHONEOS_DEPLOYMENT_TARGET: "17\.0"/);
   assert.match(spec, /xcodeVersion: "26\.3"/);
   assert.match(spec, /xcodegen-post\.py/);
   const plist = read("native/ios/DealDex/Info.plist");
@@ -37,21 +37,21 @@ test("XcodeGen pins display name DealDex, iOS 18.0, and Xcode 26.3 format", () =
   assert.match(plist, /<string>dealdex<\/string>/);
 });
 
-test("generated pbxproj is Xcode 26.3 format on iOS 18", () => {
+test("generated pbxproj is Xcode 26.3 format on iOS 17", () => {
   const pbx = read("native/ios/DealDex.xcodeproj/project.pbxproj");
   assert.match(pbx, /objectVersion = 100;/);
   assert.match(pbx, /preferredProjectObjectVersion = 100;/);
   assert.match(pbx, /LastUpgradeCheck = 2630;/);
-  assert.match(pbx, /IPHONEOS_DEPLOYMENT_TARGET = 18\.0;/);
+  assert.match(pbx, /IPHONEOS_DEPLOYMENT_TARGET = 17\.0;/);
   assert.match(pbx, /INFOPLIST_KEY_CFBundleDisplayName = DealDex;/);
   assert.doesNotMatch(pbx, /IPHONEOS_DEPLOYMENT_TARGET = 16/);
 });
 
-test("Info.plist CFBundleIdentifier is online.dealdex", () => {
+test("Info.plist CFBundleIdentifier is net.dealdex", () => {
   const plist = read("native/ios/DealDex/Info.plist");
   assert.match(
     plist,
-    /<key>CFBundleIdentifier<\/key>\s*<string>online\.dealdex<\/string>/,
+    /<key>CFBundleIdentifier<\/key>\s*<string>net\.dealdex<\/string>/,
   );
   assert.doesNotMatch(plist, /me\.grok\.dealdex/);
 });
