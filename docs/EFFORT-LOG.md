@@ -31,6 +31,8 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
+- **2026-08-22 — GROK — IN PROGRESS — Android + PWA isolated DD.**  Branch `grok/dd-android-pwa-transparent`.  iOS AppIcon stays tiled.  Board `2d4aff5c`.
+
 - **2026-08-22 — GROK — IN PROGRESS — Owner DD AppIcon + isolated favicon.**  Branch `grok/dd-appicon-tight`.  AppIcon is the owner 1024 PNG resized.  Favicon is the isolated DD.  Board `3b2d4b88`.
 
 - **2026-08-22 — GROK — IN PROGRESS — Vercel Web Analytics.**  Branch `grok/vercel-analytics`, worktree `~/apps/dealdex-grok-vercel-analytics`.  `@vercel/analytics/react` in root layout, SW skip `/_vercel/`, privacy disclosure.  Board `e65921a0`.

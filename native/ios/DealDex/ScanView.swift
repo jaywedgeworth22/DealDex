@@ -31,10 +31,12 @@ struct ScanView: View {
                         Image(systemName: "camera")
                     }
                     .buttonStyle(.bordered)
-                    Button("Scan") { Task { await desk.scan(notify: false) } }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(desk.loading)
                 }
+                Button("Scan") { Task { await desk.scan(notify: false) } }
+                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.borderedProminent)
+                    .tint(Color(red: 0.29, green: 0.20, blue: 0.14))
+                    .disabled(desk.loading)
                 HStack(spacing: 8) {
                     MarketplaceToggle(
                         market: "ebay",

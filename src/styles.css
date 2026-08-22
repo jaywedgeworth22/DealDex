@@ -12,6 +12,8 @@
   --color-border: #d4cebf;
   --color-accent: #3f4a32;
   --color-accent-fg: #f6f3ea;
+  --color-scan: #4a3224;
+  --color-scan-fg: #f6f3ea;
   --color-deal-good: #3f5a38;
   --color-deal-fair: #7a6638;
   --color-deal-bad: #8f4e44;
@@ -47,6 +49,8 @@
   --color-border: #2a2b26;
   --color-accent: #e4dfd2;
   --color-accent-fg: #12130f;
+  --color-scan: #8b5e3c;
+  --color-scan-fg: #f6f3ea;
   --color-deal-good: #8eaa86;
   --color-deal-fair: #c4b48a;
   --color-deal-bad: #c4887c;

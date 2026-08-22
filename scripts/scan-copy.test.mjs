@@ -34,6 +34,8 @@ test("scan box has no suggested Pokémon chips and one marketplace toggle pair",
   assert.match(scan, /count=\{ebayCount\}/);
   assert.match(scan, /count=\{mercariCount\}/);
   assert.match(scan, /md:grid-cols-2/);
+  assert.match(scan, /grid-cols-3/);
+  assert.match(scan, /bg-scan/);
   assert.equal((scan.match(/MarketplaceToggle/g) || []).length, 3);
 });
 

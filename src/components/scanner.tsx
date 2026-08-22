@@ -160,7 +160,7 @@ export function Scanner() {
     <section className="min-w-0 space-y-4">
       <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-4">
         <h2 className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</h2>
-        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+        <div className="mt-2">
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -174,54 +174,10 @@ export function Scanner() {
             spellCheck={false}
             name="dealdex-scan"
             inputMode="search"
-            className="sm:flex-1"
-          />
-          <Button onClick={() => void run()} disabled={loading} className="sm:w-36">
-            {loading ? <LoaderCircle className="animate-spin" /> : <Radar />}
-            Scan
-          </Button>
-        </div>
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          <MarketplaceToggle
-            marketplace="ebay"
-            selected={sources.includes("ebay")}
-            onClick={() => toggle("ebay")}
-            count={ebayCount}
-            size="lg"
-          />
-          <MarketplaceToggle
-            marketplace="mercari"
-            selected={sources.includes("mercari")}
-            onClick={() => toggle("mercari")}
-            count={mercariCount}
-            size="lg"
           />
         </div>
-        {rows && (
-          <div className="mt-2 flex flex-wrap gap-1">
-            {(
-              [
-                ["all", `All ${rows.length}`],
-                ["deals", `Deals ${dealCount}`],
-                ["verified", `Verified ${verifiedCount}`],
-              ] as const
-            ).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setView(key)}
-                className={cn(
-                  "h-9 rounded-md px-3 text-xs tabular-nums transition-colors duration-150",
-                  view === key ? "bg-accent text-accent-fg" : "bg-elevated text-muted hover:text-fg",
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        )}
-        {rows && (
-          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-start">
+          <div className="grid min-w-0 flex-1 grid-cols-3 gap-2">
             <FilterSelect
               label="Verdict"
               value={verdict}
@@ -279,15 +235,67 @@ export function Scanner() {
                 ["promo", "Promo"],
               ]}
             />
-            <label className="flex h-11 items-center gap-2 rounded-md border border-border bg-surface px-3 text-xs text-muted hover:text-fg cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={hideRepacks}
-                onChange={(e) => setHideRepacks(e.target.checked)}
-                className="rounded"
-              />
-              <span className="truncate">Hide Repacks / Proxies</span>
+            <label className="block min-w-0">
+              <span className="mb-0.5 block text-[10px] uppercase tracking-[0.12em] text-subtle">Repacks</span>
+              <span className="flex h-9 cursor-pointer select-none items-center gap-2 rounded-md border border-border bg-surface px-2 text-sm text-muted hover:text-fg">
+                <input
+                  type="checkbox"
+                  checked={hideRepacks}
+                  onChange={(e) => setHideRepacks(e.target.checked)}
+                  className="rounded"
+                />
+                <span className="truncate">Hide Proxies</span>
+              </span>
             </label>
+          </div>
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-56">
+            <Button
+              onClick={() => void run()}
+              disabled={loading}
+              className="h-11 w-full bg-scan text-scan-fg hover:opacity-90"
+            >
+              {loading ? <LoaderCircle className="animate-spin" /> : <Radar />}
+              Scan
+            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <MarketplaceToggle
+                marketplace="ebay"
+                selected={sources.includes("ebay")}
+                onClick={() => toggle("ebay")}
+                count={ebayCount}
+                size="lg"
+              />
+              <MarketplaceToggle
+                marketplace="mercari"
+                selected={sources.includes("mercari")}
+                onClick={() => toggle("mercari")}
+                count={mercariCount}
+                size="lg"
+              />
+            </div>
+          </div>
+        </div>
+        {rows && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {(
+              [
+                ["all", `All ${rows.length}`],
+                ["deals", `Deals ${dealCount}`],
+                ["verified", `Verified ${verifiedCount}`],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setView(key)}
+                className={cn(
+                  "h-9 rounded-md px-3 text-xs tabular-nums transition-colors duration-150",
+                  view === key ? "bg-accent text-accent-fg" : "bg-elevated text-muted hover:text-fg",
+                )}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         )}
       </div>
