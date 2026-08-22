@@ -8,7 +8,7 @@
 **ASC:** Apple bundle `online.dealdex` is registered (IAP capability on).  Jay has not created the App Store Connect app DealDex (SKU `dealdex`) yet.  Do not upload to TestFlight / ASC until that record exists.
 **TestFlight ship:** `.github/workflows/ios-ship.yml` on `[self-hosted, macOS, ARM64, xcode26]`.  Wrapper `scripts/ios-ship-testflight.sh` (fleet key `dealdex`).  Cron is gated by `scripts/ios-scheduled-ship-gate.sh` so web-only commits do not ship.  Secrets stay in `~/.secrets/appstore-connect.env` on the Mac.
 **XcodeGen:** `native/ios/project.yml` — add new `.swift` files under `DealDex/`, then run `xcodegen generate` from `native/ios`.  Do not hand-edit `project.pbxproj`.  `xcodegen-post.py` sets objectVersion 100 / LastUpgradeCheck 2630 so the File Inspector shows **Xcode 26.3**.  Deployment target is **iOS 18.0**.  Display name **DealDex**.
-**AppIcon:** `DealDex/Assets.xcassets/AppIcon.appiconset` — overlapping red + blue DD with a yellow rim on the Socratic.Trade tiled field (no candlesticks).  `CFBundleIconName` is `AppIcon`.  Home-screen icon is this DD, not the in-app wordmark.  Older preview variants live in `native/brand/icon-options/`.
+**AppIcon:** `DealDex/Assets.xcassets/AppIcon.appiconset` — Jay's rendered 3D interlocking DD, resized from `native/brand/dealdex-dd-icon-1024.png`.  Do not composite a fake tiled field.  `CFBundleIconName` is `AppIcon`.  Tab favicon is the isolated transparent DD, not the launcher.
 **Title wordmark:** `Assets.xcassets/DealDexWordmark.imageset` — glossy 3D DealDex PNG used by `DealDexTitle` on Scan.  Isolated DD is `DealDexMark.imageset` (not the live launcher).
 **Keys:** stay on device. Do not invent a cloud key store.
 
