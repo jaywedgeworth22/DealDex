@@ -1,15 +1,18 @@
 # DealDex Effort Log — cross-agent board
 Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this file
-(mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-17.
+(mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-22.
+
+**Canonical public host is `https://dealdex.net`.**  `dealdex.online` is the redirect leftover, not the product name.  Do not invent DNS.
 
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
 ## Deployed
-- **2026-08-22 — GROK — DEPLOYED — Vercel Web Analytics (#128 squash `148780af`).**  https://dealdex.online serves `/_vercel/insights/script.js` 200.  Privacy discloses cookie-less page views.  Board `e65921a0`.
-- **2026-08-21 — CURSOR — DEPLOYED — #118 / #117 scan layout + subtitle.**  https://dealdex.online homepage HTML includes Identify Best-Priced Pokémon Card Listings.  `og.jpg?v=subtitle-20260821` is the new 92437-byte JPEG (Vercel 200).  Squash `5474ef1`.
+- **2026-08-22 — CURSOR — PICKUP GROK — Analytics already live; remaining Autorotate (`autorotate.codes`, GitHub TopSpin) + DealDex.net copy is Cursor Auto.**  Grok is no longer owner.  Board comment on DealDex #129.
+- **2026-08-22 — GROK — DEPLOYED — Vercel Web Analytics (#128 squash `148780af`).**  Canonical check is https://dealdex.net (was documented on dealdex.online).  Privacy discloses cookie-less page views.  Board `e65921a0`.
+- **2026-08-21 — CURSOR — DEPLOYED — #118 / #117 scan layout + subtitle.**  https://dealdex.net homepage HTML includes Identify Best-Priced Pokémon Card Listings.  `og.jpg?v=subtitle-20260821` is the new 92437-byte JPEG (Vercel 200).  Squash `5474ef1`.
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 ## Completed
-- **2026-08-22 - GROK - COMPLETED - Point DealDex production at dealdex.net.**  Landed DealDex #136.  Canonical host dealdex.net in code.  iOS bundle still online.dealdex.  Need owner: Vercel Domains add dealdex.net + Namecheap A/CNAME before live TLS. <!-- wb-agent-report:b16e5c7409b147288f5b958bf895c54d -->
+- **2026-08-22 - GROK - COMPLETED - Point DealDex production at dealdex.net.**  Landed DealDex #136.  Canonical host dealdex.net in code.  Cursor 2026-08-22: live `https://dealdex.net` HTTP 200; `https://dealdex.online` redirects.  Do not invent DNS. <!-- wb-agent-report:b16e5c7409b147288f5b958bf895c54d -->
 - **2026-08-22 - GROK - COMPLETED - Android + PWA use isolated DD.**  Merged #132. Scan over eBay/Mercari; Android/PWA isolated DD. <!-- wb-agent-report:2d4aff5cad2847eb807cfd03e41f999a -->
 - **2026-08-22 - GROK - COMPLETED - Tighter DD AppIcon on ST grid.**  Merged #130. AppIcon is the owner 1024 PNG resized. Favicon is the isolated transparent DD. <!-- wb-agent-report:3b2d4b881f214f88abc49a658626b6ee -->
 - **2026-08-21 — CURSOR — COMPLETED/MERGED #113 / #112 — Transparent DD favicon + ST-grid AppIcon.**  Safari PNG/ICO interlocking DD.  Header `img` outline removed.  iOS/Android launcher is DD on the ST tiled field (no candlesticks).  PR #113 squash `493e88a`.
@@ -33,9 +36,10 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
-- **2026-08-22 — CURSOR — IN PROGRESS — Vercel Speed Insights.**  `@vercel/speed-insights/react` on the TanStack root (not `/next`).  Privacy discloses Core Web Vitals.  Branch `cursor/vercel-speed-insights-4a42`.
+(none)
 
 ## Completed
+- **2026-08-22 — ANTIGRAVITY — COMPLETED — Build app under net.dealdex bundle, dealdex.net domain, sync iOS/Android/Favicon/ASC icons.**  Branch `ag/bundle-net-and-builds`, worktree `~/apps/dealdex-antigravity`.
 - **2026-08-22 — ANTIGRAVITY — COMPLETED — DealDex.net domain, net.dealdex bundle ID, iOS 17 + Xcode 26 doc format + icons + dev team link, and Android build.**  Branch `ag/net-domain-and-ios-setup`, worktree `~/apps/dealdex-antigravity`.
 - **2026-08-21 — ANTIGRAVITY — COMPLETED — Multi-platform power enhancements (Web, iOS, Android).**  Branch `ag/power-enhancements`, worktree `~/apps/dealdex-antigravity`.  Grading arbitrage & net flip calculators, repack filter, native iOS & Android Card Dossier, Evaluator, and Saved Ledger parity.
 - **2026-08-21 — CURSOR — iOS first-launch update prompt (fleet) — COMPLETED/MERGED #122 squash `3b18d9a` (branch `cursor/ios-update-prompt-9992`, worktree `~/apps/dealdex-cursor-ios-update`).**  TestFlight opens TestFlight; App Store opens the App Store.  Manifest `jaywedgeworth22/ios-app-versions`.  Verify + Vercel green.
@@ -44,7 +48,6 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
-- 2026-08-22 — CURSOR: reserved Vercel Speed Insights (`cursor/vercel-speed-insights-4a42`).
 - 2026-08-22 — GROK: reserved Vercel Web Analytics (`grok/vercel-analytics`).
 - 2026-08-21 — CURSOR: deployed #118 / #117 (homepage subtitle + new og.jpg).
 - 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.
