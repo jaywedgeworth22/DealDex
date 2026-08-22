@@ -9,7 +9,7 @@ fleet / delivery posture, not card-desk features.
   registries.  See `docs/rollouts/2026-08-13-fleet-onboard.md`.
 - GROK-BUILD standing seat: Mac lane + `fleet-apps.json`.  See
   `docs/rollouts/2026-08-14-grok-build-seat.md`.
-- Web identity: public host **https://dealdex.online** on **Vercel**.
+- Web identity: public host **https://dealdex.net** on **Vercel**.
   Vercel is current.  GitHub About homepage is that URL, not
   `dealdex-psi.vercel.app`.  Do not migrate copy to Coolify.  Do not
   point people at `dealdex.vercel.app` (different Next.js product).
@@ -20,7 +20,7 @@ fleet / delivery posture, not card-desk features.
 
 - Runtime secrets in Infisical (prod env).  Owner creates the project.  Do
   not invent one.
-- Keep `dealdex.online` on Vercel.  Do not invent a replacement hostname
+- Keep `dealdex.net` on Vercel.  Do not invent a replacement hostname
   and do not move the site to Coolify.
 - iOS TestFlight via `.github/workflows/ios-ship.yml` (Mac runner
   `[self-hosted, macOS, ARM64, xcode26]`, app key `dealdex`, path

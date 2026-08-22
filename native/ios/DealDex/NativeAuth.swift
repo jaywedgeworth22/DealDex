@@ -26,7 +26,7 @@ final class NativeAuthPresenter: NSObject, ASWebAuthenticationPresentationContex
 }
 
 enum NativeAuth {
-    static let defaultOrigin = "https://dealdex.online"
+    static let defaultOrigin = "https://dealdex.net"
     private static var heldSession: ASWebAuthenticationSession?
     private static var heldPresenter: NativeAuthPresenter?
 

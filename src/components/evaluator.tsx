@@ -382,7 +382,7 @@ function AppraisalPanel({
       result.spread != null
         ? `${result.spread >= 0 ? "-" : "+"}${Math.abs(Math.round(result.spread * 100))}%`
         : "";
-    const text = `🔥 DealDex Appraisal: ${card.name} (${card.setName} #${card.localId}) · Ask: ${formatUsd(result.allIn)} · Book: ${formatUsd(result.adjustedMarket)} (${spreadPct} vs Book) · Verdict: ${copy?.label ?? "Fair"} · Net Flip: ${formatUsd(result.flipProfit)} · https://dealdex.online/card/${card.id}`;
+    const text = `🔥 DealDex Appraisal: ${card.name} (${card.setName} #${card.localId}) · Ask: ${formatUsd(result.allIn)} · Book: ${formatUsd(result.adjustedMarket)} (${spreadPct} vs Book) · Verdict: ${copy?.label ?? "Fair"} · Net Flip: ${formatUsd(result.flipProfit)} · https://dealdex.net/card/${card.id}`;
     void navigator.clipboard.writeText(text);
     toast("Deal card copied to clipboard!");
   }
