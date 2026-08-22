@@ -22,6 +22,11 @@ struct ScanView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+                Text("LIVE MARKET SCAN")
+                    .font(.caption)
+                    .tracking(1.6)
+                    .foregroundStyle(Color(red: 0.23, green: 0.22, blue: 0.20))
+                    .padding(.leading, 8)
                 HStack(spacing: 8) {
                     TextField("Card, set, or leave blank", text: $desk.query)
                         .textFieldStyle(.roundedBorder)
@@ -32,11 +37,76 @@ struct ScanView: View {
                     }
                     .buttonStyle(.bordered)
                 }
-                Button("Scan") { Task { await desk.scan(notify: false) } }
-                    .frame(maxWidth: .infinity)
-                    .buttonStyle(.borderedProminent)
-                    .tint(Color(red: 0.29, green: 0.20, blue: 0.14))
-                    .disabled(desk.loading)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                    filterMenu("Verdict", selection: $desk.verdictFilter, options: [
+                        ("any", "Any Verdict"),
+                        ("steal", "Steal"),
+                        ("good", "Good Deal"),
+                        ("fair", "Fair"),
+                        ("high", "High Ask"),
+                        ("avoid", "Overpriced"),
+                    ])
+                    filterMenu("Max Ask", selection: $desk.priceCap, options: [
+                        ("any", "Any Price"),
+                        ("25", "Under $25"),
+                        ("50", "Under $50"),
+                        ("100", "Under $100"),
+                        ("250", "Under $250"),
+                    ])
+                    filterMenu("Condition", selection: $desk.condition, options: [
+                        ("any", "Raw or Graded"),
+                        ("raw", "Raw Only"),
+                        ("graded", "Graded Only"),
+                    ])
+                    filterMenu("Min Discount", selection: $desk.spreadMin, options: [
+                        ("any", "Any vs Book"),
+                        ("10", "10%+ Under Book"),
+                        ("20", "20%+ Under Book"),
+                        ("40", "40%+ Under Book"),
+                    ])
+                    filterMenu("Finish", selection: $desk.finish, options: [
+                        ("any", "Any Finish"),
+                        ("holo", "Holo"),
+                        ("reverse", "Reverse"),
+                        ("promo", "Promo"),
+                    ])
+                    VStack(spacing: 2) {
+                        Color.clear.frame(height: 14)
+                        Button {
+                            desk.hideProxies.toggle()
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: desk.hideProxies ? "checkmark.square.fill" : "square")
+                                Text("Hide Proxies")
+                                    .lineLimit(1)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(Color(red: 0.10, green: 0.11, blue: 0.09))
+                            .frame(maxWidth: .infinity, minHeight: 36)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                Button {
+                    Task { await desk.scan(notify: false) }
+                } label: {
+                    Group {
+                        if desk.loading {
+                            ProgressView()
+                                .tint(Color(red: 0.96, green: 0.95, blue: 0.92))
+                        } else {
+                            Text("SCAN")
+                                .font(.system(size: 34, weight: .semibold, design: .default))
+                                .tracking(1.6)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 64)
+                    .foregroundStyle(Color(red: 0.96, green: 0.95, blue: 0.92))
+                    .background(Color(red: 0.29, green: 0.20, blue: 0.14))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .disabled(desk.loading)
+                .buttonStyle(.plain)
                 HStack(spacing: 8) {
                     MarketplaceToggle(
                         market: "ebay",
@@ -60,6 +130,7 @@ struct ScanView: View {
                 HStack(spacing: 8) {
                     chip("all", "All \(desk.rows.count)")
                     chip("deals", "Deals \(desk.dealCount)")
+                    chip("verified", "Verified \(desk.verifiedCount)")
                 }
                 if desk.loading && desk.rows.isEmpty {
                     Spacer()
@@ -96,6 +167,33 @@ struct ScanView: View {
         Button(label) { desk.view = key }
             .buttonStyle(.bordered)
             .tint(desk.view == key ? Color(red: 0.25, green: 0.29, blue: 0.20) : .secondary)
+    }
+
+    private func filterMenu(_ title: String, selection: Binding<String>, options: [(String, String)]) -> some View {
+        let current = options.first(where: { $0.0 == selection.wrappedValue })?.1 ?? options.first?.1 ?? title
+        return VStack(spacing: 2) {
+            Text(title.uppercased())
+                .font(.caption2.weight(.medium))
+                .tracking(1.0)
+                .foregroundStyle(Color(red: 0.23, green: 0.22, blue: 0.20))
+                .frame(maxWidth: .infinity)
+            Menu {
+                ForEach(options, id: \.0) { key, name in
+                    Button(name) { selection.wrappedValue = key }
+                }
+            } label: {
+                Text(current)
+                    .font(.caption)
+                    .foregroundStyle(Color(red: 0.10, green: 0.11, blue: 0.09))
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, minHeight: 36)
+                    .padding(.horizontal, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color(red: 0.56, green: 0.54, blue: 0.49), lineWidth: 1)
+                    )
+            }
+        }
     }
 }
 

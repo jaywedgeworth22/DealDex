@@ -7,9 +7,9 @@
   --color-surface: #fffcf6;
   --color-elevated: #ece6d8;
   --color-fg: #1a1b16;
-  --color-muted: #5b594f;
-  --color-subtle: #8a867a;
-  --color-border: #d4cebf;
+  --color-muted: #2c2b26;
+  --color-subtle: #3a3832;
+  --color-border: #8f8a7c;
   --color-accent: #3f4a32;
   --color-accent-fg: #f6f3ea;
   --color-scan: #4a3224;
@@ -44,9 +44,9 @@
   --color-surface: #151612;
   --color-elevated: #1c1d19;
   --color-fg: #eceae4;
-  --color-muted: #9a978c;
-  --color-subtle: #6f6c63;
-  --color-border: #2a2b26;
+  --color-muted: #d4d0c4;
+  --color-subtle: #c2beB0;
+  --color-border: #6a675c;
   --color-accent: #e4dfd2;
   --color-accent-fg: #12130f;
   --color-scan: #8b5e3c;
@@ -103,6 +103,16 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+
+  /* Closed-state value: text-align-last. Open list: option text-align. */
+  select.filter-select {
+    text-align: center;
+    text-align-last: center;
+  }
+
+  select.filter-select option {
+    text-align: center;
   }
 }
 
