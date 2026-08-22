@@ -6,6 +6,9 @@ import {
   BookmarkCheck,
   LoaderCircle,
   Search,
+  Share2,
+  ShieldAlert,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -372,6 +375,18 @@ function AppraisalPanel({
   const img = cardImageUrl(card.image);
   const fallbackFinish = card.finishes.find((f) => f.key === finish) ?? card.finishes[0] ?? null;
   const usedFinish = result?.finish ?? fallbackFinish;
+
+  function shareDeal() {
+    if (!result || !listing) return;
+    const spreadPct =
+      result.spread != null
+        ? `${result.spread >= 0 ? "-" : "+"}${Math.abs(Math.round(result.spread * 100))}%`
+        : "";
+    const text = `🔥 DealDex Appraisal: ${card.name} (${card.setName} #${card.localId}) · Ask: ${formatUsd(result.allIn)} · Book: ${formatUsd(result.adjustedMarket)} (${spreadPct} vs Book) · Verdict: ${copy?.label ?? "Fair"} · Net Flip: ${formatUsd(result.flipProfit)} · https://dealdex.online/card/${card.id}`;
+    void navigator.clipboard.writeText(text);
+    toast("Deal card copied to clipboard!");
+  }
+
   return (
     <section className="space-y-6">
       <div className="grid items-start gap-6 lg:grid-cols-[220px_1fr]">
@@ -405,6 +420,15 @@ function AppraisalPanel({
               </Badge>
             )}
           </div>
+
+          {result?.isSuspiciousRepack && (
+            <div className="flex items-center gap-2.5 rounded-lg border border-deal-bad/30 bg-deal-bad/10 p-3 text-sm text-deal-bad">
+              <ShieldAlert className="size-5 shrink-0" />
+              <span>
+                <strong>Listing Warning:</strong> {result.repackReason ?? "Potential proxy, repack lot, or non-card listing."}
+              </span>
+            </div>
+          )}
 
           {needsPrice && (
             <p className="rounded-md bg-elevated px-3 py-2 text-sm text-muted">
@@ -471,7 +495,10 @@ function AppraisalPanel({
 
               <div className="grid gap-3 rounded-lg bg-elevated p-4 sm:grid-cols-2">
                 <div>
-                  <p className="text-xs text-subtle">If you flip after ~{Math.round(result.sellFeeRate * 1000) / 10}% fees</p>
+                  <p className="text-xs text-subtle">
+                    If you flip after ~{Math.round(result.sellFeeRate * 1000) / 10}% fees
+                    {result.netMarginRate != null ? ` (${Math.round(result.netMarginRate * 100)}% margin)` : ""}
+                  </p>
                   <p className="font-mono text-lg tabular-nums">
                     {formatUsd(result.flipProfit)}{" "}
                     <span className="text-sm text-muted">net vs this ask</span>
@@ -490,6 +517,52 @@ function AppraisalPanel({
                   )}
                 </div>
               </div>
+
+              {result.grading && (
+                <div className="rounded-lg border border-border bg-elevated/60 p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-fg">
+                      <Sparkles className="size-3.5 text-accent" /> PSA Grading Arbitrage (Raw → Slab)
+                    </p>
+                    {result.grading.worthGrading && (
+                      <Badge variant="good" className="text-xs">
+                        High Slab Upside
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div>
+                      <p className="text-xs text-subtle">PSA 10 Book Est.</p>
+                      <p className="font-mono text-sm font-medium tabular-nums">{formatUsd(result.grading.psa10Value)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-subtle">Grading + Ship</p>
+                      <p className="font-mono text-sm tabular-nums text-muted">{formatUsd(result.grading.gradingCost)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-subtle">PSA 10 Net Profit</p>
+                      <p
+                        className={cn(
+                          "font-mono text-sm font-medium tabular-nums",
+                          (result.grading.psa10NetProfit ?? 0) > 0 ? "text-deal-good" : "text-muted",
+                        )}
+                      >
+                        {formatUsd(result.grading.psa10NetProfit)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-subtle">PSA 10 Target ROI</p>
+                      <p className="font-mono text-sm tabular-nums text-fg">
+                        {result.grading.psa10Roi != null ? `${Math.round(result.grading.psa10Roi * 100)}%` : "—"}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-xs text-subtle">
+                    Considers a ~${result.grading.gradingCost.toFixed(0)} grading & shipping fee. PSA 9 net upside is{" "}
+                    {formatUsd(result.grading.psa9NetProfit)}.
+                  </p>
+                </div>
+              )}
             </>
           )}
 
@@ -550,6 +623,11 @@ function AppraisalPanel({
               </Link>
             </Button>
             {listing && result && (
+              <Button variant="outline" onClick={shareDeal}>
+                <Share2 /> Share Deal
+              </Button>
+            )}
+            {listing && result && (
               <Button variant="ghost" onClick={onSave} disabled={saving || saved}>
                 {saved ? <BookmarkCheck /> : <Bookmark />}
                 {saved ? "Saved" : "Save"}
@@ -558,6 +636,7 @@ function AppraisalPanel({
           </div>
         </div>
       </div>
+
 
       {cards.length > 1 && (
         <div>

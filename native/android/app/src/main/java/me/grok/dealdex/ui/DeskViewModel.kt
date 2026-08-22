@@ -18,7 +18,11 @@ import me.grok.dealdex.data.AlertRule
 import me.grok.dealdex.data.DeskKeys
 import me.grok.dealdex.data.Market
 import me.grok.dealdex.data.Prefs
+import me.grok.dealdex.data.SavedAppraisal
 import me.grok.dealdex.data.ScoredListing
+import me.grok.dealdex.data.TcgCard
+import org.json.JSONArray
+import org.json.JSONObject
 
 data class DeskState(
     val query: String = "",
@@ -28,6 +32,10 @@ data class DeskState(
     val view: String = "all",
     val sources: Set<String> = setOf("ebay", "mercari"),
     val rules: List<AlertRule> = listOf(AlertRule("default", "Steals under $100")),
+    val savedItems: List<SavedAppraisal> = emptyList(),
+    val currentTab: String = "scan",
+    val activeDossierCard: TcgCard? = null,
+    val evaluatorCard: TcgCard? = null,
     val justTcg: String = "",
     val priceCharting: String = "",
     val pokemonTcg: String = "",
@@ -85,6 +93,34 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
     fun setOrigin(v: String) { _state.value = _state.value.copy(origin = v) }
     fun setLoginEmail(v: String) { _state.value = _state.value.copy(loginEmail = v) }
     fun setLoginPassword(v: String) { _state.value = _state.value.copy(loginPassword = v) }
+
+    fun setTab(tab: String) {
+        _state.value = _state.value.copy(currentTab = tab)
+    }
+
+    fun openDossier(card: me.grok.dealdex.data.TcgCard) {
+        _state.value = _state.value.copy(activeDossierCard = card, currentTab = "dossier")
+    }
+
+    fun openEvaluator(card: me.grok.dealdex.data.TcgCard? = null) {
+        _state.value = _state.value.copy(evaluatorCard = card, currentTab = "evaluator")
+    }
+
+    fun saveAppraisal(item: SavedAppraisal) {
+        val current = _state.value.savedItems
+        val next = listOf(item) + current.filterNot { it.id == item.id }
+        _state.value = _state.value.copy(savedItems = next)
+    }
+
+    fun deleteSaved(id: String) {
+        val next = _state.value.savedItems.filterNot { it.id == id }
+        _state.value = _state.value.copy(savedItems = next)
+    }
+
+    fun updateSavedStatus(id: String, status: String) {
+        val next = _state.value.savedItems.map { if (it.id == id) it.copy(status = status) else it }
+        _state.value = _state.value.copy(savedItems = next)
+    }
 
     fun saveKeys() {
         prefs.justTcg = _state.value.justTcg

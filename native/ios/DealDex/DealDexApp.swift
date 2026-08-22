@@ -17,6 +17,10 @@ struct RootView: View {
             ScanView()
                 .environmentObject(desk)
                 .tabItem { Label("Scan", systemImage: "dot.radiowaves.left.and.right") }
+            EvaluatorView()
+                .tabItem { Label("Evaluator", systemImage: "slider.horizontal.3") }
+            SavedView()
+                .tabItem { Label("Saved", systemImage: "bookmark") }
             AlertsView()
                 .environmentObject(desk)
                 .tabItem { Label("Alerts", systemImage: "bell") }

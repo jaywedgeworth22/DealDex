@@ -53,3 +53,22 @@ struct AlertRule: Identifiable, Hashable {
     var minSpread: Double? = 0.12
     var maxPrice: Double? = 100
 }
+
+struct SavedAppraisal: Identifiable, Codable, Hashable {
+    var id: String = UUID().uuidString
+    var cardId: String
+    var cardName: String
+    var setName: String
+    var localId: String
+    var marketplace: String
+    var listingTitle: String
+    var listingPrice: Double
+    var marketPrice: Double?
+    var spread: Double?
+    var verdict: String
+    var condition: String
+    var grade: String
+    var status: String = "watching" // "watching", "bought", "passed"
+    var createdAt: Date = Date()
+}
+
