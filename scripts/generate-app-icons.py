@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""Resize owner artwork into iOS / Android / web launcher and favicon slots.
+"""Resize owner artwork into iOS / Android / PWA / favicon slots.
 
-AppIcon source of truth: native/brand/dealdex-dd-icon-1024.png
-  Jay's rendered 3D DD (tight crop).  Do not composite a fake tiled field.
-
-Favicon source of truth: native/brand/dealdex-dd-isolated.png
+iOS AppIcon: native/brand/dealdex-dd-icon-1024.png (tiled 3D DD).
+Android + PWA 180 + favicon: native/brand/dealdex-dd-isolated.png
   Isolated transparent DD.  Black in previews is alpha.
 
 Run from the repo root:  python3 scripts/generate-app-icons.py
@@ -206,15 +204,15 @@ def main() -> None:
         save_png(resize_square(icon, size), IOS_ICONSET / name)
     write_contents_json()
 
-    for folder, size in ANDROID_MIPMAP.items():
-        slot = resize_square(icon, size)
-        save_png(slot, ANDROID_RES / folder / "ic_launcher.png")
-        save_png(slot, ANDROID_RES / folder / "ic_launcher_round.png")
-
-    save_png_rgba(resize_square(icon, FOREGROUND_PX).convert("RGBA"), ANDROID_RES / "drawable" / "ic_launcher_foreground.png")
-    save_png(resize_square(icon, 180), WEB_ICON_180)
-
     mark = Image.open(MARK_SOURCE).convert("RGBA")
+    for folder, size in ANDROID_MIPMAP.items():
+        slot = favicon_mark(mark, size)
+        save_png_rgba(slot, ANDROID_RES / folder / "ic_launcher.png")
+        save_png_rgba(slot, ANDROID_RES / folder / "ic_launcher_round.png")
+
+    save_png_rgba(favicon_mark(mark, FOREGROUND_PX, margin_frac=0.18), ANDROID_RES / "drawable" / "ic_launcher_foreground.png")
+    save_png_rgba(favicon_mark(mark, 180), WEB_ICON_180)
+
     write_favicons(mark)
     mark_path = ROOT / "public/marks/dealdex-dd.png"
     mark_path.parent.mkdir(parents=True, exist_ok=True)
@@ -222,7 +220,7 @@ def main() -> None:
     imageset = ROOT / "native/ios/DealDex/Assets.xcassets/DealDexMark.imageset/dealdex-dd.png"
     if imageset.parent.is_dir():
         save_png_rgba(mark, imageset)
-    print("wrote owner AppIcon sizes, Android mipmaps, PWA 180, transparent favicon")
+    print("wrote iOS AppIcon from tiled PNG; Android/PWA/favicon from isolated DD")
 
 
 if __name__ == "__main__":

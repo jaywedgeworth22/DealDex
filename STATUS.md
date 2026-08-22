@@ -1,5 +1,12 @@
 # Current Handoff
 
+## 2026-08-22 GROK — Scan desk + Android/PWA isolated DD
+
+Scan is dark brown, full width of the eBay/Mercari column, with those
+toggles under it.  Six filters sit 3-per-row to the left.  Android and
+PWA 180 use the isolated transparent DD.  iOS AppIcon stays the tiled
+1024 PNG.  Branch `grok/dd-android-pwa-transparent`.
+
 ## 2026-08-22 GROK — Tighter DD AppIcon
 
 AppIcon is the owner 1024 DD PNG, resized to iOS/Android/PWA slots.

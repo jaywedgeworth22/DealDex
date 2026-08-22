@@ -90,7 +90,10 @@ test("Android launcher uses the DD adaptive icon and mipmaps", () => {
     "native/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
   );
   assert.deepEqual({ width: xxx.width, height: xxx.height }, { width: 192, height: 192 });
-  assert.ok(existsSync(join(ROOT, "native/android/app/src/main/res/drawable/ic_launcher_foreground.png")));
+  const xxxBuf = readFileSync(join(ROOT, "native/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"));
+  assert.equal(xxxBuf[25], 6, "Android mipmaps must keep the isolated DD alpha");
+  const fg = readFileSync(join(ROOT, "native/android/app/src/main/res/drawable/ic_launcher_foreground.png"));
+  assert.equal(fg[25], 6, "Android adaptive foreground must keep the isolated DD alpha");
 });
 
 test("web favicon is a transparent DD PNG/ICO, not an SVG letter tile", () => {
@@ -108,7 +111,9 @@ test("web favicon is a transparent DD PNG/ICO, not an SVG letter tile", () => {
   assert.doesNotMatch(head, /rel: "icon", type: "image\/svg\+xml"/);
   const pwa = pngSize("public/__grok/icon-180.png");
   assert.deepEqual({ width: pwa.width, height: pwa.height }, { width: 180, height: 180 });
-  assert.ok(pwa.bytes > 8_000, "PWA 180 should be the glossy DD, not the 2 KB delta");
+  const pwaBuf = readFileSync(join(ROOT, "public/__grok/icon-180.png"));
+  assert.equal(pwaBuf[25], 6, "PWA 180 must keep the isolated DD alpha");
+  assert.ok(pwa.bytes > 4_000, "PWA 180 should be the glossy DD, not a stub");
   const source = pngSize("native/brand/dealdex-dd-icon-1024.png");
   assert.deepEqual({ width: source.width, height: source.height }, { width: 1024, height: 1024 });
 });
@@ -119,6 +124,7 @@ test("AppIcon generator resizes owner art and does not invent a tiled field", ()
   assert.doesNotMatch(gen, /st_background/);
   assert.doesNotMatch(gen, /MARK_SCALE/);
   assert.doesNotMatch(gen, /compose_app_icon/);
+  assert.match(gen, /favicon_mark\(mark, 180\)/);
 });
 
 test("header wordmark is not wrapped in a global img outline", () => {

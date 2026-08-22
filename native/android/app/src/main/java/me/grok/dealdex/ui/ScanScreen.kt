@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -79,18 +79,24 @@ fun ScanScreen(
             modifier = Modifier.padding(top = 4.dp),
         )
         Spacer(Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(
-                value = state.query,
-                onValueChange = vm::setQuery,
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-                placeholder = { Text("All Pokémon") },
-            )
-            Spacer(Modifier.width(8.dp))
-            Button(onClick = { vm.scan() }, enabled = !state.loading) {
-                Text("Scan")
-            }
+        OutlinedTextField(
+            value = state.query,
+            onValueChange = vm::setQuery,
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            placeholder = { Text("All Pokémon") },
+        )
+        Spacer(Modifier.height(8.dp))
+        Button(
+            onClick = { vm.scan() },
+            enabled = !state.loading,
+            modifier = Modifier.fillMaxWidth(),
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4A3224),
+                contentColor = Color(0xFFF6F3EA),
+            ),
+        ) {
+            Text("Scan")
         }
         Row(
             Modifier
