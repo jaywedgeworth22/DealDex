@@ -28,7 +28,7 @@ The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your
 
 1. From `native/ios`, run `xcodegen generate` after editing `project.yml` (then `xcodegen-post.py` sets Xcode 26.3 / objectVersion 100).
 2. Open `DealDex.xcodeproj` in Xcode 26.3 (team `CC8UTF7ATG`).  Display name **DealDex**.  Minimum iOS **18.0**.
-3. Run on a phone or simulator.  Scan talks to `https://dealdex.online/api/native/scan` and does not require sign-in.  Google website accounts use **Sign in with Google**.
+3. Run on a phone or simulator.  Scan talks to `https://dealdex.net/api/native/scan` and does not require sign-in.  Google website accounts use **Sign in with Google**.
 
 Home-screen icon is the official overlapping red + blue DD (yellow rim) on
 the Socratic.Trade tiled field (soft top-left light, recessed grout, no

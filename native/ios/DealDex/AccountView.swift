@@ -7,7 +7,7 @@ struct AccountView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("https://dealdex.online", text: $desk.origin)
+                    TextField("https://dealdex.net", text: $desk.origin)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
@@ -19,7 +19,7 @@ struct AccountView: View {
                 } header: {
                     Text("Website")
                 } footer: {
-                    Text("Leave this as https://dealdex.online.  Scan already uses that host if the field is empty.  Change it only for a preview URL.  Sign-in and key sync talk to this address.")
+                    Text("Leave this as https://dealdex.net.  Scan already uses that host if the field is empty.  Change it only for a preview URL.  Sign-in and key sync talk to this address.")
                 }
                 if desk.accountEmail.isEmpty {
                     Section {

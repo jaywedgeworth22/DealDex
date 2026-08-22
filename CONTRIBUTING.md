@@ -22,7 +22,7 @@ builds from.
 ## Live site
 
 **Vercel is the host.**  It is current, not a leftover.  Public URL:
-**https://dealdex.online**.  GitHub About homepage is that URL.  Do not
+**https://dealdex.net**.  GitHub About homepage is that URL.  Do not
 use `dealdex-psi.vercel.app` as the homepage.  Do not migrate the site
 to Coolify.
 
@@ -30,19 +30,10 @@ GitHub `main` is the code.  This preview (`/workspace`) is a workbench,
 not production.  Vercel Production builds `main` (team
 `jaywedgeworth22s-projects`, project `dealdex`).
 
-Checked 2026-08-20 (HTTP GET):
-
-- `https://dealdex.online` returned HTTP 200, title DealDex, Vite
-  `/assets/index-BV1SWqsO.js`.
-- The GitHub-linked alias
-  `https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app`
-  served the same hashed JS.  The older "stale Grok publish, not
-  tracking `main`" gap is not visible today.  Both pages still load
-  `grok.com/grok-app-builder/extensions.js` (Grok publish chrome).
-- `https://dealdex-psi.vercel.app` still serves the same DealDex build.
-  It is an old About alias, not the public host.
-- `https://dealdex.vercel.app` is a different Next.js site
-  ("DealDeX - Revolutionizing E-commerce").  Do not point About at it.
+Owner registered `dealdex.net` 2026-08-22.  Public host is that name.
+`dealdex.online` redirects once both names are on the Vercel project.
+`https://dealdex.vercel.app` is a different Next.js site
+("DealDeX - Revolutionizing E-commerce").  Do not point About at it.
 
 Do not invent a second live URL.
 

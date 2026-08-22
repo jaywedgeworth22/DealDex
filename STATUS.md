@@ -1,5 +1,16 @@
 # Current Handoff
 
+## 2026-08-22 GROK — Public host dealdex.net
+
+Owner registered `dealdex.net` (Namecheap).  Canonical website host is
+`https://dealdex.net`.  iOS bundle stays `online.dealdex`.  Android stays
+`me.grok.dealdex`.  `dealdex.online` redirects to `.net` once both names are
+on the Vercel project.  Branch `grok/dealdex-net`.  Board `b16e5c74`.
+
+Need owner: Vercel project Domains → add `dealdex.net` (and www).  Then
+Namecheap Advanced DNS for `dealdex.net` using the records Vercel prints
+(same screen as `dealdex.online`).
+
 ## 2026-08-22 GROK — Scan box contrast + SCAN label
 
 Portrait web layout kept.  Filter headings and select values are centered.

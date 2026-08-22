@@ -22,9 +22,9 @@ The website is optional.  The phone apps do not wrap it.
 
 This repo's web app is React 19, TanStack Start, Tailwind v4, and Better Auth (Vite).  It is not Next.js, Expo, React Native, or Capacitor.
 
-**Public host: https://dealdex.online on Vercel.**  Vercel is current, not a leftover.  GitHub About homepage is that URL.  Do not use `dealdex-psi.vercel.app` as the homepage.  Do not migrate the site to Coolify.
+**Public host: https://dealdex.net on Vercel.**  Vercel is current, not a leftover.  GitHub About homepage is that URL.  Do not use `dealdex-psi.vercel.app` as the homepage.  Do not migrate the site to Coolify.
 
-The app's default `VITE_PUBLIC_HOSTNAME` is `dealdex.online`.  Checked 2026-08-20: that host returned HTTP 200 DealDex with the same hashed Vite bundle as the GitHub-linked Vercel `main` alias, so the older "stale Grok publish vs `main`" gap is not visible today.  `https://dealdex.vercel.app` is a different Next.js site titled "DealDeX - Revolutionizing E-commerce" and is not this repo.
+The app's default `VITE_PUBLIC_HOSTNAME` is `dealdex.net`.  Owner registered that name 2026-08-22 (Namecheap).  Point it at the existing Vercel project `dealdex` and redirect `dealdex.online`.  `https://dealdex.vercel.app` is a different Next.js site titled "DealDeX - Revolutionizing E-commerce" and is not this repo.
 
 Do not invent another live URL.
 

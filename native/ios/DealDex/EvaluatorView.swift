@@ -335,7 +335,7 @@ struct EvaluatorView: View {
     }
 
     private func shareDeal(card: TcgCard, allIn: Double, book: Double, spread: Double, verdict: String, flipNet: Double) {
-        let text = "🔥 DealDex: \(card.name) (\(card.setName) #\(card.localId)) · Ask: $\(String(format: "%.2f", allIn)) · Book: $\(String(format: "%.2f", book)) (\(String(format: "%+.1f%%", spread * 100))) · Verdict: \(verdict.capitalized) · Net Flip: $\(String(format: "%.2f", flipNet)) · https://dealdex.online/card/\(card.id)"
+        let text = "🔥 DealDex: \(card.name) (\(card.setName) #\(card.localId)) · Ask: $\(String(format: "%.2f", allIn)) · Book: $\(String(format: "%.2f", book)) (\(String(format: "%+.1f%%", spread * 100))) · Verdict: \(verdict.capitalized) · Net Flip: $\(String(format: "%.2f", flipNet)) · https://dealdex.net/card/\(card.id)"
         UIPasteboard.general.string = text
     }
 }

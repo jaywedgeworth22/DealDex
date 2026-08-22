@@ -7,7 +7,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("https://dealdex.online", text: $desk.origin)
+                    TextField("https://dealdex.net", text: $desk.origin)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
@@ -36,7 +36,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Account")
                 } footer: {
-                    Text("Website is https://dealdex.online by default.  Leave it unless you are on a preview host.  Scan works without signing in.  Google website accounts use Sign in with Google — email and password is only for accounts you created that way.")
+                    Text("Website is https://dealdex.net by default.  Leave it unless you are on a preview host.  Scan works without signing in.  Google website accounts use Sign in with Google — email and password is only for accounts you created that way.")
                 }
 
                 Section {

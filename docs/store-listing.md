@@ -2,7 +2,7 @@
 
 Updated: Fri, Aug 21, 2026.  Two spaces between sentences.  No agent names.
 
-Privacy and support URLs use `https://dealdex.online` because that is the
+Privacy and support URLs use `https://dealdex.net` because that is the
 hostname the website emits.  Checked 2026-08-20: `/` and `/privacy` returned
 HTTP 200 DealDex.  `https://dealdex-psi.vercel.app` served the same build.
 `https://dealdex.vercel.app` is a different Next.js product.  Do not point
@@ -19,8 +19,8 @@ the listing at it.
 **App icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, on the Socratic.Trade tiled field (not the in-app wordmark).
 **Category:** Shopping  
 **Marketing version:** 1.0.1  
-**Privacy:** `https://dealdex.online/privacy`  
-**Support:** `https://dealdex.online/`
+**Privacy:** `https://dealdex.net/privacy`  
+**Support:** `https://dealdex.net/`
 
 ## Name
 

@@ -104,7 +104,7 @@ STATUS rows **GROK-BUILD**. If the sandbox drifted from GitHub, GitHub wins.
 After merge, Mac Grok should pull `~/apps/dealdex-grok` so the worktree matches.
 
 Live hosting is **not** this preview.  Public host is
-**https://dealdex.online** on **Vercel** (current, not leftover).  GitHub
+**https://dealdex.net** on **Vercel** (current, not leftover).  GitHub
 `main` is the code.  Vercel builds Production on merge.  Do not migrate
 the site to Coolify.  Do not invent a live URL.  After a green merge,
 other agents pull `main`.

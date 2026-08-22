@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "DealDex";
-const host = import.meta.env.VITE_PUBLIC_HOSTNAME || "dealdex.online";
+const host = import.meta.env.VITE_PUBLIC_HOSTNAME || "dealdex.net";
 const ogImage = `https://${host}/og.jpg?v=subtitle-20260821`;
 
 export const Route = createRootRoute({

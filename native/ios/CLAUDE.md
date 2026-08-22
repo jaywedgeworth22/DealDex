@@ -45,7 +45,7 @@ native/ios/
     ├── MarketplaceMarks.swift          # official eBay + Mercari paths
     ├── DealDexApp.swift                # App entry
     ├── NativeAuth.swift                # Sign in with Google (ASWebAuthenticationSession)
-    ├── DeskStore.swift                 # desk / session store (origin defaults to dealdex.online)
+    ├── DeskStore.swift                 # desk / session store (origin defaults to dealdex.net)
     ├── DeskModel.swift                 # Desk types
     ├── Models.swift                    # Shared models
     ├── Market.swift                    # Market / comps

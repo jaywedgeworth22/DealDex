@@ -368,7 +368,7 @@ fun EvaluatorScreen(
                                             val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                             val clip = ClipData.newPlainText(
                                                 "DealDex",
-                                                "🔥 DealDex: ${card.name} (${card.setName} #${card.localId}) · Ask: $%.2f · Book: $%.2f (%+.1f%%) · Flip Net: $%.2f · https://dealdex.online/card/${card.id}".format(allIn, book, spread * 100, flipNet),
+                                                "🔥 DealDex: ${card.name} (${card.setName} #${card.localId}) · Ask: $%.2f · Book: $%.2f (%+.1f%%) · Flip Net: $%.2f · https://dealdex.net/card/${card.id}".format(allIn, book, spread * 100, flipNet),
                                             )
                                             clipboard.setPrimaryClip(clip)
                                             Toast.makeText(ctx, "Deal copied to clipboard", Toast.LENGTH_SHORT).show()
