@@ -33,7 +33,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
-(none)
+- **2026-08-22 — CURSOR — IN PROGRESS — Vercel Speed Insights.**  `@vercel/speed-insights/react` on the TanStack root (not `/next`).  Privacy discloses Core Web Vitals.  Branch `cursor/vercel-speed-insights-4a42`.
 
 ## Completed
 - **2026-08-22 — ANTIGRAVITY — COMPLETED — DealDex.net domain, net.dealdex bundle ID, iOS 17 + Xcode 26 doc format + icons + dev team link, and Android build.**  Branch `ag/net-domain-and-ios-setup`, worktree `~/apps/dealdex-antigravity`.
@@ -44,6 +44,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
+- 2026-08-22 — CURSOR: reserved Vercel Speed Insights (`cursor/vercel-speed-insights-4a42`).
 - 2026-08-22 — GROK: reserved Vercel Web Analytics (`grok/vercel-analytics`).
 - 2026-08-21 — CURSOR: deployed #118 / #117 (homepage subtitle + new og.jpg).
 - 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.

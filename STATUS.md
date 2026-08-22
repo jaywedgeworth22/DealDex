@@ -1,5 +1,14 @@
 # Current Handoff
 
+## 2026-08-22 CURSOR — Vercel Speed Insights
+
+Mount `@vercel/speed-insights` on the TanStack Start root
+(`@vercel/speed-insights/react` + `computeRoute`, not the Next.js import).
+Service worker already skips `/_vercel/` so vitals beacons are not intercepted.
+Privacy page discloses cookie-less Core Web Vitals.  After merge, Vercel
+Production on `dealdex.net` collects FCP/LCP/INP/CLS.  Branch
+`cursor/vercel-speed-insights-4a42`.
+
 ## 2026-08-22 ANTIGRAVITY — DealDex.net domain, net.dealdex bundle ID, iOS 17.0, and icon sync
 
 - **Domain & GitHub**: DealDex.net is the official canonical domain name (`dealdex.online` 301 redirects to `.net`).  Updated GitHub repo details (`homepageUrl: https://dealdex.net`) and all docs.

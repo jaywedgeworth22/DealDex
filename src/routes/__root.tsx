@@ -1,5 +1,6 @@
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, Scripts, useRouterState } from "@tanstack/react-router";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights, computeRoute } from "@vercel/speed-insights/react";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
@@ -79,6 +80,17 @@ function ThemedToaster() {
   );
 }
 
+function VercelSpeedInsights() {
+  const route = useRouterState({
+    select: (state) => {
+      const leaf = state.matches.at(-1);
+      const params = leaf?.params ?? null;
+      return computeRoute(state.location.pathname, params);
+    },
+  });
+  return <SpeedInsights route={route} />;
+}
+
 function Root() {
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
@@ -98,6 +110,7 @@ function Root() {
           </MarkProvider>
         </ThemeProvider>
         <Analytics />
+        <VercelSpeedInsights />
         <Scripts />
       </body>
     </html>
