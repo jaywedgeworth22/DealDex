@@ -16,10 +16,12 @@ test("shared subtitle constant matches the owner string", () => {
   assert.match(copy, new RegExp(SUBTITLE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
-test("site, OG, and apps use the new subtitle", () => {
+test("site and apps use the new subtitle (OG card is logo-only)", () => {
   assert.match(read("src/routes/index.tsx"), /APP_SUBTITLE/);
   assert.match(read("src/routes/__root.tsx"), /APP_SUBTITLE/);
-  assert.match(read("scripts/og-dealdex.html"), new RegExp(SUBTITLE.replace("é", "é")));
+  const og = read("scripts/og-dealdex.html");
+  assert.doesNotMatch(og, new RegExp(SUBTITLE.replace("é", "é")));
+  assert.match(og, /dealdex-wordmark\.png/);
   assert.match(read("native/android/app/src/main/res/values/strings.xml"), new RegExp(SUBTITLE));
   assert.doesNotMatch(read("src/routes/index.tsx"), /Find the best listings/);
   assert.doesNotMatch(read("src/routes/__root.tsx"), /Find the best listings/);
@@ -39,17 +41,13 @@ test("scan box has no suggested Pokémon chips and one marketplace toggle pair",
   assert.equal((scan.match(/MarketplaceToggle/g) || []).length, 3);
 });
 
-test("OG wordmark is centered and large, with DealDex.net between marketplace marks", () => {
+test("OG card is logo-only and centers a large wordmark", () => {
   const og = read("scripts/og-dealdex.html");
-  assert.match(og, /width:\s*1160px/);
-  assert.match(og, /max-height:\s*400px/);
-  assert.match(og, /font-size:\s*52px/);
-  assert.match(og, /text-align:\s*center/);
-  assert.match(og, /DealDex\.net/);
-  assert.match(og, /ebay\.svg/);
-  assert.match(og, /mercari\.svg/);
-  assert.doesNotMatch(og, /TCGPlayer/i);
-  assert.doesNotMatch(og, /dealdex\.online/);
+  assert.match(og, /align-items:\s*center/);
+  assert.match(og, /justify-content:\s*center/);
+  assert.match(og, /width:\s*88%/);
+  assert.doesNotMatch(og, /DealDex\.net/i);
+  assert.doesNotMatch(og, /eBay/i);
 });
 
 test("Android scan has no suggested chips and shows counts on source toggles", () => {

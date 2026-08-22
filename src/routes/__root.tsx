@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 
 const APP_NAME = "DealDex";
 const host = import.meta.env.VITE_PUBLIC_HOSTNAME || "dealdex.net";
-const ogImage = `https://${host}/og.jpg?v=share-20260823c`;
+const ogImage = `https://${host}/og.jpg?v=logo-only-20260822`;
 
 export const Route = createRootRoute({
   head: () => ({
