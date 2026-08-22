@@ -33,9 +33,10 @@ function PrivacyPage() {
         <section className="space-y-2">
           <h2 className="font-display text-xl tracking-tight text-fg">Website analytics</h2>
           <p>
-            The DealDex website uses Vercel Web Analytics to count visits and page views.  That
-            product does not use cookies and does not identify you.  Native apps do not send those
-            web page-view events.
+            The DealDex website uses Vercel Web Analytics to count visits and page views, and
+            Vercel Speed Insights to measure Core Web Vitals (paint, layout, and interaction
+            timing).  Those products do not use cookies and do not identify you.  Native apps do
+            not send those web events.
           </p>
         </section>
         <section className="space-y-2">
