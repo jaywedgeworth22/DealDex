@@ -37,7 +37,7 @@ enum NativeAuth {
         }
         let presenter = NativeAuthPresenter()
         let callback = try await withCheckedThrowingContinuation { (cont: CheckedContinuation<URL, Error>) in
-            let session = ASWebAuthenticationSession(url: start, callback: .customScheme("dealdex")) { url, error in
+            let session = ASWebAuthenticationSession(url: start, callbackURLScheme: "dealdex") { url, error in
                 heldSession = nil
                 heldPresenter = nil
                 if let error {

@@ -6,7 +6,7 @@ Keys you paste in **Settings** live on the device.  If the website is down, scan
 
 **Settings** also has optional sign-in.  Use the same email as the website only when you want to copy keys to or from your account.
 
-Play and TestFlight are not shipping yet.  Android sideloads as `me.grok.dealdex`.  iOS is `online.dealdex` (team `CC8UTF7ATG`).  Do not upload iOS until the ASC app record exists (SKU `dealdex`).
+Play and TestFlight are not shipping yet.  Android sideloads as `me.grok.dealdex`.  iOS is `net.dealdex` (team `CC8UTF7ATG`).  Do not upload iOS until the ASC app record exists (SKU `dealdex`).
 
 ## Android
 
@@ -27,7 +27,7 @@ The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your
 ## iOS
 
 1. From `native/ios`, run `xcodegen generate` after editing `project.yml` (then `xcodegen-post.py` sets Xcode 26.3 / objectVersion 100).
-2. Open `DealDex.xcodeproj` in Xcode 26.3 (team `CC8UTF7ATG`).  Display name **DealDex**.  Minimum iOS **18.0**.
+2. Open `DealDex.xcodeproj` in Xcode 26.3 (team `CC8UTF7ATG`).  Display name **DealDex**.  Minimum iOS **17.0**.
 3. Run on a phone or simulator.  Scan talks to `https://dealdex.net/api/native/scan` and does not require sign-in.  Google website accounts use **Sign in with Google**.
 
 Home-screen icon is the official overlapping red + blue DD (yellow rim) on
@@ -35,7 +35,7 @@ the Socratic.Trade tiled field (soft top-left light, recessed grout, no
 candlesticks) in `DealDex/Assets.xcassets`.  `CFBundleIconName` is
 `AppIcon`.  iPad `UISupportedInterfaceOrientations` includes
 PortraitUpsideDown.  Android launcher mipmaps and the adaptive icon use
-the same DD-on-grid mark.  Do not put the in-app wordmark on the home
+the isolated transparent DD mark.  Do not put the in-app wordmark on the home
 screen.
 
 In-app / web **title** is `DealDexWordmark` (glossy 3D DealDex PNG).  Scan subtitle
@@ -46,7 +46,7 @@ xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
   -destination 'generic/platform=iOS Simulator' build
 ```
 
-Bundle id: `online.dealdex`.  Display name: DealDex.  Min iOS: 18.0.  Project format: Xcode 26.3.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
+Bundle id: `net.dealdex`.  Display name: DealDex.  Min iOS: 17.0.  Project format: Xcode 26.3.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
 
 TestFlight archive + upload is `.github/workflows/ios-ship.yml` on the owned Mac runner (app key `dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  Do not upload until the ASC app record exists.
 

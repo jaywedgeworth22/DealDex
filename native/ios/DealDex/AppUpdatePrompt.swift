@@ -34,6 +34,7 @@ enum AppUpdatePrompt {
         "services.jays.usage.client.monitor": 6_799_230_435,
         "services.jays.usage.local.monitor": 6_799_230_729,
         "online.dealdex": 6_802_474_288,
+        "net.dealdex": 6_802_474_288,
     ]
 
     private static let skippedVersionKeyPrefix = "appUpdatePrompt.skippedVersion."

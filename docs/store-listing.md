@@ -11,7 +11,7 @@ the listing at it.
 **Wordmark:** official DealDex title mark (red Deal + blue Dex, yellow badge).  Used in the website header, login, and marketing card.  
 **Home-screen icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, on the Socratic.Trade tiled field (no candlesticks).  Not the in-app wordmark.
 
-**iOS bundle:** `online.dealdex`  
+**iOS bundle:** `net.dealdex`  
 **Apple bundle resource ID:** `R2FAW69NPD` (Developer portal App ID resource; **not** a team ID)  
 **Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`  
 **Android package:** `me.grok.dealdex`  
