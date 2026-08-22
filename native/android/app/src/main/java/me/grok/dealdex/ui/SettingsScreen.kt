@@ -29,7 +29,7 @@ fun SettingsScreen(vm: DeskViewModel, state: DeskState) {
         Text("SETTINGS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("This Phone", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "Sign in to back up keys. Keys stay on this phone. Scan works signed out.",
+            "Website is https://dealdex.online by default.  Leave it unless you are on a preview host.  Sign in to back up keys.  Keys stay on this phone.  Scan works signed out.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
@@ -41,8 +41,8 @@ fun SettingsScreen(vm: DeskViewModel, state: DeskState) {
         OutlinedTextField(
             state.origin,
             vm::setOrigin,
-            label = { Text("Website Origin") },
-            placeholder = { Text("https://your-dealdex.example") },
+            label = { Text("Website") },
+            placeholder = { Text("https://dealdex.online") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
         )

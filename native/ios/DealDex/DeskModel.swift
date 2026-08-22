@@ -10,6 +10,12 @@ final class DeskModel: ObservableObject {
     @Published var view = "all"
     @Published var sources: Set<String> = ["ebay", "mercari"]
     @Published var rule = AlertRule(id: "default", name: "Steals under $100")
+    @Published var verdictFilter = "any"
+    @Published var priceCap = "any"
+    @Published var condition = "any"
+    @Published var spreadMin = "any"
+    @Published var finish = "any"
+    @Published var hideProxies = true
 
     @Published var justTcg = DeskStore.keys.justTcg
     @Published var priceCharting = DeskStore.keys.priceCharting
@@ -31,12 +37,37 @@ final class DeskModel: ObservableObject {
 
     var visible: [ScoredListing] {
         rows.filter { row in
-            switch view {
-            case "ebay": return row.listing.marketplace == "ebay"
-            case "mercari": return row.listing.marketplace == "mercari"
-            case "deals": return row.appraisal?.verdict == "steal" || row.appraisal?.verdict == "good"
-            default: return true
+            if hideProxies {
+                let t = row.listing.title.lowercased()
+                if t.contains("proxy") || t.contains("repack") || t.contains("replica") { return false }
             }
+            switch view {
+            case "ebay":
+                if row.listing.marketplace != "ebay" { return false }
+            case "mercari":
+                if row.listing.marketplace != "mercari" { return false }
+            case "deals":
+                if row.appraisal?.verdict != "steal" && row.appraisal?.verdict != "good" { return false }
+            case "verified":
+                let v = row.appraisal?.verdict
+                if row.card == nil || (v != "steal" && v != "good") { return false }
+            default:
+                break
+            }
+            if verdictFilter != "any" && row.appraisal?.verdict != verdictFilter { return false }
+            if priceCap != "any", let cap = Double(priceCap) {
+                guard let price = row.listing.price, price <= cap else { return false }
+            }
+            if condition == "raw" && row.grade != "raw" { return false }
+            if condition == "graded" && row.grade == "raw" { return false }
+            if spreadMin != "any", let min = Double(spreadMin) {
+                guard let spread = row.appraisal?.spread, spread >= min / 100 else { return false }
+            }
+            if finish != "any" {
+                let blob = row.listing.title.lowercased()
+                if !blob.contains(finish) { return false }
+            }
+            return true
         }
     }
 
@@ -44,6 +75,11 @@ final class DeskModel: ObservableObject {
     var mercariCount: Int { rows.filter { $0.listing.marketplace == "mercari" }.count }
     var dealCount: Int {
         rows.filter { $0.appraisal?.verdict == "steal" || $0.appraisal?.verdict == "good" }.count
+    }
+    var verifiedCount: Int {
+        rows.filter {
+            ($0.appraisal?.verdict == "steal" || $0.appraisal?.verdict == "good") && $0.card != nil
+        }.count
     }
 
     func toggleSource(_ market: String) {

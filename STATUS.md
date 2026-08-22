@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-08-22 GROK — Scan box contrast + SCAN label
+
+Portrait web layout kept.  Filter headings and select values are centered.
+LIVE MARKET SCAN is nudged 1ch right.  The brown button is SCAN at 2.5x
+with no radar icon.  Hide Proxies has no REPACKS label and no bubble
+border.  Muted/subtle/border tokens are darker for AA.  Phone Account
+Website already defaults to https://dealdex.online.  Native iOS ScanView
+matches the web filters and SCAN button.  Branch `grok/scan-row-contrast`.
+Board `952f57b3`.
+
 ## 2026-08-22 GROK — Scan desk + Android/PWA isolated DD
 
 Scan is dark brown, full width of the eBay/Mercari column, with those

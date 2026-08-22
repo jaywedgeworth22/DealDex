@@ -29,7 +29,7 @@ fun AccountScreen(vm: DeskViewModel, state: DeskState) {
         Text("ACCOUNT", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Sign in to sync keys", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "Optional. Scan still works signed out. Use the same email as the website.",
+            "Leave Website as https://dealdex.online.  Scan already uses that host if the field is empty.  Change it only for a preview URL.  Sign-in and key sync talk to this address.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
@@ -38,8 +38,8 @@ fun AccountScreen(vm: DeskViewModel, state: DeskState) {
         OutlinedTextField(
             state.origin,
             vm::setOrigin,
-            label = { Text("Website origin") },
-            placeholder = { Text("https://your-dealdex.example") },
+            label = { Text("Website") },
+            placeholder = { Text("https://dealdex.online") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
         )

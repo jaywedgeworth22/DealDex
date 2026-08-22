@@ -11,6 +11,7 @@ struct SettingsView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
+                        .textContentType(.URL)
                     if desk.accountEmail.isEmpty {
                         Button(desk.accountBusy ? "Working…" : "Sign in with Google") {
                             Task { await desk.signInGoogle() }
@@ -35,7 +36,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Account")
                 } footer: {
-                    Text("Optional.  Scan works without signing in.  Google website accounts use Sign in with Google — email and password is only for accounts you created that way.")
+                    Text("Website is https://dealdex.online by default.  Leave it unless you are on a preview host.  Scan works without signing in.  Google website accounts use Sign in with Google — email and password is only for accounts you created that way.")
                 }
 
                 Section {

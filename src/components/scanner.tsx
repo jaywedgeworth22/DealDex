@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Copy, LoaderCircle, Radar } from "lucide-react";
+import { ArrowUpRight, Copy, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -159,7 +158,7 @@ export function Scanner() {
   return (
     <section className="min-w-0 space-y-4">
       <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-4">
-        <h2 className="text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</h2>
+        <h2 className="pl-[1ch] text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</h2>
         <div className="mt-2">
           <Input
             value={q}
@@ -235,9 +234,9 @@ export function Scanner() {
                 ["promo", "Promo"],
               ]}
             />
-            <label className="block min-w-0">
-              <span className="mb-0.5 block text-[10px] uppercase tracking-[0.12em] text-subtle">Repacks</span>
-              <span className="flex h-9 cursor-pointer select-none items-center gap-2 rounded-md border border-border bg-surface px-2 text-sm text-muted hover:text-fg">
+            <label className="flex min-w-0 cursor-pointer select-none flex-col items-center justify-end">
+              <span className="mb-0.5 block h-4" aria-hidden="true" />
+              <span className="flex h-9 items-center justify-center gap-2 text-sm text-fg">
                 <input
                   type="checkbox"
                   checked={hideRepacks}
@@ -249,14 +248,14 @@ export function Scanner() {
             </label>
           </div>
           <div className="flex w-full shrink-0 flex-col gap-2 sm:w-56">
-            <Button
+            <button
+              type="button"
               onClick={() => void run()}
               disabled={loading}
-              className="h-11 w-full bg-scan text-scan-fg hover:opacity-90"
+              className="inline-flex h-16 w-full items-center justify-center rounded-md bg-scan text-[2.1875rem] font-semibold leading-none tracking-[0.12em] text-scan-fg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {loading ? <LoaderCircle className="animate-spin" /> : <Radar />}
-              Scan
-            </Button>
+              {loading ? <LoaderCircle className="size-8 animate-spin" /> : "SCAN"}
+            </button>
             <div className="grid grid-cols-2 gap-2">
               <MarketplaceToggle
                 marketplace="ebay"
@@ -354,11 +353,11 @@ function FilterSelect<T extends string>({
 }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-0.5 block text-[10px] uppercase tracking-[0.12em] text-subtle">{label}</span>
+      <span className="mb-0.5 block text-center text-xs uppercase tracking-[0.12em] text-subtle">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
-        className="h-9 w-full rounded-md border border-border bg-surface px-2 text-sm text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+        className="filter-select h-9 w-full rounded-md border border-border bg-surface px-2 text-center text-sm text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
       >
         {options.map(([v, name]) => (
           <option key={v} value={v}>
