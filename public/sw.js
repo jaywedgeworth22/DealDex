@@ -19,6 +19,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/auth/")) return;
+  if (url.pathname.startsWith("/_vercel/")) return;
   if (req.mode === "navigate") {
     event.respondWith(fetch(req).catch(() => caches.match(req)));
     return;

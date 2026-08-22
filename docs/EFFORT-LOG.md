@@ -31,7 +31,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 
 ## In Progress
-(none)
+- **2026-08-22 — GROK — IN PROGRESS — Vercel Web Analytics.**  Branch `grok/vercel-analytics`, worktree `~/apps/dealdex-grok-vercel-analytics`.  `@vercel/analytics/react` in root layout, SW skip `/_vercel/`, privacy disclosure.  Board `e65921a0`.
 
 ## Completed
 - **2026-08-21 — ANTIGRAVITY — COMPLETED — Multi-platform power enhancements (Web, iOS, Android).**  Branch `ag/power-enhancements`, worktree `~/apps/dealdex-antigravity`.  Grading arbitrage & net flip calculators, repack filter, native iOS & Android Card Dossier, Evaluator, and Saved Ledger parity.
@@ -42,6 +42,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 
 ## Changelog of this log
+- 2026-08-22 — GROK: reserved Vercel Web Analytics (`grok/vercel-analytics`).
 - 2026-08-21 — CURSOR: deployed #118 / #117 (homepage subtitle + new og.jpg).
 - 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.
 - 2026-08-21 — CURSOR: landed #113 / #112 transparent DD favicon + ST-grid AppIcon.

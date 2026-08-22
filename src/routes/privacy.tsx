@@ -31,6 +31,14 @@ function PrivacyPage() {
           </p>
         </section>
         <section className="space-y-2">
+          <h2 className="font-display text-xl tracking-tight text-fg">Website analytics</h2>
+          <p>
+            The DealDex website uses Vercel Web Analytics to count visits and page views.  That
+            product does not use cookies and does not identify you.  Native apps do not send those
+            web page-view events.
+          </p>
+        </section>
+        <section className="space-y-2">
           <h2 className="font-display text-xl tracking-tight text-fg">Notifications</h2>
           <p>
             The iPhone app may ask to send local alerts when a listing matches a rule you set.
