@@ -1,5 +1,9 @@
 # Current Handoff
 
+## 2026-08-22 GROK — Vercel Web Analytics
+
+Mount `@vercel/analytics` on the TanStack Start root (`@vercel/analytics/react`, not the Next.js import).  Service worker skips `/_vercel/` so insight beacons are not intercepted.  Privacy page discloses cookie-less page-view counting.  After merge, Vercel Production on `dealdex.online` collects visits.  Branch `grok/vercel-analytics`.
+
 ## 2026-08-21 ANTIGRAVITY — Cross-Platform Power Enhancements (#119)
 
 Cross-platform power valuation engine, Mobile Card Dossier, Evaluator desk, Saved Appraisals ledger, and camera OCR integration across Web, iOS, and Android.

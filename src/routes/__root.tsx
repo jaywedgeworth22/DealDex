@@ -1,4 +1,5 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
@@ -96,6 +97,7 @@ function Root() {
             </AuthProvider>
           </MarkProvider>
         </ThemeProvider>
+        <Analytics />
         <Scripts />
       </body>
     </html>
