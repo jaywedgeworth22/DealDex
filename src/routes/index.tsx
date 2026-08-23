@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Smartphone } from "lucide-react";
 import { Shell } from "@/components/shell";
 import { Scanner } from "@/components/scanner";
 import { Evaluator } from "@/components/evaluator";
 import { MarketBoard } from "@/components/market-board";
+import { Button } from "@/components/ui/button";
 import { APP_SUBTITLE } from "@/lib/copy";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -18,13 +20,14 @@ function Home() {
           DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask against a
           book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any keys you add.
         </p>
-        <p className="mt-3 text-sm text-muted">
-          Android and iPhone apps are on{" "}
-          <a href="/install" className="text-fg underline-offset-4 hover:underline">
-            Apps
-          </a>
-          .
-        </p>
+        <div className="mt-5 text-left">
+          <Button variant="secondary" asChild>
+            <Link to="/install">
+              <Smartphone />
+              Apps
+            </Link>
+          </Button>
+        </div>
       </section>
       <Scanner />
       <details className="mt-14">
