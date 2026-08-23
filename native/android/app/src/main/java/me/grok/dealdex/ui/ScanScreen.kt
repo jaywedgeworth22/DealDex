@@ -21,7 +21,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +36,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +52,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import me.grok.dealdex.R
 import me.grok.dealdex.data.ScoredListing
 
@@ -55,6 +65,7 @@ fun ScanScreen(
     val rows = vm.visible()
     val ebayCount = state.rows.count { it.listing.marketplace == "ebay" }
     val mercariCount = state.rows.count { it.listing.marketplace == "mercari" }
+    val dealCount = state.rows.count { it.appraisal?.verdict == "steal" || it.appraisal?.verdict == "good" }
     val width = LocalConfiguration.current.screenWidthDp
     val cols = if (width >= 600) 2 else 1
     Column(
@@ -84,19 +95,39 @@ fun ScanScreen(
             onValueChange = vm::setQuery,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            placeholder = { Text("All Pokémon") },
+            placeholder = { Text("All Pokémon  ·  leave blank to scan everything") },
         )
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterMenu("Verdict", state.verdictFilter, listOf("any" to "Any", "steal" to "Steal", "good" to "Good", "fair" to "Fair", "high" to "High"), vm::setVerdictFilter, Modifier.weight(1f))
+            FilterMenu("Price", state.priceCap, listOf("any" to "Any $", "10" to "≤ $10", "25" to "≤ $25", "50" to "≤ $50", "100" to "≤ $100"), vm::setPriceCap, Modifier.weight(1f))
+            FilterMenu("Cond.", state.condition, listOf("any" to "Any", "raw" to "Raw", "graded" to "Graded"), vm::setCondition, Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(6.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterMenu("Spread", state.spreadMin, listOf("any" to "Any %", "10" to "≥ 10%", "20" to "≥ 20%", "30" to "≥ 30%"), vm::setSpreadMin, Modifier.weight(1f))
+            FilterMenu("Finish", state.finish, listOf("any" to "Any", "holo" to "Holo", "reverse" to "Reverse", "full art" to "Full art"), vm::setFinish, Modifier.weight(1f))
+            Row(
+                Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(checked = state.hideProxies, onCheckedChange = vm::setHideProxies)
+                Text("Hide proxies", style = MaterialTheme.typography.labelSmall)
+            }
+        }
         Spacer(Modifier.height(8.dp))
         Button(
             onClick = { vm.scan() },
             enabled = !state.loading,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
             colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4A3224),
                 contentColor = Color(0xFFF6F3EA),
             ),
         ) {
-            Text("Scan")
+            Text("SCAN", fontSize = 28.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
         }
         Row(
             Modifier
@@ -116,6 +147,16 @@ fun ScanScreen(
                 count = mercariCount,
                 modifier = Modifier.weight(1f),
             ) { vm.toggleSource("mercari") }
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            FilterChip(selected = state.view == "all", onClick = { vm.setView("all") }, label = { Text("All") })
+            FilterChip(selected = state.view == "deals", onClick = { vm.setView("deals") }, label = { Text("Deals $dealCount") })
+            FilterChip(selected = state.view == "verified", onClick = { vm.setView("verified") }, label = { Text("Verified") })
         }
         Spacer(Modifier.height(10.dp))
         when {
@@ -139,6 +180,44 @@ fun ScanScreen(
                         onSave = { item -> vm.saveAppraisal(item) },
                     )
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FilterMenu(
+    label: String,
+    value: String,
+    options: List<Pair<String, String>>,
+    onPick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var open by remember { mutableStateOf(false) }
+    val shown = options.firstOrNull { it.first == value }?.second ?: value
+    ExposedDropdownMenuBox(expanded = open, onExpandedChange = { open = it }, modifier = modifier) {
+        OutlinedTextField(
+            value = shown,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = open) },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+            textStyle = MaterialTheme.typography.labelSmall,
+            singleLine = true,
+        )
+        ExposedDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            options.forEach { (id, title) ->
+                DropdownMenuItem(
+                    text = { Text(title) },
+                    onClick = {
+                        onPick(id)
+                        open = false
+                    },
+                )
             }
         }
     }

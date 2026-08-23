@@ -1,7 +1,9 @@
 package me.grok.dealdex.data
 
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URLEncoder
@@ -10,7 +12,7 @@ import java.util.concurrent.TimeUnit
 object Market {
     private val http = OkHttpClient.Builder()
         .connectTimeout(20, TimeUnit.SECONDS)
-        .readTimeout(35, TimeUnit.SECONDS)
+        .readTimeout(90, TimeUnit.SECONDS)
         .build()
 
     private const val JINA = "https://r.jina.ai/"
@@ -30,7 +32,103 @@ object Market {
 
     private fun enc(s: String) = URLEncoder.encode(s, "UTF-8")
 
-    fun scan(query: String, keys: DeskKeys = DeskKeys(), sources: Collection<String> = listOf("ebay", "mercari")): List<ScoredListing> {
+    fun scan(
+        query: String,
+        keys: DeskKeys = DeskKeys(),
+        sources: Collection<String> = listOf("ebay", "mercari"),
+        origin: String = "https://dealdex.net",
+    ): List<ScoredListing> {
+        val site = origin.trim().trimEnd('/').ifBlank { "https://dealdex.net" }
+        try {
+            val rows = scanViaSite(site, query, keys, sources)
+            if (rows.isNotEmpty()) return rows
+        } catch (_: Exception) {
+            // Fall through to on-device scrape.  Scan never requires sign-in.
+        }
+        return scanOnDevice(query, keys, sources)
+    }
+
+    private fun scanViaSite(origin: String, query: String, keys: DeskKeys, sources: Collection<String>): List<ScoredListing> {
+        val payload = JSONObject()
+            .put("q", query)
+            .put("sources", JSONArray(sources.toList()))
+            .put(
+                "keys",
+                JSONObject()
+                    .put("justtcg", keys.justTcg)
+                    .put("pricecharting", keys.priceCharting)
+                    .put("pokemontcg", keys.pokemonTcg),
+            )
+            .toString()
+        val req = Request.Builder()
+            .url("$origin/api/native/scan")
+            .post(payload.toRequestBody("application/json; charset=utf-8".toMediaType()))
+            .header("Accept", "application/json")
+            .header("User-Agent", "DealDex/1.0 (android)")
+            .build()
+        http.newCall(req).execute().use { res ->
+            val raw = res.body?.string().orEmpty()
+            val json = JSONObject(raw.ifBlank { "{}" })
+            if (!res.isSuccessful) {
+                throw RuntimeException(json.optString("error", "Scan failed (${res.code})"))
+            }
+            val arr = json.optJSONArray("rows") ?: return emptyList()
+            val out = ArrayList<ScoredListing>(arr.length())
+            for (i in 0 until arr.length()) {
+                parseNativeRow(arr.optJSONObject(i))?.let { out.add(it) }
+            }
+            return out
+        }
+    }
+
+    private fun parseNativeRow(obj: JSONObject?): ScoredListing? {
+        if (obj == null) return null
+        val id = obj.optString("id")
+        val title = obj.optString("title")
+        if (id.isBlank() || title.isBlank()) return null
+        val listing = LiveListing(
+            id = id,
+            marketplace = obj.optString("marketplace"),
+            title = title,
+            url = obj.optString("url"),
+            price = num(obj, "price"),
+            shipping = num(obj, "shipping") ?: 0.0,
+            image = obj.optString("image").ifBlank { null },
+        )
+        val cardObj = obj.optJSONObject("card")
+        val card = if (cardObj != null && cardObj.optString("id").isNotBlank()) {
+            TcgCard(
+                id = cardObj.optString("id"),
+                name = cardObj.optString("name"),
+                localId = cardObj.optString("localId"),
+                setName = cardObj.optString("setName"),
+                setId = cardObj.optString("setId"),
+                rarity = cardObj.optString("rarity").ifBlank { null },
+                image = cardObj.optString("image").ifBlank { null },
+                finishes = emptyList(),
+                cardmarketEur = null,
+            )
+        } else null
+        val a = obj.optJSONObject("appraisal")
+        val appraisal = if (a != null) {
+            Appraisal(
+                market = num(a, "market"),
+                adjusted = num(a, "adjusted"),
+                allIn = num(a, "allIn") ?: 0.0,
+                spread = num(a, "spread"),
+                verdict = a.optString("verdict", "fair"),
+            )
+        } else null
+        return ScoredListing(listing, card, appraisal, obj.optString("grade", "raw"))
+    }
+
+    private fun num(o: JSONObject, key: String): Double? {
+        if (!o.has(key) || o.isNull(key)) return null
+        val d = o.optDouble(key, Double.NaN)
+        return d.takeIf { !it.isNaN() }
+    }
+
+    private fun scanOnDevice(query: String, keys: DeskKeys, sources: Collection<String>): List<ScoredListing> {
         val q = query.trim()
         val ebayQ = if (Appraise.significantTokens(q).isEmpty()) "pokemon" else
             if (q.contains("pokemon", true) || q.contains("tcg", true)) q else "$q pokemon"

@@ -46,6 +46,12 @@ data class DeskState(
     val accountEmail: String = "",
     val accountBusy: Boolean = false,
     val accountNote: String? = null,
+    val hideProxies: Boolean = true,
+    val verdictFilter: String = "any",
+    val priceCap: String = "any",
+    val condition: String = "any",
+    val spreadMin: String = "any",
+    val finish: String = "any",
 )
 
 class DeskViewModel(app: Application) : AndroidViewModel(app) {
@@ -62,7 +68,7 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
             justTcg = prefs.justTcg,
             priceCharting = prefs.priceCharting,
             pokemonTcg = prefs.pokemonTcg,
-            origin = prefs.origin,
+            origin = prefs.origin.ifBlank { "https://dealdex.net" },
             loginEmail = prefs.email,
             accountEmail = if (prefs.signedIn()) prefs.email else "",
         )
@@ -77,6 +83,12 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setQuery(q: String) { _state.value = _state.value.copy(query = q) }
     fun setView(v: String) { _state.value = _state.value.copy(view = v) }
+    fun setHideProxies(v: Boolean) { _state.value = _state.value.copy(hideProxies = v) }
+    fun setVerdictFilter(v: String) { _state.value = _state.value.copy(verdictFilter = v) }
+    fun setPriceCap(v: String) { _state.value = _state.value.copy(priceCap = v) }
+    fun setCondition(v: String) { _state.value = _state.value.copy(condition = v) }
+    fun setSpreadMin(v: String) { _state.value = _state.value.copy(spreadMin = v) }
+    fun setFinish(v: String) { _state.value = _state.value.copy(finish = v) }
     fun toggleSource(market: String) {
         val current = _state.value.sources
         val next = if (market in current) {
@@ -126,7 +138,7 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
         prefs.justTcg = _state.value.justTcg
         prefs.priceCharting = _state.value.priceCharting
         prefs.pokemonTcg = _state.value.pokemonTcg
-        _state.value = _state.value.copy(settingsNote = "Saved on this phone. Scan uses them even if DealDex.com is down.")
+        _state.value = _state.value.copy(settingsNote = "Saved on this phone.  Scan uses them even if dealdex.net is down.")
     }
 
     fun scan(q: String = _state.value.query) {
@@ -135,7 +147,8 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
         val sources = _state.value.sources
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val rows = Market.scan(q, desk, sources)
+                val origin = _state.value.origin.ifBlank { "https://dealdex.net" }
+                val rows = Market.scan(q, desk, sources, origin)
                 _state.value = _state.value.copy(loading = false, rows = rows)
                 fireAlerts(rows)
             } catch (e: Exception) {
@@ -266,12 +279,41 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
     fun visible(): List<ScoredListing> {
         val s = _state.value
         return s.rows.filter { row ->
-            when (s.view) {
-                "ebay" -> row.listing.marketplace == "ebay"
-                "mercari" -> row.listing.marketplace == "mercari"
-                "deals" -> row.appraisal?.verdict == "steal" || row.appraisal?.verdict == "good"
-                else -> true
+            if (s.hideProxies) {
+                val t = row.listing.title.lowercase()
+                if ("proxy" in t || "repack" in t || "replica" in t) return@filter false
             }
+            when (s.view) {
+                "ebay" -> if (row.listing.marketplace != "ebay") return@filter false
+                "mercari" -> if (row.listing.marketplace != "mercari") return@filter false
+                "deals" -> {
+                    val v = row.appraisal?.verdict
+                    if (v != "steal" && v != "good") return@filter false
+                }
+                "verified" -> {
+                    val v = row.appraisal?.verdict
+                    if (row.card == null || (v != "steal" && v != "good")) return@filter false
+                }
+                else -> {}
+            }
+            if (s.verdictFilter != "any" && row.appraisal?.verdict != s.verdictFilter) return@filter false
+            if (s.priceCap != "any") {
+                val cap = s.priceCap.toDoubleOrNull() ?: return@filter false
+                val price = row.listing.price ?: return@filter false
+                if (price > cap) return@filter false
+            }
+            if (s.condition == "raw" && row.grade != "raw") return@filter false
+            if (s.condition == "graded" && row.grade == "raw") return@filter false
+            if (s.spreadMin != "any") {
+                val min = s.spreadMin.toDoubleOrNull() ?: return@filter false
+                val spread = row.appraisal?.spread ?: return@filter false
+                if (spread < min / 100) return@filter false
+            }
+            if (s.finish != "any") {
+                val blob = row.listing.title.lowercase()
+                if (s.finish !in blob) return@filter false
+            }
+            true
         }
     }
 }

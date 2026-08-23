@@ -1,5 +1,9 @@
 # Current Handoff
 
+## 2026-08-22 CURSOR — Publish native apps against dealdex.net
+
+Android Scan now POSTs to `https://dealdex.net/api/native/scan` first (same unsigned website scoring as iOS), then falls back to on-device scrape.  Scan chrome matches the site: SCAN, filters, Hide proxies, All/Deals/Verified.  Sideload APK is `public/DealDex.apk` (versionName 1.0.2).  iOS already used the website; TestFlight ship uses bundle `net.dealdex`.  Branch `cursor/native-publish`.
+
 ## 2026-08-22 CURSOR — Vercel Speed Insights
 
 Mount `@vercel/speed-insights` on the TanStack Start root

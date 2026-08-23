@@ -36,7 +36,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
-(none)
+- **2026-08-22 — CURSOR — IN PROGRESS — Publish native Android + iOS with website scan scoring.**  Branch `cursor/native-publish`, worktree `~/apps/dealdex-cursor`.  Android now posts to `/api/native/scan` like iOS; rebuild `public/DealDex.apk`; TestFlight via ios-fleet (`net.dealdex`).
 
 ## Completed
 - **2026-08-22 — ANTIGRAVITY — COMPLETED — Build app under net.dealdex bundle, dealdex.net domain, sync iOS/Android/Favicon/ASC icons.**  Branch `ag/bundle-net-and-builds`, worktree `~/apps/dealdex-antigravity`.
