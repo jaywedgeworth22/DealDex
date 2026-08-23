@@ -3,7 +3,7 @@ import { Shell } from "@/components/shell";
 import { Scanner } from "@/components/scanner";
 import { Evaluator } from "@/components/evaluator";
 import { MarketBoard } from "@/components/market-board";
-import { APP_HOST, APP_SUBTITLE } from "@/lib/copy";
+import { APP_SUBTITLE } from "@/lib/copy";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -14,7 +14,6 @@ function Home() {
         <h1 className="mx-auto max-w-4xl font-display text-4xl tracking-tight sm:text-5xl">
           {APP_SUBTITLE}
         </h1>
-        <p className="mt-3 text-lg text-subtle">{APP_HOST}</p>
         <p className="mt-4 text-left text-muted">
           DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask against a
           book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any keys you add.
