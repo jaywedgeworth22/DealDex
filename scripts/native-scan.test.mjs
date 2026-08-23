@@ -30,6 +30,18 @@ test("native scan and oauth routes exist and are public (no session gate on scan
   assert.match(oauth, /grok-google/);
 });
 
+test("Android scan talks to the website without requiring a token", () => {
+  const market = read("native/android/app/src/main/java/me/grok/dealdex/data/Market.kt");
+  assert.match(market, /\/api\/native\/scan/);
+  assert.match(market, /scanViaSite/);
+  assert.match(market, /Scan never requires sign-in/);
+  const scan = read("native/android/app/src/main/java/me/grok/dealdex/ui/ScanScreen.kt");
+  assert.match(scan, /Text\("SCAN"/);
+  assert.match(scan, /Hide proxies/);
+  assert.match(scan, /leave blank to scan everything/);
+  assert.doesNotMatch(scan, /Text\("Scan"\)/);
+});
+
 test("iOS scan talks to the website without requiring a token", () => {
   const market = read("native/ios/DealDex/Market.swift");
   assert.match(market, /\/api\/native\/scan/);

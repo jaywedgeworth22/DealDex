@@ -18,7 +18,7 @@ the listing at it.
 **SKU:** `dealdex`  
 **App icon:** overlapping glossy red + blue bubble-letter Ds, thick yellow rim, on the Socratic.Trade tiled field (not the in-app wordmark).
 **Category:** Shopping  
-**Marketing version:** 1.0.1  
+**Marketing version:** 1.0.2  
 **Privacy:** `https://dealdex.net/privacy`  
 **Support:** `https://dealdex.net/`
 
