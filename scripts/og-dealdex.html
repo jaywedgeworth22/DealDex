@@ -14,60 +14,64 @@
         width: 1200px;
         height: 630px;
         box-sizing: border-box;
-        padding: 36px 40px 88px;
+        padding: 24px 28px 100px;
         background: #ffffff;
         position: relative;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: stretch;
-      }
-      .rule {
-        position: absolute;
-        inset: 18px;
-        border: 1px solid rgba(26, 27, 22, 0.1);
-        pointer-events: none;
+        align-items: center;
+        text-align: center;
       }
       .wordmark {
         display: block;
-        width: auto;
-        height: 400px;
-        max-width: 1120px;
-        max-height: 64%;
+        width: 1140px;
+        height: auto;
+        max-height: 430px;
         object-fit: contain;
-        object-position: left center;
+        object-position: center;
       }
       p {
-        margin: 16px 0 0;
-        font-size: 48px;
+        margin: 10px 0 0;
+        font-size: 36px;
         font-weight: 500;
-        color: #5c5a52;
+        color: #4a4842;
         letter-spacing: 0.01em;
-        max-width: 1120px;
+        max-width: 1080px;
         line-height: 1.2;
+        text-align: center;
       }
       .foot {
         position: absolute;
-        left: 40px;
-        right: 40px;
-        bottom: 32px;
+        left: 64px;
+        right: 64px;
+        bottom: 28px;
         display: flex;
-        justify-content: space-between;
-        color: #6f6c63;
-        font-size: 18px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+      }
+      .foot img {
+        display: block;
+        height: 34px;
+        width: auto;
+      }
+      .domain {
+        color: #8a877e;
+        font-size: 26px;
+        font-weight: 400;
+        letter-spacing: 0.04em;
       }
     </style>
   </head>
   <body>
     <div class="frame">
-      <div class="rule"></div>
       <img class="wordmark" src="../public/marks/dealdex-wordmark.png" alt="DealDex" />
       <p>Identify Best-Priced Pokémon Card Listings</p>
       <div class="foot">
-        <span>eBay · Mercari</span>
-        <span>dealdex.net</span>
+        <img src="../public/marks/ebay.svg" alt="eBay" />
+        <span class="domain">DealDex.net</span>
+        <img src="../public/marks/mercari.svg" alt="Mercari" />
       </div>
     </div>
   </body>

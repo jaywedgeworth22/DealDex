@@ -90,9 +90,8 @@ All / Deals / Verified plus compact filter selects stay in the same card.
 Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
 `horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
 
-OG wordmark is ~400px tall (most of the 630 card) with a 48px subtitle.
-Footer is eBay · Mercari and dealdex.net (no TCGPlayer).  Re-render:
-`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=share-20260823`.
+OG share card: centered 1140px wordmark, 36px subtitle, eBay + DealDex.net + Mercari
+footer.  Re-render: `node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=share-20260823b`.
 
 
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
