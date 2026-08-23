@@ -39,12 +39,14 @@ test("scan box has no suggested Pokémon chips and one marketplace toggle pair",
   assert.equal((scan.match(/MarketplaceToggle/g) || []).length, 3);
 });
 
-test("OG wordmark fills most of the 1200×630 card without TCGPlayer", () => {
+test("OG wordmark is centered and large, with DealDex.net between marketplace marks", () => {
   const og = read("scripts/og-dealdex.html");
-  assert.match(og, /height:\s*400px/);
-  assert.match(og, /max-width:\s*1120px/);
-  assert.match(og, /font-size:\s*48px/);
-  assert.match(og, /dealdex\.net/);
+  assert.match(og, /width:\s*1140px/);
+  assert.match(og, /max-height:\s*430px/);
+  assert.match(og, /text-align:\s*center/);
+  assert.match(og, /DealDex\.net/);
+  assert.match(og, /ebay\.svg/);
+  assert.match(og, /mercari\.svg/);
   assert.doesNotMatch(og, /TCGPlayer/i);
   assert.doesNotMatch(og, /dealdex\.online/);
 });
