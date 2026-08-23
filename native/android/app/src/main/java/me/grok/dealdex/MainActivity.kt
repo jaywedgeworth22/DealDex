@@ -1,6 +1,7 @@
 package me.grok.dealdex
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 33) askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
+        handleAuth(intent)
         setContent {
             DealDexTheme {
                 val nav = rememberNavController()
@@ -116,5 +118,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleAuth(intent)
+    }
+
+    private fun handleAuth(intent: Intent?) {
+        val data = intent?.data ?: return
+        if (data.scheme == "dealdex") vm.completeOAuth(data)
     }
 }

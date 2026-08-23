@@ -30,7 +30,7 @@ enum NativeAuth {
     private static var heldSession: ASWebAuthenticationSession?
     private static var heldPresenter: NativeAuthPresenter?
 
-    static func signIn(origin: String, provider: String = "grok-google") async throws -> AccountApi.Session {
+    static func signIn(origin: String, provider: String = "google") async throws -> AccountApi.Session {
         let site = Self.normalized(origin)
         guard let start = URL(string: "\(site)/api/native/oauth?provider=\(provider)") else {
             throw NativeAuthError.server("Website origin is not a valid URL.")

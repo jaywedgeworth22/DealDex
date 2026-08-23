@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.AndroidViewModel
@@ -17,6 +18,7 @@ import me.grok.dealdex.data.AccountApi
 import me.grok.dealdex.data.AlertRule
 import me.grok.dealdex.data.DeskKeys
 import me.grok.dealdex.data.Market
+import me.grok.dealdex.data.NativeAuth
 import me.grok.dealdex.data.Prefs
 import me.grok.dealdex.data.SavedAppraisal
 import me.grok.dealdex.data.ScoredListing
@@ -162,34 +164,29 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
         _state.value = _state.value.copy(rules = next)
     }
 
-    fun signIn(signup: Boolean) {
-        val origin = _state.value.origin.trim().trimEnd('/')
-        val email = _state.value.loginEmail.trim()
-        val password = _state.value.loginPassword
-        if (origin.isBlank() || email.isBlank() || password.length < 8) {
-            _state.value = _state.value.copy(accountNote = "Website origin, email, and a password of 8+ characters.")
-            return
-        }
-        _state.value = _state.value.copy(accountBusy = true, accountNote = null)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val session = AccountApi.signIn(origin, email, password, signup)
-                prefs.origin = origin
-                prefs.token = session.token
-                prefs.email = session.email
-                _state.value = _state.value.copy(
-                    accountBusy = false,
-                    accountEmail = session.email,
-                    origin = origin,
-                    loginPassword = "",
-                    accountNote = "Signed in. Keys still live on this phone. Pull or push to sync.",
-                )
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(
-                    accountBusy = false,
-                    accountNote = e.message ?: "Could not reach the website. Scan still works with saved keys.",
-                )
-            }
+    fun startOAuth(ctx: Context, provider: String) {
+        val origin = _state.value.origin.ifBlank { NativeAuth.DEFAULT_ORIGIN }
+        NativeAuth.start(ctx, origin, provider)
+    }
+
+    fun completeOAuth(uri: Uri) {
+        try {
+            val session = NativeAuth.parse(uri)
+            val origin = NativeAuth.normalized(_state.value.origin)
+            prefs.origin = origin
+            prefs.token = session.token
+            prefs.email = session.email
+            _state.value = _state.value.copy(
+                accountBusy = false,
+                accountEmail = session.email.ifBlank { "Signed in" },
+                origin = origin,
+                accountNote = "Signed in. Keys still live on this phone. Pull or push to sync.",
+            )
+        } catch (e: Exception) {
+            _state.value = _state.value.copy(
+                accountBusy = false,
+                accountNote = (e.message ?: "Sign-in failed") + " Scan still works with saved keys.",
+            )
         }
     }
 

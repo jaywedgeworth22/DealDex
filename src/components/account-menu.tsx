@@ -1,16 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Bell, Bookmark, KeyRound, Menu, Monitor, Moon, ScanSearch, Sun } from "lucide-react";
+import { Bell, Bookmark, KeyRound, Menu, ScanSearch } from "lucide-react";
 import { authEnabled, signOut } from "@/lib/auth/client";
 import { useCurrentUser } from "@/lib/auth/use-current-user";
-import { useTheme, type ThemePref } from "@/lib/theme";
-import { cn } from "@/lib/utils";
-
-const THEMES: { id: ThemePref; label: string; icon: typeof Sun }[] = [
-  { id: "light", label: "Light", icon: Sun },
-  { id: "dark", label: "Dark", icon: Moon },
-  { id: "system", label: "System", icon: Monitor },
-];
 
 function useDismiss(open: boolean, onClose: () => void) {
   const root = useRef<HTMLDivElement>(null);
@@ -34,7 +26,6 @@ function MenuBody({
   signedIn: boolean;
   heading?: { name: string; email?: string };
 }) {
-  const { pref, setPref } = useTheme();
   return (
     <div
       role="menu"
@@ -75,26 +66,6 @@ function MenuBody({
         >
           <KeyRound className="size-4" /> Settings
         </Link>
-      </div>
-      <p className="px-3 pt-2 text-[11px] uppercase tracking-[0.14em] text-subtle">Appearance</p>
-      <div className="mt-1 px-2">
-        {THEMES.map((t) => {
-          const Icon = t.icon;
-          return (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setPref(t.id)}
-              className={cn(
-                "flex h-10 w-full items-center gap-2 rounded-md px-2 text-sm",
-                pref === t.id ? "bg-elevated text-fg" : "text-muted hover:bg-elevated hover:text-fg",
-              )}
-            >
-              <Icon className="size-4" />
-              {t.label}
-            </button>
-          );
-        })}
       </div>
       <div className="mt-1 border-t border-border px-2 pt-1">
         {signedIn && authEnabled ? (
