@@ -1,5 +1,14 @@
 # Current Handoff
 
+## 2026-08-23 CURSOR — iOS version regimen (1.0.N + UTC build)
+
+DealDex ASC showed `1.0 (1)` because `CURRENT_PROJECT_VERSION` was stuck at `1`
+while marketing was `1.0.2`.  Fleet regimen: marketing `1.0.<seq>`, build UTC
+`YYYYMMDDHHMM` so ASC reads `1.0.2 (202608230250)`.  `project.yml`, `pbxproj`,
+`CLAUDE.md`, and `ios-identity.test.mjs` updated.  Next Mac `ios-ship` run
+ships the next patch via `ios-fleet/ship-testflight.sh`.  Branch
+`cursor/ios-version-regimen-709e`.
+
 ## 2026-08-22 CURSOR — Publish native apps against dealdex.net
 
 Android Scan now POSTs to `https://dealdex.net/api/native/scan` first (same unsigned website scoring as iOS), then falls back to on-device scrape.  Scan chrome matches the site: SCAN, filters, Hide proxies, All/Deals/Verified.  Sideload APK is `public/DealDex.apk` (versionName 1.0.2).  iOS already used the website; TestFlight ship uses bundle `net.dealdex`.  Branch `cursor/native-publish`.
