@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lead } from "@/components/lead";
+import { AppearanceToggle } from "@/components/appearance-toggle";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { testDeskKey } from "@/lib/server/tcg";
 import { getAccountKeys, saveAccountKeys } from "@/lib/server/desk-keys";
@@ -97,7 +98,15 @@ function SettingsPage() {
   return (
     <Shell>
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Settings</p>
-      <h1 className="mt-1 font-display text-4xl tracking-tight">API Desks</h1>
+      <h1 className="mt-1 font-display text-4xl tracking-tight">Settings</h1>
+      <section className="mt-8">
+        <h2 className="font-display text-xl tracking-tight">Appearance</h2>
+        <p className="mt-1 text-sm text-muted">Light, dark, or match this device.</p>
+        <div className="mt-3">
+          <AppearanceToggle />
+        </div>
+      </section>
+      <h2 className="mt-10 font-display text-2xl tracking-tight">API desks</h2>
       <Lead>
         {user
           ? "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device and copy to your DealDex account when you save."

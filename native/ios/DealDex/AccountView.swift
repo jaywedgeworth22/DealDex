@@ -12,10 +12,6 @@ struct AccountView: View {
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                         .textContentType(.URL)
-                    TextField("Email", text: $desk.loginEmail)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.emailAddress)
-                    SecureField("Password", text: $desk.loginPassword)
                 } header: {
                     Text("Website")
                 } footer: {
@@ -24,15 +20,19 @@ struct AccountView: View {
                 if desk.accountEmail.isEmpty {
                     Section {
                         Button(desk.accountBusy ? "Working…" : "Sign in with Google") {
-                            Task { await desk.signInGoogle() }
+                            Task { await desk.signInSocial("google") }
                         }
                         .disabled(desk.accountBusy)
-                        Button(desk.accountBusy ? "Working…" : "Sign in") { Task { await desk.signIn(signup: false) } }
-                            .disabled(desk.accountBusy)
-                        Button("Create account") { Task { await desk.signIn(signup: true) } }
-                            .disabled(desk.accountBusy)
+                        Button(desk.accountBusy ? "Working…" : "Sign in with Apple") {
+                            Task { await desk.signInSocial("apple") }
+                        }
+                        .disabled(desk.accountBusy)
+                        Button(desk.accountBusy ? "Working…" : "Sign in with X") {
+                            Task { await desk.signInSocial("twitter") }
+                        }
+                        .disabled(desk.accountBusy)
                     } footer: {
-                        Text("Optional.  Scan works signed out with keys saved on this phone.  Google accounts use Sign in with Google.")
+                        Text("Optional.  Scan works signed out with keys saved on this phone.")
                     }
                 } else {
                     Section {

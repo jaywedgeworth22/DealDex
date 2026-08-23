@@ -72,3 +72,41 @@ test("header wordmark PNG is cache-busted so the 3D title replaces the arched ma
   const mark = readFileSync(join(ROOT, "src/components/app-mark.tsx"), "utf8");
   assert.match(mark, /dealdex-wordmark\.png\?v=/);
 });
+
+test("login is social-only: Google, Apple, X — no email/password form", () => {
+  const login = readFileSync(join(ROOT, "src/routes/login.tsx"), "utf8");
+  assert.match(login, /Continue with \{p\.label\}/);
+  assert.match(login, /SOCIAL_PROVIDERS/);
+  assert.doesNotMatch(login, /signIn\.email/);
+  assert.doesNotMatch(login, /type="password"/);
+  assert.doesNotMatch(login, /Create an account/);
+});
+
+test("settings has a 3-way appearance toggle above API desks, not in the hamburger", () => {
+  const settings = readFileSync(join(ROOT, "src/routes/settings.tsx"), "utf8");
+  const menu = readFileSync(join(ROOT, "src/components/account-menu.tsx"), "utf8");
+  assert.match(settings, /AppearanceToggle/);
+  assert.match(settings, /API desks/);
+  const appearanceAt = settings.indexOf("Appearance");
+  const desksAt = settings.indexOf("API desks");
+  assert.ok(appearanceAt > 0 && desksAt > appearanceAt);
+  assert.doesNotMatch(menu, /Appearance/);
+  const toggle = readFileSync(join(ROOT, "src/components/appearance-toggle.tsx"), "utf8");
+  assert.match(toggle, /Light/);
+  assert.match(toggle, /Dark/);
+  assert.match(toggle, /System/);
+});
+
+test("auth talks to Google/Apple/X directly, not the Grok broker", () => {
+  const server = readFileSync(join(ROOT, "src/lib/auth/server.ts"), "utf8");
+  const providers = readFileSync(join(ROOT, "src/lib/auth/providers.ts"), "utf8");
+  const email = readFileSync(join(ROOT, "src/lib/auth/email-password.ts"), "utf8");
+  assert.match(server, /socialProviders/);
+  assert.doesNotMatch(server, /genericOAuth/);
+  assert.doesNotMatch(server, /GROK_AUTH_ISSUER/);
+  assert.match(providers, /id: "google"/);
+  assert.match(providers, /id: "apple"/);
+  assert.match(providers, /id: "twitter"/);
+  assert.match(email, /emailAndPasswordEnabled = false/);
+});
+

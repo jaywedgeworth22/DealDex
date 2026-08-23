@@ -17,6 +17,7 @@
  * `client.ts` (`signIn` → `openSignInPopup`).
  */
 import { auth, SESSION_TOKEN_COOKIE } from "./server";
+import { SOCIAL_PROVIDER_IDS, type SocialProviderId } from "./providers";
 
 /** Message shape the popup posts to the opener (must match `client.ts`). */
 type PopupMessage = {
@@ -52,8 +53,8 @@ export async function handleAuthPopupRequest(request: Request): Promise<Response
   }
 
   const providerId = url.searchParams.get("providerId")?.trim();
-  if (!providerId) {
-    return new Response("Missing providerId", {
+  if (!providerId || !SOCIAL_PROVIDER_IDS.has(providerId)) {
+    return new Response("Unknown providerId", {
       status: 400,
       headers: { "content-type": "text/plain; charset=utf-8" },
     });
@@ -62,9 +63,9 @@ export async function handleAuthPopupRequest(request: Request): Promise<Response
   // Stay first-party for the callback so the session cookie lands in THIS popup.
   const back = `${url.origin}/auth/popup?done=1`;
   try {
-    const apiRes = await auth.api.signInWithOAuth2({
+    const apiRes = await auth.api.signInSocial({
       body: {
-        providerId,
+        provider: providerId as SocialProviderId,
         callbackURL: back,
         errorCallbackURL: `${back}&error=1`,
       },
