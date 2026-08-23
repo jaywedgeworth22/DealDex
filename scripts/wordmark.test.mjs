@@ -61,6 +61,13 @@ test("header and login use DealDexWordmark, not a chip plus serif title", () => 
   assert.doesNotMatch(login, /<AppMark/);
 });
 
+test("settings has no App Mark picker — the official wordmark is fixed", () => {
+  const settings = readFileSync(join(ROOT, "src/routes/settings.tsx"), "utf8");
+  assert.doesNotMatch(settings, /App Mark/);
+  assert.doesNotMatch(settings, /useAppMark/);
+  assert.doesNotMatch(settings, /APP_MARKS/);
+});
+
 test("header wordmark PNG is cache-busted so the 3D title replaces the arched mark", () => {
   const mark = readFileSync(join(ROOT, "src/components/app-mark.tsx"), "utf8");
   assert.match(mark, /dealdex-wordmark\.png\?v=/);
