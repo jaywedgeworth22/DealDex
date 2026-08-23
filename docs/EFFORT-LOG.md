@@ -36,6 +36,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
+- **2026-08-23 — CURSOR — IN PROGRESS — iOS version regimen (1.0.N + UTC build, not 1.0 (1)).**  Branch `cursor/ios-version-regimen-709e`.
 - **2026-08-23 — CURSOR — IN PROGRESS — Settings appearance 3-way + native Google/Apple/X auth (no Grok broker, no email/password).**  Branch `cursor/login-social`, worktree `~/apps/dealdex-cursor-og2`.
 
 ## Completed
