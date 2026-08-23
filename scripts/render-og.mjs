@@ -21,5 +21,10 @@ await page.screenshot({ path: png, type: "png" });
 await browser.close();
 
 const ff = spawnSync("ffmpeg", ["-y", "-i", png, "-q:v", "4", jpg], { stdio: "inherit" });
-if (ff.status !== 0) process.exit(ff.status ?? 1);
+if (ff.status !== 0) {
+  const sips = spawnSync("sips", ["-s", "format", "jpeg", "-s", "formatOptions", "80", png, "--out", jpg], {
+    stdio: "inherit",
+  });
+  if (sips.status !== 0) process.exit(sips.status ?? ff.status ?? 1);
+}
 console.log("wrote", jpg);
