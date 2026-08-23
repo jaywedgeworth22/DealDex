@@ -39,7 +39,7 @@ the isolated transparent DD mark.  Do not put the in-app wordmark on the home
 screen.
 
 In-app / web **title** is `DealDexWordmark` (glossy 3D DealDex PNG).  Scan subtitle
-is Identify Best-Priced Pokémon Card Listings, not serif "Find the best listings."
+is Find the best-priced Pokémon card listings, not serif "Find the best listings."
 
 ```
 xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \

@@ -90,8 +90,9 @@ All / Deals / Verified plus compact filter selects stay in the same card.
 Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
 `horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
 
-OG share card: centered 1140px wordmark, 36px subtitle, eBay + DealDex.net + Mercari
-footer.  Re-render: `node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=share-20260823b`.
+OG share card: 1160px centered wordmark, 52px subtitle
+("Find the best-priced Pokémon card listings"), DealDex.net between eBay and Mercari.
+Re-render: `node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=share-20260823c`.
 
 
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon

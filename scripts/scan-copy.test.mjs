@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SUBTITLE = "Identify Best-Priced Pokémon Card Listings";
+const SUBTITLE = "Find the best-priced Pokémon card listings";
 
 function read(rel) {
   return readFileSync(join(ROOT, rel), "utf8");
@@ -41,8 +41,9 @@ test("scan box has no suggested Pokémon chips and one marketplace toggle pair",
 
 test("OG wordmark is centered and large, with DealDex.net between marketplace marks", () => {
   const og = read("scripts/og-dealdex.html");
-  assert.match(og, /width:\s*1140px/);
-  assert.match(og, /max-height:\s*430px/);
+  assert.match(og, /width:\s*1160px/);
+  assert.match(og, /max-height:\s*400px/);
+  assert.match(og, /font-size:\s*52px/);
   assert.match(og, /text-align:\s*center/);
   assert.match(og, /DealDex\.net/);
   assert.match(og, /ebay\.svg/);
