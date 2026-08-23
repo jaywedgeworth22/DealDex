@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { Smartphone } from "lucide-react";
 import { AccountMenu, GuestMenu } from "@/components/account-menu";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DealDexWordmark } from "@/components/app-mark";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 function AuthSlot() {
@@ -12,15 +14,7 @@ function AuthSlot() {
   return user ? (
     <AccountMenu />
   ) : (
-    <div className="flex items-center">
-      <GuestMenu />
-      <Link
-        to="/login"
-        className="inline-flex h-11 items-center rounded-md px-3 text-sm text-muted transition-colors duration-150 hover:text-fg"
-      >
-        Sign in
-      </Link>
-    </div>
+    <GuestMenu />
   );
 }
 
@@ -41,30 +35,12 @@ export function Shell({ children }: { children: ReactNode }) {
             >
               Scan
             </Link>
-            <Link
-              to="/alerts"
-              className="hidden h-11 items-center px-3 text-muted transition-colors duration-150 hover:text-fg sm:inline-flex"
-            >
-              Alerts
-            </Link>
-            <Link
-              to="/saved"
-              className="inline-flex h-11 items-center px-3 text-muted transition-colors duration-150 hover:text-fg"
-            >
-              Saved
-            </Link>
-            <Link
-              to="/install"
-              className="inline-flex h-11 items-center px-3 text-muted transition-colors duration-150 hover:text-fg"
-            >
-              Apps
-            </Link>
-            <Link
-              to="/settings"
-              className="hidden h-11 items-center px-3 text-muted transition-colors duration-150 hover:text-fg sm:inline-flex"
-            >
-              Settings
-            </Link>
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/install">
+                <Smartphone />
+                Apps
+              </Link>
+            </Button>
             <AuthSlot />
           </nav>
         </div>

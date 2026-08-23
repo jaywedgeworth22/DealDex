@@ -6,6 +6,10 @@ import { Shell } from "@/components/shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Lead } from "@/components/lead";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { testDeskKey } from "@/lib/server/tcg";
+import { getAccountKeys, saveAccountKeys } from "@/lib/server/desk-keys";
 import {
   DESK_KEY_META,
   countDeskKeys,
@@ -14,19 +18,11 @@ import {
   type DeskKeyId,
   type DeskKeys,
 } from "@/lib/settings/keys";
-import { testDeskKey } from "@/lib/server/tcg";
-import { getAccountKeys, saveAccountKeys } from "@/lib/server/desk-keys";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { Lead } from "@/components/lead";
-import { AppMark, useAppMark } from "@/components/app-mark";
-import { APP_MARKS } from "@/lib/settings/mark";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/settings")({ component: SettingsPage });
 
 function SettingsPage() {
   const { user, isPending } = useCurrentUserState();
-  const { mark, setMark } = useAppMark();
   const [keys, setKeys] = useState<DeskKeys>({});
   const [show, setShow] = useState<Partial<Record<DeskKeyId, boolean>>>({});
   const [testing, setTesting] = useState<DeskKeyId | null>(null);
@@ -180,38 +176,6 @@ function SettingsPage() {
           Back to scan
         </Link>
       </div>
-
-      <aside className="mt-10 rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
-        <h2 className="font-display text-xl tracking-tight">App Mark</h2>
-        <p className="mt-2 text-sm text-muted">
-          Pick the DealDex mark for this browser.  It stays on the device.
-        </p>
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {APP_MARKS.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setMark(opt.id)}
-              aria-pressed={mark === opt.id}
-              className={cn(
-                "flex min-h-11 flex-col items-start gap-2 rounded-lg border px-3 py-3 text-left transition-colors duration-150",
-                mark === opt.id
-                  ? "border-accent bg-accent text-accent-fg"
-                  : "border-border bg-elevated text-fg hover:border-accent/40",
-              )}
-            >
-              <AppMark
-                id={opt.id}
-                className={mark === opt.id ? "border-accent-fg/40 text-accent-fg" : undefined}
-              />
-              <span className="text-sm font-medium">{opt.label}</span>
-              <span className={cn("text-xs", mark === opt.id ? "text-accent-fg/80" : "text-muted")}>
-                {opt.blurb}
-              </span>
-            </button>
-          ))}
-        </div>
-      </aside>
 
       <aside className="mt-10 rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
         <h2 className="font-display text-xl tracking-tight">Website vs phone apps</h2>
