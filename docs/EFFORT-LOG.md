@@ -36,6 +36,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
+- **2026-08-23 — CURSOR — IN PROGRESS — Enlarge OG share card; drop TCGPlayer; DealDex.net.**  Branch `cursor/og-share-layout`, worktree `~/apps/dealdex-cursor-og`.  Footer eBay · Mercari + dealdex.net.  Cache-bust `og.jpg?v=share-20260823`.
 - **2026-08-22 — CURSOR — IN PROGRESS — Publish native Android + iOS with website scan scoring.**  Branch `cursor/native-publish`, worktree `~/apps/dealdex-cursor`.  Android now posts to `/api/native/scan` like iOS; rebuild `public/DealDex.apk`; TestFlight via ios-fleet (`net.dealdex`).
 
 ## Completed
