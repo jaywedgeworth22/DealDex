@@ -27,6 +27,7 @@ test("ios-ship.yml targets dealdex / native/ios on GitHub-hosted macos-latest", 
   assert.match(yml, /bash scripts\/ios-ship-testflight\.sh/);
   assert.match(yml, /ios-appstore-gm-prepare\.sh/);
   assert.match(yml, /secrets\.ASC_KEY_ID/);
+  assert.doesNotMatch(yml, /if:.*secrets\./);
   assert.match(yml, /cron:\s*'22,52 \* \* \* \*'/);
   assert.match(yml, /workflow_dispatch/);
 
