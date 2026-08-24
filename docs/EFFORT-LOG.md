@@ -39,8 +39,13 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
+<<<<<<< HEAD
 - **2026-08-23 — CURSOR — IN PROGRESS — iOS version regimen (1.0.N + UTC build, not 1.0 (1)).**  Branch `cursor/ios-version-regimen-709e`.
 - **2026-08-23 — CURSOR — IN PROGRESS — Settings appearance 3-way + native Google/Apple/X auth (no Grok broker, no email/password).**  Branch `cursor/login-social`, worktree `~/apps/dealdex-cursor-og2`.
+=======
+- **2026-08-22 — CURSOR — IN PROGRESS — OG logo-only social card.**  Centered DealDex wordmark only; no subtitle/footer.  Branch `cursor/og-logo-only-4780`.
+- **2026-08-22 — CURSOR — IN PROGRESS — Vercel Speed Insights.**  `@vercel/speed-insights/react` on the TanStack root (not `/next`).  Privacy discloses Core Web Vitals.  Branch `cursor/vercel-speed-insights-4a42`.
+>>>>>>> 27df8dd (OG social card: logo-only centered wordmark)
 
 ## Completed
 - **2026-08-22 — ANTIGRAVITY — COMPLETED — Build app under net.dealdex bundle, dealdex.net domain, sync iOS/Android/Favicon/ASC icons.**  Branch `ag/bundle-net-and-builds`, worktree `~/apps/dealdex-antigravity`.
@@ -52,6 +57,11 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
+<<<<<<< HEAD
+=======
+- 2026-08-22 — CURSOR: reserved OG logo-only social card (`cursor/og-logo-only-4780`).
+- 2026-08-22 — CURSOR: reserved Vercel Speed Insights (`cursor/vercel-speed-insights-4a42`).
+>>>>>>> 27df8dd (OG social card: logo-only centered wordmark)
 - 2026-08-22 — GROK: reserved Vercel Web Analytics (`grok/vercel-analytics`).
 - 2026-08-21 — CURSOR: deployed #118 / #117 (homepage subtitle + new og.jpg).
 - 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.

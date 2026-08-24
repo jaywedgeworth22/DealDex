@@ -13,6 +13,13 @@ ships the next patch via `ios-fleet/ship-testflight.sh`.  Branch
 
 Android Scan now POSTs to `https://dealdex.net/api/native/scan` first (same unsigned website scoring as iOS), then falls back to on-device scrape.  Scan chrome matches the site: SCAN, filters, Hide proxies, All/Deals/Verified.  Sideload APK is `public/DealDex.apk` (versionName 1.0.2).  iOS already used the website; TestFlight ship uses bundle `net.dealdex`.  Branch `cursor/native-publish`.
 
+## 2026-08-22 CURSOR — OG logo-only card
+
+Social sharing image (`public/og.jpg`) is logo-only: centered DealDex wordmark
+fills ~88% width on white, no subtitle or footer.  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
+Branch `cursor/og-logo-only-4780`.
+
 ## 2026-08-22 CURSOR — Vercel Speed Insights
 
 Mount `@vercel/speed-insights` on the TanStack Start root
@@ -99,9 +106,14 @@ All / Deals / Verified plus compact filter selects stay in the same card.
 Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
 `horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
 
+<<<<<<< HEAD
 OG share card: 1160px centered wordmark, 52px subtitle
 ("Find the best-priced Pokémon card listings"), DealDex.net between eBay and Mercari.
 Re-render: `node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=share-20260823c`.
+=======
+OG wordmark fills ~88% width, centered on white (logo only).  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
+>>>>>>> 27df8dd (OG social card: logo-only centered wordmark)
 
 
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
