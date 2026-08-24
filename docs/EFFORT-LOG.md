@@ -6,6 +6,9 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+## In Progress
+- **2026-08-24 — AG — IN PROGRESS — Switch iOS CI & Actions workflows to GitHub-hosted cloud macOS runners (branch `antigravity/cloud-ios-actions-runners`).** Update ios-ship.yml to runs-on macos-latest (free unlimited minutes on public repo), and update Xcode assertion.
+
 ## Deployed
 - **2026-08-22 — CURSOR — PICKUP GROK — Analytics already live; remaining Autorotate (`autorotate.codes`, GitHub TopSpin) + DealDex.net copy is Cursor Auto.**  Grok is no longer owner.  Board comment on DealDex #129.
 - **2026-08-22 — GROK — DEPLOYED — Vercel Web Analytics (#128 squash `148780af`).**  Canonical check is https://dealdex.net (was documented on dealdex.online).  Privacy discloses cookie-less page views.  Board `e65921a0`.
