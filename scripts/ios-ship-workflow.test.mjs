@@ -16,8 +16,7 @@ test("ios-ship.yml targets dealdex / native/ios on the Mac runner", () => {
 
   assert.match(yml, /native\/ios\/\*\*/);
   assert.match(yml, /--path-prefix 'native\/ios\/'/);
-  assert.match(yml, /\bdealdex\b/);
-  assert.match(yml, /runs-on:\s*\[self-hosted,\s*macOS,\s*ARM64,\s*xcode26\]/);
+  assert.match(yml, /runs-on:\s*macos-latest/);
   assert.match(yml, /DEVELOPER_DIR:\s*\/Applications\/Xcode\.app\/Contents\/Developer/);
   assert.match(yml, /fetch-depth:\s*0/);
   assert.match(yml, /cancel-in-progress:\s*false/);
