@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-08-24 CURSOR — Finish ASC 1.0.N ship (vendor fleet + Mac runner)
+
+#165 landed the project regimen (`1.0.2` / `202608230250`).  ASC still showed
+`1.0 (1)` because #167 moved `ios-ship` to `macos-latest`, which has no
+`/Users/jay/apps/ios-fleet` and no `~/.secrets`.  Every scheduled ship then
+exited 127 in ~14s.  This follow-up vendors `scripts/ios-fleet` (bundle
+`net.dealdex`, train `1.0.N`), points the wrapper at that copy, and restores
+`[self-hosted, macOS, ARM64, xcode26]`.  Branch
+`cursor/ios-ship-asc-version-709e`.
+
 ## 2026-08-23 CURSOR — iOS version regimen (1.0.N + UTC build)
 
 DealDex ASC showed `1.0 (1)` because `CURRENT_PROJECT_VERSION` was stuck at `1`
@@ -106,14 +116,8 @@ All / Deals / Verified plus compact filter selects stay in the same card.
 Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
 `horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
 
-<<<<<<< HEAD
-OG share card: 1160px centered wordmark, 52px subtitle
-("Find the best-priced Pokémon card listings"), DealDex.net between eBay and Mercari.
-Re-render: `node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=share-20260823c`.
-=======
 OG wordmark fills ~88% width, centered on white (logo only).  Re-render:
 `node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
->>>>>>> 27df8dd (OG social card: logo-only centered wordmark)
 
 
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
