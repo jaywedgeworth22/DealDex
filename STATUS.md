@@ -1,14 +1,20 @@
 # Current Handoff
 
-## 2026-08-24 CURSOR — Finish ASC 1.0.N ship (vendor fleet + Mac runner)
+## 2026-08-24 CURSOR — GH-hosted macos-latest for iOS ship (protocol)
 
-#165 landed the project regimen (`1.0.2` / `202608230250`).  ASC still showed
-`1.0 (1)` because #167 moved `ios-ship` to `macos-latest`, which has no
-`/Users/jay/apps/ios-fleet` and no `~/.secrets`.  Every scheduled ship then
-exited 127 in ~14s.  This follow-up vendors `scripts/ios-fleet` (bundle
-`net.dealdex`, train `1.0.N`), points the wrapper at that copy, and restores
-`[self-hosted, macOS, ARM64, xcode26]`.  Branch
-`cursor/ios-ship-asc-version-709e`.
+#170 wrongly restored a local Mac self-hosted runner.  Updated fleet protocol
+bans that: iOS ships and all other Actions use GitHub-hosted runners
+(`macos-latest` here).  Keep vendored `scripts/ios-fleet` (bundle
+`net.dealdex`, train `1.0.N`).  Import ASC + Distribution secrets the same
+way Congress.Trade does (`scripts/ios-appstore-gm-prepare.sh`).  Branch
+`cursor/ios-gh-hosted-runners-709e`.
+
+## 2026-08-24 CURSOR — Vendor ios-fleet so hosted ships can find 1.0.N
+
+#165 landed the project regimen (`1.0.2` / `202608230250`).  #167 hosted
+ships died because `/Users/jay/apps/ios-fleet` is not on `macos-latest`.
+#170 vendored `scripts/ios-fleet`.  Do not send this job back to a local
+Mac runner.
 
 ## 2026-08-23 CURSOR — iOS version regimen (1.0.N + UTC build)
 
@@ -229,9 +235,10 @@ Updated: 2026-08-21 (CURSOR — #118 deployed, scan layout + subtitle)
   red + blue DD on the ST tiled field.  Tab favicon is the isolated DD
   on a transparent field.
 - iOS TestFlight ship workflow (`.github/workflows/ios-ship.yml`) runs on
-  `[self-hosted, macOS, ARM64, xcode26]`, calls
-  `scripts/ios-ship-testflight.sh` (fleet key `dealdex`), and gates cron
-  on `native/ios/` changes.  Secrets stay on the Mac.
+  GitHub-hosted `macos-latest`, calls `scripts/ios-ship-testflight.sh`
+  (fleet key `dealdex`, in-repo `scripts/ios-fleet`), imports ASC +
+  Distribution secrets via `scripts/ios-appstore-gm-prepare.sh`, and
+  gates cron on `native/ios/` changes.
 
 ## Blockers
 

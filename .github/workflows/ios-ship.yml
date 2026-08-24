@@ -1,19 +1,18 @@
-name: iOS TestFlight ship (Mac runner)
+name: iOS TestFlight ship (GitHub-hosted macOS)
 
-# Archive + upload on the owned Mac runner so TestFlight (the phone) actually
-# updates when iOS code lands on main. Ubuntu CI stays web-only.
+# Archive + upload on GitHub-hosted macos-latest (fleet protocol 2026-08-24:
+# GH-hosted runners for iOS ships and everything else; local Mac self-hosted
+# runners are banned). Ubuntu CI stays web-only. Fork PRs never run here.
 #
-# XCODE BUILDS ONLY: this workflow may target mac-runner labels. Web / Android
-# jobs stay off this host. Fork PRs never run here.
+# Signing + ASC keys come from repo secrets (same names as Congress.Trade):
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8,
+#   IOS_DIST_P12_BASE64, IOS_DIST_P12_PASSWORD
+# scripts/ios-appstore-gm-prepare.sh writes ~/.secrets/appstore-connect.env
+# and imports the Distribution identity. Values are never printed.
 #
-# Secrets stay on the Mac (~/.secrets/appstore-connect.env). Nothing is
-# checked into GitHub. The in-repo wrapper prefers scripts/ios-fleet/, then
+# The in-repo wrapper prefers scripts/ios-fleet/, then
 # /Users/jay/apps/ios-fleet. App key `dealdex`, bundle `net.dealdex`.
-#
-# Do not use macos-latest for this job. GitHub-hosted runners have no
-# ~/.secrets and no signing identities. After #167 every ship failed in ~14s
-# with "ship-testflight.sh: No such file or directory" and ASC stayed on
-# 1.0 (1) instead of the fleet 1.0.N (YYYYMMDDHHMM) train.
+# Marketing train is 1.0.N; build is UTC YYYYMMDDHHMM.
 #
 # Bundle `net.dealdex` and team `CC8UTF7ATG` are unchanged here.
 # The Apple Developer portal App ID resource is not a team id.
@@ -26,11 +25,11 @@ on:
       - '.github/workflows/ios-ship.yml'
       - 'scripts/ios-fleet/**'
       - 'scripts/ios-ship-testflight.sh'
+      - 'scripts/ios-appstore-gm-prepare.sh'
   workflow_dispatch:
   schedule:
     # Twice an hour, offset from Socratic.Trade ('*/30'), Congress.Trade
-    # ('7,37'), and Usage-Monitor ('13,43') so the shared Mac runner is not
-    # asked to start every fleet ship on the same minute.
+    # ('7,37'), and Usage-Monitor ('13,43').
     - cron: '22,52 * * * *'
 
 # WHY THE CRON EXISTS, AND WHY IT NEEDS A GATE
@@ -58,7 +57,7 @@ jobs:
   ship:
     name: TestFlight archive + upload
     if: github.event.repository.fork == false
-    runs-on: [self-hosted, macOS, ARM64, xcode26]
+    runs-on: macos-latest
     timeout-minutes: 90
     env:
       DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
@@ -74,7 +73,7 @@ jobs:
       # Runs FIRST so a tick with nothing to ship costs seconds and cannot go
       # red on an unrelated environment problem. The logic lives in a script,
       # not inline YAML, so Ubuntu CI can unit-test it on every PR -- otherwise
-      # it would only ever execute on the one Mac that can ship.
+      # it would only ever execute on the hosted runner that can ship.
       - name: Scheduled ship gate (skip unless iOS code changed)
         id: gate
         run: |
@@ -98,9 +97,19 @@ jobs:
               ;;
           esac
 
+      - name: Import signing + ASC key
+        if: steps.gate.outputs.should_ship == '1' && secrets.ASC_KEY_ID != ''
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          IOS_DIST_P12_BASE64: ${{ secrets.IOS_DIST_P12_BASE64 }}
+          IOS_DIST_P12_PASSWORD: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+        run: bash "$GITHUB_WORKSPACE/scripts/ios-appstore-gm-prepare.sh"
+
       # Route through the in-repo wrapper. scripts/ios-ship-testflight.sh
       # execs scripts/ios-fleet/ship-testflight.sh (DealDex apps.json is
-      # net.dealdex, 1.0.N) and falls back to /Users/jay/apps/ios-fleet.
+      # net.dealdex, 1.0.N).
       #
       # No IOS_TF_MIN_INTERVAL_SEC here. Standing gate is
       # DEFAULT_MIN_INTERVAL_SEC=3600 (1 hour) in the fleet script. The
