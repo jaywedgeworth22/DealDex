@@ -54,4 +54,9 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
   const ship = read("scripts/ios-fleet/ship-testflight.sh");
   assert.match(ship, /MARKETING_VERSION\s+= 1\.0\.<seq>/);
   assert.match(ship, /CURRENT_PROJECT_VERSION = <UTC YYYYMMDDHHMM>/);
+
+  const publish = read("scripts/ios-fleet/publish-ios-versions.sh");
+  assert.match(publish, /fetch_remote_json/);
+  assert.match(publish, /refusing to publish an empty apps map/);
+  assert.doesNotMatch(publish, /data = \{"schemaVersion": 1, "apps": \{\}\}/);
 });
