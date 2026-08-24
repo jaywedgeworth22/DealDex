@@ -39,7 +39,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
-- **2026-08-24 — CURSOR — IN PROGRESS — Vendor ios-fleet + restore Mac runner so ASC gets 1.0.N not 1.0 (1).**  Branch `cursor/ios-ship-asc-version-709e`.
+- **2026-08-24 — CURSOR — IN PROGRESS — Put ios-ship back on GitHub-hosted macos-latest (protocol; no local Mac runner).**  Branch `cursor/ios-gh-hosted-runners-709e`.
 
 ## Completed
 - **2026-08-22 — ANTIGRAVITY — COMPLETED — Build app under net.dealdex bundle, dealdex.net domain, sync iOS/Android/Favicon/ASC icons.**  Branch `ag/bundle-net-and-builds`, worktree `~/apps/dealdex-antigravity`.
@@ -51,7 +51,8 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
-- 2026-08-24 — CURSOR: vendor ios-fleet + restore Mac runner so ASC gets 1.0.N (`cursor/ios-ship-asc-version-709e`).
+- 2026-08-24 — CURSOR: put ios-ship on GitHub-hosted macos-latest + ASC secret import (`cursor/ios-gh-hosted-runners-709e`).
+- 2026-08-24 — CURSOR: vendor ios-fleet so hosted ships can resolve 1.0.N (`cursor/ios-ship-asc-version-709e`).
 - 2026-08-22 — CURSOR: reserved OG logo-only social card (`cursor/og-logo-only-4780`).
 - 2026-08-22 — CURSOR: reserved Vercel Speed Insights (`cursor/vercel-speed-insights-4a42`).
 - 2026-08-22 — GROK: reserved Vercel Web Analytics (`grok/vercel-analytics`).
