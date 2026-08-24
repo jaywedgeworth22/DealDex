@@ -7,8 +7,13 @@ name: iOS TestFlight ship (Mac runner)
 # jobs stay off this host. Fork PRs never run here.
 #
 # Secrets stay on the Mac (~/.secrets/appstore-connect.env). Nothing is
-# checked into GitHub. The in-repo wrapper execs the fleet script with app
-# key `dealdex` and --repo-root pointing at this checkout (native/ios).
+# checked into GitHub. The in-repo wrapper prefers scripts/ios-fleet/, then
+# /Users/jay/apps/ios-fleet. App key `dealdex`, bundle `net.dealdex`.
+#
+# Do not use macos-latest for this job. GitHub-hosted runners have no
+# ~/.secrets and no signing identities. After #167 every ship failed in ~14s
+# with "ship-testflight.sh: No such file or directory" and ASC stayed on
+# 1.0 (1) instead of the fleet 1.0.N (YYYYMMDDHHMM) train.
 #
 # Bundle `net.dealdex` and team `CC8UTF7ATG` are unchanged here.
 # The Apple Developer portal App ID resource is not a team id.
@@ -19,6 +24,8 @@ on:
     paths:
       - 'native/ios/**'
       - '.github/workflows/ios-ship.yml'
+      - 'scripts/ios-fleet/**'
+      - 'scripts/ios-ship-testflight.sh'
   workflow_dispatch:
   schedule:
     # Twice an hour, offset from Socratic.Trade ('*/30'), Congress.Trade
@@ -51,7 +58,7 @@ jobs:
   ship:
     name: TestFlight archive + upload
     if: github.event.repository.fork == false
-    runs-on: macos-latest
+    runs-on: [self-hosted, macOS, ARM64, xcode26]
     timeout-minutes: 90
     env:
       DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
@@ -91,9 +98,9 @@ jobs:
               ;;
           esac
 
-      # Route through the in-repo wrapper, not the runtime fleet path directly.
-      # scripts/ios-ship-testflight.sh execs
-      # /Users/jay/apps/ios-fleet/ship-testflight.sh dealdex --repo-root "$ROOT".
+      # Route through the in-repo wrapper. scripts/ios-ship-testflight.sh
+      # execs scripts/ios-fleet/ship-testflight.sh (DealDex apps.json is
+      # net.dealdex, 1.0.N) and falls back to /Users/jay/apps/ios-fleet.
       #
       # No IOS_TF_MIN_INTERVAL_SEC here. Standing gate is
       # DEFAULT_MIN_INTERVAL_SEC=3600 (1 hour) in the fleet script. The
