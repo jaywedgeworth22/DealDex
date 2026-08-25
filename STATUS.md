@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — Center iOS Scan empty-loading spinner
+
+TestFlight Scan (2026-08-24) showed the gray spinner and
+"Reading eBay and Mercari…" left of center in the empty results area.
+`ScanView` parent `VStack` is `alignment: .leading`; the labeled
+`ProgressView` had no `maxWidth` / center frame, so it hugged leading.
+Now it uses `.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)`.
+Caption unchanged.  No ship-path / runner / `--force-ship` change.
+Branch `cursor/ios-scan-loading-center-1b16`.
+
 ## 2026-08-25 CURSOR — Android Play + PWA skippable update alerts
 
 On-open update alert on Android (Play In-App Updates, flexible) and a
@@ -222,7 +232,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-25 (CURSOR — accept dealdex in vendored ship-testflight.sh)
+Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
 
 ## Current state
 
