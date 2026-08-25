@@ -10,7 +10,7 @@
       "xcodegenDir": "native/ios",
       "worktreeHint": "~/apps/dealdex-grok",
       "marketingVersionDefault": "1.0.2",
-      "notes": "Native iPhone app. Bundle ID net.dealdex (resource R2FAW69NPD, not a team id). Team CC8UTF7ATG. ASC app DealDex SKU dealdex id 6802474288. Marketing train is 1.0.N; build is UTC YYYYMMDDHHMM. Do not upload me.grok.dealdex or online.dealdex."
+      "notes": "Native iPhone app. Live bundle is net.dealdex (resource R2FAW69NPD, not a team id). Team CC8UTF7ATG. ASC app DealDex SKU dealdex appleId 6802474288. This appleId is the in-repo source for AppUpdatePrompt (not a Swift knownAppleIds map). Marketing train is 1.0.N; build is UTC YYYYMMDDHHMM. Do not treat online.dealdex as the live bundle. Do not upload me.grok.dealdex or online.dealdex."
     }
   }
 }

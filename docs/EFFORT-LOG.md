@@ -7,6 +7,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
 ## In Progress
+- **2026-08-25 — CURSOR — IN PROGRESS — Pin AppUpdatePrompt.swift from in-repo ios-fleet; move knownAppleIds off Swift.**  Branch `cursor/ios-app-update-prompt-pin-525d`.  Live bundle `net.dealdex` appleId `6802474288` in `apps.json` / Info.plist.  No Swift package.  testers.json untouched.  No `--force-ship`.  No spend.  KEEPOUT #183.
 - **2026-08-25 — CURSOR — IN PROGRESS — testers.json Comcast typo (`johnwedeworth` → `johnwedgeworth`).**  Branch `cursor/testers-comcast-typo-160f`.  Keep `mail@jays.services`.  No extra testers.  No invite-on-ship / ios-ship / `--force-ship`.
 - **2026-08-25 — CURSOR — IN PROGRESS — Center iOS Scan empty-loading spinner + caption.**  Branch `cursor/ios-scan-loading-center-1b16`.  Leading parent VStack; add maxWidth/maxHeight center frame.  Caption unchanged.  No local Mac runner / --force-ship.
 - **2026-08-25 — CURSOR — IN PROGRESS — Android Play + PWA skippable update alerts.**  Branch `cursor/android-pwa-update-alerts-c953`.  Play In-App Updates on open; PWA reload banner when a waiting worker exists.  No ios-fleet / testers / invite-on-ship.
@@ -43,6 +44,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
+- **2026-08-25 — CURSOR — IN PROGRESS — Pin AppUpdatePrompt.swift from in-repo ios-fleet; move knownAppleIds off Swift.**  Branch `cursor/ios-app-update-prompt-pin-525d`.  Live bundle `net.dealdex` appleId `6802474288` in `apps.json` / Info.plist.  No Swift package.  testers.json untouched.  No `--force-ship`.  No spend.  KEEPOUT #183.
 - **2026-08-25 — CURSOR — IN PROGRESS — testers.json Comcast typo (`johnwedeworth` → `johnwedgeworth`).**  Branch `cursor/testers-comcast-typo-160f`.  Keep `mail@jays.services`.  No extra testers.  No invite-on-ship / ios-ship / `--force-ship`.
 - **2026-08-25 — CURSOR — IN PROGRESS — Center iOS Scan empty-loading spinner + caption.**  Branch `cursor/ios-scan-loading-center-1b16`.  Leading parent VStack; add maxWidth/maxHeight center frame.  Caption unchanged.  No local Mac runner / --force-ship.
 - **2026-08-25 — CURSOR — IN PROGRESS — Android Play + PWA skippable update alerts.**  Branch `cursor/android-pwa-update-alerts-c953`.  Play In-App Updates on open; PWA reload banner when a waiting worker exists.  No ios-fleet / testers / invite-on-ship.
@@ -59,6 +61,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
+- 2026-08-25 — CURSOR: reserved AppUpdatePrompt pin + Apple IDs off Swift (`cursor/ios-app-update-prompt-pin-525d`).
 - 2026-08-25 — CURSOR: reserved testers.json Comcast typo (`cursor/testers-comcast-typo-160f`).
 - 2026-08-25 — CURSOR: reserved iOS Scan empty-loading center (`cursor/ios-scan-loading-center-1b16`).
 - 2026-08-25 — CURSOR: reserved Android Play + PWA skippable update alerts (`cursor/android-pwa-update-alerts-c953`).

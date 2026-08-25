@@ -88,6 +88,7 @@ targets:
         CFBundleIconName: AppIcon
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        AppUpdateAppleId: 6802474288
         LSApplicationCategoryType: public.app-category.shopping
         ITSAppUsesNonExemptEncryption: false
         LSRequiresIPhoneOS: true
