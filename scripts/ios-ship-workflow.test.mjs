@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,6 +26,7 @@ test("ios-ship.yml targets dealdex / native/ios on GitHub-hosted macos-latest", 
   assert.match(yml, /cancel-in-progress:\s*false/);
   assert.match(yml, /github\.event\.repository\.fork == false/);
   assert.match(yml, /bash scripts\/ios-ship-testflight\.sh/);
+  assert.doesNotMatch(yml, /--force-ship/);
   assert.match(yml, /ios-appstore-gm-prepare\.sh/);
   assert.match(yml, /secrets\.ASC_KEY_ID/);
   assert.doesNotMatch(yml, /if:.*secrets\./);
@@ -37,7 +39,11 @@ test("ios-ship.yml targets dealdex / native/ios on GitHub-hosted macos-latest", 
   assert.doesNotMatch(yml, /PRODUCT_BUNDLE_IDENTIFIER/);
 
   assert.match(wrapper, /scripts\/ios-fleet\/ship-testflight\.sh/);
+  assert.match(wrapper, /IN_REPO="\$\{ROOT\}\/scripts\/ios-fleet\/ship-testflight\.sh"/);
+  assert.match(wrapper, /if \[\[ -f "\$IN_REPO" \]\]/);
+  assert.match(wrapper, /exec bash "\$IN_REPO" dealdex --repo-root "\$ROOT"/);
   assert.match(wrapper, /dealdex --repo-root/);
+  assert.doesNotMatch(wrapper, /--force-ship/);
   assert.doesNotMatch(wrapper, /R2FAW69NPD/);
   assert.doesNotMatch(wrapper, /me\.grok\.dealdex/);
 
@@ -60,4 +66,40 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
   const ship = read("scripts/ios-fleet/ship-testflight.sh");
   assert.match(ship, /MARKETING_VERSION\s+= 1\.0\.<seq>/);
   assert.match(ship, /CURRENT_PROJECT_VERSION = <UTC YYYYMMDDHHMM>/);
+  assert.match(
+    ship,
+    /<socratic\|congress\|usage\|usage-local\|dealdex>/,
+    "usage header must list dealdex",
+  );
+  assert.match(
+    ship,
+    /socratic\|congress\|usage\|usage-local\|dealdex\) APP_KEY=/,
+    "positional case must accept dealdex like congress/socratic",
+  );
+  assert.match(
+    ship,
+    /app key required: socratic \| congress \| usage \| usage-local \| dealdex/,
+  );
+});
+
+test("ship-testflight.sh --help lists dealdex and the case accepts it", () => {
+  const script = join(ROOT, "scripts/ios-fleet/ship-testflight.sh");
+
+  const help = spawnSync("bash", [script, "--help"], { encoding: "utf8" });
+  assert.equal(help.status, 2);
+  assert.match(help.stdout, /socratic\|congress\|usage\|usage-local\|dealdex/);
+  assert.doesNotMatch(help.stderr, /unknown arg: dealdex/);
+
+  const accepted = spawnSync("bash", [script, "dealdex", "--help"], {
+    encoding: "utf8",
+  });
+  assert.equal(accepted.status, 2);
+  assert.doesNotMatch(accepted.stderr, /unknown arg: dealdex/);
+  assert.match(accepted.stdout, /socratic\|congress\|usage\|usage-local\|dealdex/);
+
+  const rejected = spawnSync("bash", [script, "not-an-app"], {
+    encoding: "utf8",
+  });
+  assert.notEqual(rejected.status, 0);
+  assert.match(rejected.stderr, /unknown arg: not-an-app/);
 });

@@ -2,7 +2,7 @@
 # ship-testflight.sh - Archive + upload an iOS app to TestFlight without Xcode UI.
 #
 # Usage:
-#   bash /Users/jay/apps/ios-fleet/ship-testflight.sh <socratic|congress|usage|usage-local> [options]
+#   bash /Users/jay/apps/ios-fleet/ship-testflight.sh <socratic|congress|usage|usage-local|dealdex> [options]
 #
 # Options:
 #   --repo-root PATH   Repo root (default: cwd)
@@ -511,7 +511,7 @@ record_successful_ship() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    socratic|congress|usage|usage-local) APP_KEY="$1"; shift ;;
+    socratic|congress|usage|usage-local|dealdex) APP_KEY="$1"; shift ;;
     --repo-root) REPO_ROOT="$2"; shift 2 ;;
     --build) FORCE_BUILD="$2"; shift 2 ;;
     --version) FORCE_VERSION="$2"; shift 2 ;;
@@ -528,7 +528,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ -n "$APP_KEY" ]] || die "app key required: socratic | congress | usage | usage-local"
+[[ -n "$APP_KEY" ]] || die "app key required: socratic | congress | usage | usage-local | dealdex"
 [[ -f "$APPS_JSON" ]] || die "missing apps registry: $APPS_JSON"
 
 # Prefer stable Xcode.app over Xcode-beta for TestFlight / ASC compatibility.
