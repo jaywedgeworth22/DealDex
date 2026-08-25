@@ -6,6 +6,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { ThemeProvider, THEME_BOOT, useTheme } from "@/lib/theme";
 import { MarkProvider } from "@/components/app-mark";
+import { PwaUpdateBanner } from "@/components/pwa-update-banner";
 import { listenForInstallPrompt, registerServiceWorker } from "@/lib/pwa";
 import { APP_SUBTITLE } from "@/lib/copy";
 import { useEffect } from "react";
@@ -105,6 +106,7 @@ function Root() {
             <Boot />
             <AuthProvider>
               <Outlet />
+              <PwaUpdateBanner />
               <ThemedToaster />
             </AuthProvider>
           </MarkProvider>
