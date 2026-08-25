@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — testers.json Comcast typo
+
+`scripts/ios-fleet/testers.json` had `johnwedeworth@comcast.net`.  Spelling
+is `johnwedgeworth@comcast.net`.  Left `mail@jays.services`.  Did not add
+testers, expand invite-on-ship, change ios-ship, or use `--force-ship`.
+Invite-on-ship comments/tests are not on `main` (only an unmerged leftover
+on `cursor/android-pwa-update-alerts-c953`).  Remaining emails:
+`johnwedgeworth@comcast.net`, `mail@jays.services`.  Branch
+`cursor/testers-comcast-typo-160f`.
+
 ## 2026-08-25 CURSOR — Center iOS Scan empty-loading spinner
 
 TestFlight Scan (2026-08-24) showed the gray spinner and
