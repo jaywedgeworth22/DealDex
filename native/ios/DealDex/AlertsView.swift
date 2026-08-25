@@ -28,6 +28,7 @@ struct AlertsView: View {
                 }
             }
             .navigationTitle("Alerts")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 
