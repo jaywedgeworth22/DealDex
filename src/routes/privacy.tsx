@@ -35,8 +35,10 @@ function PrivacyPage() {
           <p>
             The DealDex website uses Vercel Web Analytics to count visits and page views, and
             Vercel Speed Insights to measure Core Web Vitals (paint, layout, and interaction
-            timing).  Those products do not use cookies and do not identify you.  Native apps do
-            not send those web events.
+            timing).  Those products do not use cookies and do not identify you.  The website
+            also sends logs, traces, and Real User Monitoring to Datadog on the existing fleet
+            account so errors and slow requests stay visible.  Datadog Session Replay is off.
+            Native apps do not send those web events.
           </p>
         </section>
         <section className="space-y-2">

@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — Datadog logs + APM + RUM (web)
+
+DealDex had no Datadog code.  Wired logs, agentless APM, and browser RUM to
+the existing US5 account.  Production is fail-closed without `DD_API_KEY`,
+`DD_APPLICATION_ID`, and `DD_CLIENT_TOKEN`.  No Vercel drains (no new Vercel
+spend).  No Sentry/PD replace.  iOS skipped: no Datadog SDK in the Xcode
+project, and this seat does not add a local Mac runner / xcodebuild /
+`--force-ship`.  Branch `cursor/datadog-web-observability-4edf`.  Do not
+deploy from this seat.
+
 ## 2026-08-25 CURSOR — Center iOS Scan empty-loading spinner
 
 TestFlight Scan (2026-08-24) showed the gray spinner and
@@ -232,7 +242,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
+Updated: 2026-08-25 (CURSOR — Datadog web logs + APM + RUM)
 
 ## Current state
 
@@ -243,6 +253,9 @@ Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
 - **Grok Build** (`GROK-BUILD`) is a standing seat.  Prefix `grok-build/`.
 - Website is optional.  Stack is React 19, TanStack Start, Tailwind v4,
   Better Auth, Vite.  Not Next.js / Expo / React Native / Capacitor.
+- Website Datadog (existing US5 account): logs + agentless APM + browser
+  RUM.  Production fail-closed without `DD_API_KEY`, `DD_APPLICATION_ID`,
+  and `DD_CLIENT_TOKEN`.  No Vercel drains.  iOS has no Datadog SDK.
 - **Public host: https://dealdex.online on Vercel.**  Vercel is current,
   not a leftover.  GitHub About homepage is `https://dealdex.online`.
   Do not point About at `dealdex-psi.vercel.app`.  Do not migrate the

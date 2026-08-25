@@ -28,6 +28,24 @@ The app's default `VITE_PUBLIC_HOSTNAME` is `dealdex.net`.  Owner registered tha
 
 Do not invent another live URL.
 
+## Datadog (existing US5 account)
+
+The website ships logs, APM traces, and browser RUM to the existing Datadog
+account (`DD_SITE=us5.datadoghq.com`).  Production is fail-closed when keys
+are missing.  Reuse the names already used by the Datadog Vercel integration
+and the fleet agent.  Do not commit values.
+
+- `DD_API_KEY` (alias `DATADOG_API_KEY`) — server logs + traces
+- `DD_SITE` — defaults to `us5.datadoghq.com`
+- `DD_SERVICE` — defaults to `dealdex`
+- `DD_ENV`, `DD_VERSION`
+- `DD_APPLICATION_ID` (alias `VITE_DD_APPLICATION_ID`) — browser RUM
+- `DD_CLIENT_TOKEN` (alias `VITE_DD_CLIENT_TOKEN`) — browser RUM + browser logs
+
+Do not turn on Vercel log/trace drains (those are billed by Vercel).  Do not
+replace Sentry or PagerDuty.  iOS has no Datadog RUM SDK in this repo; adding
+one would need a Mac `xcodebuild` and is out of scope.
+
 ## Web (local)
 
 ```bash

@@ -13,11 +13,13 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
     "typecheck": "tsc --noEmit",
-    "test": "node --test 'scripts/**/*.test.mjs'",
+    "test": "node --experimental-strip-types --test 'scripts/**/*.test.mjs'",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@datadog/browser-logs": "^7.9.0",
+    "@datadog/browser-rum-slim": "^7.9.0",
     "@electric-sql/pglite": "^0.5.4",
     "@hookform/resolvers": "^5.7.0",
     "@radix-ui/react-accordion": "^1.2.12",
