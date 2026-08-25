@@ -61,6 +61,11 @@ test("iOS scan talks to the website without requiring a token", () => {
   assert.match(scanView, /count: desk\.ebayCount/);
   assert.match(scanView, /count: desk\.mercariCount/);
   assert.match(scanView, /DealDexCopy\.subtitle/);
+  assert.match(scanView, /ProgressView\("Reading eBay and Mercari…"\)/);
+  assert.match(
+    scanView,
+    /ProgressView\("Reading eBay and Mercari…"\)\s*\.frame\(maxWidth: \.infinity, maxHeight: \.infinity, alignment: \.center\)/,
+  );
   assert.doesNotMatch(scanView, /charizard/);
   assert.doesNotMatch(scanView, /POKÉMON LISTING DESK/);
   assert.match(marks, /EbayWordmark/);

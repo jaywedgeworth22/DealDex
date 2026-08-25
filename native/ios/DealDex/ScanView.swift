@@ -133,9 +133,9 @@ struct ScanView: View {
                     chip("verified", "Verified \(desk.verifiedCount)")
                 }
                 if desk.loading && desk.rows.isEmpty {
-                    Spacer()
+                    // Leading parent VStack: expand and center in the remaining results area.
                     ProgressView("Reading eBay and Mercari…")
-                    Spacer()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else if let err = desk.error {
                     Text(err).foregroundStyle(.red)
                     Spacer()
