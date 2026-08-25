@@ -22,3 +22,15 @@ and keep this `apps.json` DealDex-only.
 This directory does not carry a full local snapshot.  Publishing
 `{apps:{net.dealdex}}` would wipe sibling fleet apps from the shared
 manifest the in-app update prompt reads.
+
+## In-app update prompt (pin)
+
+`AppUpdatePrompt.swift` in this directory is the in-repo pin.  Copy it
+into `native/ios/DealDex/AppUpdatePrompt.swift`.  Keep the two files
+byte-identical.  Do not make a Swift package.  Do not fork behavior.
+
+Apple IDs are not hardcoded in the Swift file.  Live DealDex is
+`net.dealdex` / `6802474288` in `apps.json` here and in
+`jaywedgeworth22/ios-app-versions` `versions.json`.  The iOS target
+also sets Info.plist `AppUpdateAppleId` to that same number as a
+local fallback.  Do not treat `online.dealdex` as the live bundle.

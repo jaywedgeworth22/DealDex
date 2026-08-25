@@ -1,5 +1,19 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — Pin AppUpdatePrompt.swift; move Apple IDs off Swift
+
+One in-repo pin at `scripts/ios-fleet/AppUpdatePrompt.swift`, copied
+byte-identical into `native/ios/DealDex/AppUpdatePrompt.swift`.  No
+Swift package.  `knownAppleIds` (stale `online.dealdex`) is gone from
+Swift.  Live bundle is `net.dealdex` appleId `6802474288` in
+`scripts/ios-fleet/apps.json` and Info.plist `AppUpdateAppleId`.
+Public manifest already has the same id on `net.dealdex` in
+`jaywedgeworth22/ios-app-versions` `versions.json` (not rewritten here;
+a one-app PUT would wipe siblings).  Did not treat `online.dealdex` as
+live.  Did not upload `me.grok.dealdex`.  testers.json untouched.  No
+`--force-ship`.  No spend.  KEEPOUT DealDex #183 Datadog / Vercel keys.
+Branch `cursor/ios-app-update-prompt-pin-525d`.
+
 ## 2026-08-25 CURSOR — testers.json Comcast typo
 
 `scripts/ios-fleet/testers.json` had `johnwedeworth@comcast.net`.  Spelling
@@ -242,7 +256,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
+Updated: 2026-08-25 (CURSOR — pin AppUpdatePrompt.swift; Apple IDs off Swift)
 
 ## Current state
 
@@ -269,10 +283,14 @@ Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
 - Native Android debug APK builds with the Gradle 8.7 wrapper.  Package
   remains `me.grok.dealdex`.  Launcher is the official DD.
 - iOS XcodeGen spec (`native/ios/project.yml`) uses
-  `PRODUCT_BUNDLE_IDENTIFIER=online.dealdex` and
-  `DEVELOPMENT_TEAM=CC8UTF7ATG`.  Apple App ID `online.dealdex` is
-  registered (resource `R2FAW69NPD`, IAP on).  AppIcon catalog is wired;
-  `CFBundleIconName` is `AppIcon`.
+  `PRODUCT_BUNDLE_IDENTIFIER=net.dealdex` and
+  `DEVELOPMENT_TEAM=CC8UTF7ATG`.  Live ASC app is DealDex SKU `dealdex`
+  appleId `6802474288`.  Resource `R2FAW69NPD` is the bundle App ID, not
+  a team id.  Do not treat `online.dealdex` as live.  Do not upload
+  `me.grok.dealdex`.  AppUpdatePrompt is pinned at
+  `scripts/ios-fleet/AppUpdatePrompt.swift` and copied into the iOS
+  target.  Apple IDs live in `apps.json` / `versions.json` / Info.plist
+  `AppUpdateAppleId`, not a Swift `knownAppleIds` map.
 - In-app / web title mark is the official DealDex wordmark (PR #86).
   Home-screen AppIcon / Android launcher / PWA 180 are the overlapping
   red + blue DD on the ST tiled field.  Tab favicon is the isolated DD
@@ -285,10 +303,8 @@ Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
 
 ## Blockers
 
-- App Store Connect **app record** for `online.dealdex` (bundle ID is
-  registered; App Manager API cannot CREATE apps).  Account Holder must
-  add DealDex once (SKU `dealdex`).  Do not upload to TestFlight until
-  that record exists.
+- Keepout: DealDex #183 Datadog / Vercel keys stay HOLD.  Do not land
+  or extend that PR from this seat.
 - Google Play Console credentials are not in `~/.secrets/`.
 - Infisical project (prod env), `SENTRY_FLEET_DSN`, and
   `FLEET_GITHUB_TOKEN` still need the owner.
@@ -303,8 +319,7 @@ Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
 
 - Keep the public host on Vercel at `https://dealdex.online`.  Do not
   move copy to Coolify.
-- TestFlight / ASC app record when the owner is ready (bundle
-  `online.dealdex`, SKU `dealdex`, team `CC8UTF7ATG`).  After that record
-  exists, the Mac `ios-ship` workflow (or
-  `bash scripts/ios-ship-testflight.sh --force-ship`) can upload.
+- TestFlight ships stay on GitHub-hosted `macos-latest` via
+  `scripts/ios-ship-testflight.sh` (fleet key `dealdex`, bundle
+  `net.dealdex`).  Do not `--force-ship` from this seat.
 - Remaining seats start from `main` in their own worktrees.

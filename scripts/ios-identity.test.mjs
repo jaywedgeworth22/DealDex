@@ -121,6 +121,37 @@ test("iOS version regimen uses 1.0.N marketing and UTC build stamp", () => {
   }
 });
 
+test("AppUpdatePrompt iOS target matches the in-repo ios-fleet pin", () => {
+  const pin = read("scripts/ios-fleet/AppUpdatePrompt.swift");
+  const target = read("native/ios/DealDex/AppUpdatePrompt.swift");
+  assert.equal(target, pin, "iOS target must be a byte-identical copy of the pin");
+  assert.doesNotMatch(pin, /knownAppleIds/);
+  assert.doesNotMatch(pin, /online\.dealdex/);
+  assert.doesNotMatch(pin, /me\.grok\.dealdex/);
+  assert.match(pin, /ios-app-versions/);
+  assert.match(pin, /Do not wrap this in a Swift package/);
+  assert.match(pin, /Do not hardcode knownAppleIds here/);
+});
+
+test("live DealDex Apple ID lives in apps.json and Info.plist, not Swift", () => {
+  const apps = JSON.parse(read("scripts/ios-fleet/apps.json"));
+  const dealdex = apps.apps.dealdex;
+  assert.equal(dealdex.bundleId, "net.dealdex");
+  assert.equal(dealdex.appleId, 6802474288);
+  assert.equal(dealdex.bundleId === "online.dealdex", false);
+  assert.match(dealdex.notes, /Do not treat online\.dealdex as the live bundle/);
+
+  const plist = read("native/ios/DealDex/Info.plist");
+  assert.match(
+    plist,
+    /<key>AppUpdateAppleId<\/key>\s*<integer>6802474288<\/integer>/,
+  );
+  assert.doesNotMatch(plist, /online\.dealdex/);
+
+  const spec = read("native/ios/project.yml");
+  assert.match(spec, /AppUpdateAppleId: 6802474288/);
+});
+
 test("Apple bundle resource id is documented, never a team setting", () => {
   const spec = read("native/ios/project.yml");
   const onboarding = read("native/ios/CLAUDE.md");

@@ -22,6 +22,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>AppUpdateAppleId</key>
+	<integer>6802474288</integer>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
