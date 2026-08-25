@@ -248,6 +248,7 @@ struct EvaluatorView: View {
             }
             .background(Color(red: 0.95, green: 0.94, blue: 0.90))
             .navigationTitle("Evaluator")
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 if let c = initialCard {
                     activeCard = c

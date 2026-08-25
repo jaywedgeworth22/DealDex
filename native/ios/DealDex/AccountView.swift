@@ -51,6 +51,7 @@ struct AccountView: View {
                 }
             }
             .navigationTitle("Account")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
