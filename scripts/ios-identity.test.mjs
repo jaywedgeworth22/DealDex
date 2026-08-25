@@ -125,9 +125,9 @@ test("AppUpdatePrompt iOS target matches the in-repo ios-fleet pin", () => {
   const pin = read("scripts/ios-fleet/AppUpdatePrompt.swift");
   const target = read("native/ios/DealDex/AppUpdatePrompt.swift");
   assert.equal(target, pin, "iOS target must be a byte-identical copy of the pin");
-  assert.doesNotMatch(pin, /knownAppleIds/);
-  assert.doesNotMatch(pin, /online\.dealdex/);
-  assert.doesNotMatch(pin, /me\.grok\.dealdex/);
+  assert.doesNotMatch(pin, /static let knownAppleIds/);
+  assert.doesNotMatch(pin, /"online\.dealdex"/);
+  assert.doesNotMatch(pin, /"me\.grok\.dealdex"/);
   assert.match(pin, /ios-app-versions/);
   assert.match(pin, /Do not wrap this in a Swift package/);
   assert.match(pin, /Do not hardcode knownAppleIds here/);
