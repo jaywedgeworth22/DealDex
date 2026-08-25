@@ -1,5 +1,17 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — Android Play + PWA skippable update alerts
+
+On-open update alert on Android (Play In-App Updates, flexible) and a
+PWA “update available / reload” banner when a waiting service worker
+exists.  Both are skippable (Update or Reload / Not Now).  Silent when
+already current or the check fails.  iOS AppUpdatePrompt left as-is:
+`knownAppleIds` already maps `net.dealdex`.  `versions.json` lives only
+in `jaywedgeworth22/ios-app-versions` (DealDex `net.dealdex` still
+`1.0.2` / `202608230250`).  Did not clone that repo or bump it.  Did
+not touch `scripts/ios-fleet`, testers, invite-on-ship, or ios-ship YAML.
+Branch `cursor/android-pwa-update-alerts-c953`.
+
 ## 2026-08-25 CURSOR — Accept dealdex in vendored ship-testflight.sh
 
 ios-ship run 32791798491 imported signing on `macos-latest`, then Ship

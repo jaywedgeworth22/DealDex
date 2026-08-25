@@ -1,9 +1,15 @@
-const CACHE = "dealdex-v3";
+const CACHE = "dealdex-v4";
 const PRECACHE = ["/favicon.png", "/favicon.ico", "/__grok/icon-180.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
   self.skipWaiting();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("activate", (e) => {
