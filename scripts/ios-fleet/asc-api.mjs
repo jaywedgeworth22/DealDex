@@ -21,7 +21,9 @@ import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createSign } from "node:crypto";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { inviteStandingTesters, loadTestersJson, testersJsonPath } from "./testers.mjs";
 
 function loadEnvFile(path) {
   const text = readFileSync(path, "utf8");
@@ -330,6 +332,7 @@ async function main() {
     console.error("Usage: node asc-api.mjs <METHOD> <PATH> [JSON_BODY]");
     console.error("       node asc-api.mjs ensure-tf-ready <bundleId> <buildVersion> [marketingVersion]");
     console.error("       node asc-api.mjs latest-build-seq <bundleId> <prefix>");
+    console.error("       node asc-api.mjs invite-testers <bundleId>");
     process.exit(1);
   }
 
@@ -440,6 +443,38 @@ async function main() {
       `latest-build-seq: ${seenVersions} marketing version(s) + ${seenBuilds} build(s) inspected; highest ${prefix}.N is N=${best}`
     );
     console.log(String(best));
+    process.exit(0);
+  }
+
+  // After a successful upload: invite standing testers from testers.json if
+  // they are missing.  Idempotent.  Failures stay on stderr/JSON and do not
+  // fail the ship (exit 0).
+  if (method === "invite-testers") {
+    const bundleId = path;
+    if (!bundleId) {
+      console.error("Usage: node asc-api.mjs invite-testers <bundleId>");
+      process.exit(0);
+    }
+    try {
+      const listPath = process.env.IOS_TF_TESTERS_JSON || testersJsonPath(dirname(fileURLToPath(import.meta.url)));
+      const emails = loadTestersJson(listPath);
+      if (emails.length === 0) {
+        console.error("invite-testers: testers.json has no emails; nothing to invite");
+        console.log(JSON.stringify({ ok: true, skipped: true, results: [] }));
+        process.exit(0);
+      }
+      const summary = await inviteStandingTesters({ api, bundleId, emails });
+      for (const row of summary.results) {
+        console.error(`invite-testers: ${row.email} ${row.action}${row.error ? ` (${row.error})` : ""}`);
+      }
+      console.log(JSON.stringify(summary));
+    } catch (err) {
+      console.error(`invite-testers: ${err && err.message ? err.message : err}`);
+      console.log(JSON.stringify({
+        ok: false,
+        error: err && err.message ? err.message : String(err),
+      }));
+    }
     process.exit(0);
   }
 

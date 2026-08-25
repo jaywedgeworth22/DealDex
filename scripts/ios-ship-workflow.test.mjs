@@ -85,6 +85,18 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
   assert.match(publish, /fetch_remote_json/);
   assert.match(publish, /refusing to publish an empty apps map/);
   assert.doesNotMatch(publish, /data = \{"schemaVersion": 1, "apps": \{\}\}/);
+
+  const testers = JSON.parse(read("scripts/ios-fleet/testers.json"));
+  assert.deepEqual(testers.emails, [
+    "johnwedeworth@comcast.net",
+    "mail@jays.services",
+  ]);
+  assert.equal(testers.emails.length, 2);
+
+  assert.match(ship, /invite_standing_testers/);
+  assert.match(ship, /asc-api\.mjs" invite-testers/);
+  assert.match(ship, /ship still succeeded/);
+  assert.match(read("scripts/ios-fleet/asc-api.mjs"), /if \(method === "invite-testers"\)/);
 });
 
 test("ship-testflight.sh --help lists dealdex and the case accepts it", () => {

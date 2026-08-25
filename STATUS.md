@@ -8,8 +8,9 @@ exists.  Both are skippable (Update or Reload / Not Now).  Silent when
 already current or the check fails.  iOS AppUpdatePrompt left as-is:
 `knownAppleIds` already maps `net.dealdex`.  `versions.json` lives only
 in `jaywedgeworth22/ios-app-versions` (DealDex `net.dealdex` still
-`1.0.2` / `202608230250`).  Did not clone that repo or bump it.  Did
-not touch `scripts/ios-fleet`, testers, invite-on-ship, or ios-ship YAML.
+`1.0.2` / `202608230250`).  Same PR now also has standing TestFlight
+testers (`scripts/ios-fleet/testers.json`) and fail-soft invite-on-ship.
+Did not `--force-ship` or move ios-ship off GitHub-hosted `macos-latest`.
 Branch `cursor/android-pwa-update-alerts-c953`.
 
 ## 2026-08-25 CURSOR — Accept dealdex in vendored ship-testflight.sh

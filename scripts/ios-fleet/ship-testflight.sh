@@ -71,6 +71,9 @@
 # single commit and the range is uncomputable (verified 2026-08-13 on all three
 # fleet runners).
 #
+# After a successful upload, invite standing testers from testers.json if they
+# are missing.  Idempotent.  A missed invite must not fail the ship.
+#
 # Secrets (never printed):
 #   ~/.secrets/appstore-connect.env  (ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH)
 #   or Xcode-signed-in session for destination=upload export
@@ -188,6 +191,25 @@ link_private_key() {
     ln -sf "$key_path" "$dest"
   fi
   chmod 600 "$key_path" 2>/dev/null || true
+}
+
+invite_standing_testers() {
+  log "inviting standing TestFlight testers for ${BUNDLE_ID}"
+  set +e
+  node "${FLEET_DIR}/asc-api.mjs" invite-testers "$BUNDLE_ID" \
+    >"${LOG_DIR}/invite-testers.json" 2>"${LOG_DIR}/invite-testers.err"
+  local rc=$?
+  set -e
+  if [[ -s "${LOG_DIR}/invite-testers.err" ]]; then
+    while IFS= read -r line; do log "invite-testers: $line"; done <"${LOG_DIR}/invite-testers.err"
+  fi
+  if [[ $rc -ne 0 ]]; then
+    log "warning: standing tester invite failed (rc=$rc); ship still succeeded"
+    if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+      echo "::warning::invite-testers failed (rc=${rc}) for ${BUNDLE_ID}; testers may still be missing"
+    fi
+  fi
+  return 0
 }
 
 # Owner directive 2026-08-12: version naming is 1.0.# where EVERY rebuild —
@@ -759,6 +781,7 @@ if [[ -n "$UPLOAD_ONLY_IPA" ]]; then
   set -e
   [[ $UPLOAD_RC -eq 0 ]] || die "altool upload failed (rc=$UPLOAD_RC); see ${LOG_DIR}/upload.log"
   record_successful_ship
+  invite_standing_testers
   log "upload submitted; watch TestFlight processing in App Store Connect"
   exit 0
 fi
@@ -934,6 +957,7 @@ if [[ $EXPORT_RC -eq 0 ]]; then
   release_archive_lock
   ensure_tf_ready
   record_successful_ship
+  invite_standing_testers
   log "logs: ${LOG_DIR}"
   exit 0
 fi
@@ -992,6 +1016,7 @@ fi
 release_archive_lock
 ensure_tf_ready
 record_successful_ship
+invite_standing_testers
 log "upload submitted; watch TestFlight processing for ${BUNDLE_ID} build ${BUILD_NUM}"
 log "logs: ${LOG_DIR}"
 exit 0

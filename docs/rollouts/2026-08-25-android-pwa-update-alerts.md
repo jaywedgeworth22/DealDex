@@ -30,8 +30,13 @@ Left `AppUpdatePrompt` alone.  Shipped bundle is `net.dealdex`, and
 `jaywedgeworth22/ios-app-versions` (fetched, not cloned) has
 `net.dealdex` at marketing `1.0.2` / build `202608230250`, and
 `online.dealdex` still at `1.0.1`.  iTunes lookup for both bundle IDs
-returns zero results.  Did not bump that file here.  Did not touch
-`scripts/ios-fleet`, testers, invite-on-ship, or ios-ship YAML.
+returns zero results.  Did not bump that file here.
+
+Same PR now owns the durable standing-tester scripts: `testers.json`
+lists `johnwedeworth@comcast.net` and `mail@jays.services` only.
+`ship-testflight.sh` invites them after a successful upload via
+`asc-api.mjs invite-testers`.  Idempotent.  Fail-soft.  ios-ship stays
+on GitHub-hosted `macos-latest`.  No `--force-ship`.
 
 ## Verify
 

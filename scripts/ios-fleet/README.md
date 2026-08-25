@@ -22,3 +22,9 @@ and keep this `apps.json` DealDex-only.
 This directory does not carry a full local snapshot.  Publishing
 `{apps:{net.dealdex}}` would wipe sibling fleet apps from the shared
 manifest the in-app update prompt reads.
+
+`testers.json` is the standing TestFlight invite list for DealDex
+(`johnwedeworth@comcast.net`, `mail@jays.services`).  After a successful
+upload, `ship-testflight.sh` calls `asc-api.mjs invite-testers` to invite
+those emails if they are missing.  The invite is idempotent and fail-soft:
+a missed invite does not fail the ship.
