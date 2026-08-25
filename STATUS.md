@@ -1,5 +1,16 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — Accept dealdex in vendored ship-testflight.sh
+
+ios-ship run 32791798491 imported signing on `macos-latest`, then Ship
+failed with `unknown arg: dealdex`.  The wrapper always passes `dealdex`.
+Vendored `scripts/ios-fleet/ship-testflight.sh` still only accepted
+`socratic|congress|usage|usage-local` (copied from Congress.Trade).
+`apps.json` already had the DealDex row (bundle `net.dealdex`, team
+`CC8UTF7ATG`, SKU `dealdex`).  Added `dealdex` to the usage header and
+positional case.  No `--force-ship`.  No secrets YAML.  Runner stays
+GitHub-hosted `macos-latest`.  Branch `cursor/ios-ship-dealdex-case-5bfb`.
+
 ## 2026-08-24 CURSOR — GH-hosted macos-latest for iOS ship (protocol)
 
 #170 wrongly restored a local Mac self-hosted runner.  Updated fleet protocol
@@ -199,7 +210,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-21 (CURSOR — #118 deployed, scan layout + subtitle)
+Updated: 2026-08-25 (CURSOR — accept dealdex in vendored ship-testflight.sh)
 
 ## Current state
 
