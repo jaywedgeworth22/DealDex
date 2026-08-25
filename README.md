@@ -31,9 +31,10 @@ Do not invent another live URL.
 ## Datadog (existing US5 account)
 
 The website ships logs, APM traces, and browser RUM to the existing Datadog
-account (`DD_SITE=us5.datadoghq.com`).  Production is fail-closed when keys
-are missing.  Reuse the names already used by the Datadog Vercel integration
-and the fleet agent.  Do not commit values.
+account (`DD_SITE=us5.datadoghq.com`).  Production is fail-closed without
+`DD_API_KEY`.  Missing `DD_APPLICATION_ID` / `DD_CLIENT_TOKEN` leave RUM
+dark and do not 503 the site.  Reuse the names already used by the Datadog
+Vercel integration and the fleet agent.  Do not commit values.
 
 - `DD_API_KEY` (alias `DATADOG_API_KEY`) — server logs + traces
 - `DD_SITE` — defaults to `us5.datadoghq.com`

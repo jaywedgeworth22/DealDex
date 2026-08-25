@@ -4,7 +4,9 @@
  * Reuses the fleet / Datadog-Vercel names already in use on the existing
  * US5 org.  Do not invent new secret names.  Values never belong in git.
  *
- * Production (`VERCEL_ENV=production`) is fail-closed: missing keys throw.
+ * Production (`VERCEL_ENV=production`) is fail-closed only for the server
+ * API key (`DD_API_KEY` / `DATADOG_API_KEY`).  Missing RUM tokens stay
+ * dark — they must not 503 the site or throw from root `beforeLoad`.
  * Preview, CI, and local continue without instrumentation so verify can run.
  */
 
@@ -94,7 +96,7 @@ export function missingRumKeys(env: EnvMap): string[] {
 }
 
 export function missingProductionKeys(env: EnvMap): string[] {
-  return [...missingServerKeys(env), ...missingRumKeys(env)];
+  return missingServerKeys(env);
 }
 
 export function failClosedMessage(missing: string[]): string {
@@ -109,7 +111,7 @@ export function requireServerObservability(env: EnvMap): ServerObservabilityConf
   const apiKey = resolveApiKey(env);
   if (!apiKey) {
     if (isProductionObservability(env)) {
-      throw new Error(failClosedMessage(missingProductionKeys(env)));
+      throw new Error(failClosedMessage(missingServerKeys(env)));
     }
     return null;
   }
@@ -123,12 +125,6 @@ export function requireServerObservability(env: EnvMap): ServerObservabilityConf
 }
 
 export function requireRumPublicConfig(env: EnvMap): RumPublicConfig | null {
-  if (isProductionObservability(env)) {
-    const missing = missingProductionKeys(env);
-    if (missing.length) {
-      throw new Error(failClosedMessage(missing));
-    }
-  }
   const applicationId = resolveRumApplicationId(env);
   const clientToken = resolveRumClientToken(env);
   if (!applicationId || !clientToken) return null;

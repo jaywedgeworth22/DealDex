@@ -9,6 +9,8 @@ import {
   firstEnv,
   isProductionObservability,
   missingProductionKeys,
+  missingRumKeys,
+  missingServerKeys,
   requireRumPublicConfig,
   requireServerObservability,
   resolveApiKey,
@@ -31,17 +33,27 @@ test("reuses existing Datadog env names and the US5 site", () => {
   assert.equal(firstEnv({ VITE_DD_APPLICATION_ID: "app" }, ["DD_APPLICATION_ID", "VITE_DD_APPLICATION_ID"]), "app");
 });
 
-test("production is fail-closed when keys are missing", () => {
+test("production is fail-closed when the server API key is missing", () => {
   const env = { VERCEL_ENV: "production" };
   assert.equal(isProductionObservability(env), true);
-  assert.deepEqual(missingProductionKeys(env), [
-    "DD_API_KEY",
-    "DD_APPLICATION_ID",
-    "DD_CLIENT_TOKEN",
-  ]);
+  assert.deepEqual(missingServerKeys(env), ["DD_API_KEY"]);
+  assert.deepEqual(missingProductionKeys(env), ["DD_API_KEY"]);
+  assert.deepEqual(missingRumKeys(env), ["DD_APPLICATION_ID", "DD_CLIENT_TOKEN"]);
   assert.throws(() => requireServerObservability(env), /fail-closed/);
-  assert.throws(() => requireRumPublicConfig(env), /fail-closed/);
+  assert.equal(requireRumPublicConfig(env), null);
   assert.match(failClosedMessage(["DD_API_KEY"]), /DD_API_KEY/);
+});
+
+test("production APM without RUM tokens stays up and leaves RUM dark", () => {
+  const env = {
+    VERCEL_ENV: "production",
+    DD_API_KEY: "server-key",
+  };
+  assert.deepEqual(missingServerKeys(env), []);
+  assert.deepEqual(missingRumKeys(env), ["DD_APPLICATION_ID", "DD_CLIENT_TOKEN"]);
+  const server = requireServerObservability(env);
+  assert.ok(server);
+  assert.equal(requireRumPublicConfig(env), null);
 });
 
 test("preview and local skip instrumentation when keys are absent", () => {
@@ -66,6 +78,14 @@ test("production succeeds only when server and RUM keys are present", () => {
   assert.equal(rum.applicationId, "rum-app");
   assert.equal(rum.clientToken, "rum-token");
   assert.ok(!("apiKey" in rum));
+});
+
+test("malformed traceparent does not throw on header emit", () => {
+  const headers = new Headers({ traceparent: "00-not-hex-zzzz-01" });
+  const ctx = parseIncomingTrace(headers);
+  assert.doesNotThrow(() => datadogTraceHeaders(ctx));
+  assert.match(datadogTraceHeaders(ctx).traceparent, /^00-[0-9a-f]+-[0-9a-f]+-/);
+  assert.equal(hexToDecimal("zzzz"), "0");
 });
 
 test("trace header round-trip keeps Datadog and W3C ids", () => {
@@ -102,5 +122,7 @@ test("no invented secrets and no iOS Datadog SDK", () => {
   assert.doesNotMatch(ios, /Datadog/);
   const middleware = read("server/middleware/datadog.ts");
   assert.match(middleware, /throw err/);
+  assert.match(middleware, /missingServerKeys/);
+  assert.doesNotMatch(middleware, /missingProductionKeys/);
   assert.doesNotMatch(middleware, /--force-ship/);
 });

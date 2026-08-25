@@ -59,6 +59,7 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
+- 2026-08-25 — CURSOR-BUGBOT: RUM tokens stay dark in production; only `DD_API_KEY` fail-closes (`cursor/datadog-rum-stays-dark`).
 - 2026-08-25 — CURSOR: reserved Datadog web logs + APM + RUM (`cursor/datadog-web-observability-4edf`).
 - 2026-08-25 — CURSOR: reserved iOS Scan empty-loading center (`cursor/ios-scan-loading-center-1b16`).
 - 2026-08-25 — CURSOR: reserved Android Play + PWA skippable update alerts (`cursor/android-pwa-update-alerts-c953`).
