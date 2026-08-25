@@ -80,6 +80,11 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
     ship,
     /app key required: socratic \| congress \| usage \| usage-local \| dealdex/,
   );
+
+  const publish = read("scripts/ios-fleet/publish-ios-versions.sh");
+  assert.match(publish, /fetch_remote_json/);
+  assert.match(publish, /refusing to publish an empty apps map/);
+  assert.doesNotMatch(publish, /data = \{"schemaVersion": 1, "apps": \{\}\}/);
 });
 
 test("ship-testflight.sh --help lists dealdex and the case accepts it", () => {
