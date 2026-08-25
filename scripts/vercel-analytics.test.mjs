@@ -35,4 +35,5 @@ test("privacy page discloses website analytics and Speed Insights", () => {
   assert.match(privacy, /Vercel Web Analytics/);
   assert.match(privacy, /Vercel Speed Insights/);
   assert.match(privacy, /do not use cookies/);
+  assert.match(privacy, /Datadog/);
 });

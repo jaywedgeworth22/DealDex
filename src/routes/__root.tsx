@@ -9,6 +9,8 @@ import { MarkProvider } from "@/components/app-mark";
 import { PwaUpdateBanner } from "@/components/pwa-update-banner";
 import { listenForInstallPrompt, registerServiceWorker } from "@/lib/pwa";
 import { APP_SUBTITLE } from "@/lib/copy";
+import { getRumPublicConfig } from "@/lib/observability/rum-config";
+import { DatadogRum } from "@/lib/observability/rum";
 import { useEffect } from "react";
 import appCss from "../styles.css?url";
 
@@ -17,6 +19,9 @@ const host = import.meta.env.VITE_PUBLIC_HOSTNAME || "dealdex.net";
 const ogImage = `https://${host}/og.jpg?v=logo-only-20260822`;
 
 export const Route = createRootRoute({
+  beforeLoad: async () => {
+    return { datadogRum: await getRumPublicConfig() };
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -93,6 +98,7 @@ function VercelSpeedInsights() {
 }
 
 function Root() {
+  const { datadogRum } = Route.useRouteContext();
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <head>
@@ -111,6 +117,7 @@ function Root() {
             </AuthProvider>
           </MarkProvider>
         </ThemeProvider>
+        <DatadogRum config={datadogRum} />
         <Analytics />
         <VercelSpeedInsights />
         <Scripts />

@@ -1,0 +1,106 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { test } from "node:test";
+import {
+  DEFAULT_DD_SITE,
+  failClosedMessage,
+  firstEnv,
+  isProductionObservability,
+  missingProductionKeys,
+  requireRumPublicConfig,
+  requireServerObservability,
+  resolveApiKey,
+  resolveSite,
+} from "../src/lib/observability/config.ts";
+import { datadogTraceHeaders, decimalToHex, hexToDecimal, parseIncomingTrace } from "../src/lib/observability/ids.ts";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+function read(rel) {
+  return readFileSync(join(ROOT, rel), "utf8");
+}
+
+test("reuses existing Datadog env names and the US5 site", () => {
+  assert.equal(DEFAULT_DD_SITE, "us5.datadoghq.com");
+  assert.equal(resolveSite({}), "us5.datadoghq.com");
+  assert.equal(resolveSite({ DD_SITE: "us5.datadoghq.com" }), "us5.datadoghq.com");
+  assert.equal(resolveApiKey({ DATADOG_API_KEY: "abc" }), "abc");
+  assert.equal(resolveApiKey({ DD_API_KEY: "from-dd", DATADOG_API_KEY: "from-alias" }), "from-dd");
+  assert.equal(firstEnv({ VITE_DD_APPLICATION_ID: "app" }, ["DD_APPLICATION_ID", "VITE_DD_APPLICATION_ID"]), "app");
+});
+
+test("production is fail-closed when keys are missing", () => {
+  const env = { VERCEL_ENV: "production" };
+  assert.equal(isProductionObservability(env), true);
+  assert.deepEqual(missingProductionKeys(env), [
+    "DD_API_KEY",
+    "DD_APPLICATION_ID",
+    "DD_CLIENT_TOKEN",
+  ]);
+  assert.throws(() => requireServerObservability(env), /fail-closed/);
+  assert.throws(() => requireRumPublicConfig(env), /fail-closed/);
+  assert.match(failClosedMessage(["DD_API_KEY"]), /DD_API_KEY/);
+});
+
+test("preview and local skip instrumentation when keys are absent", () => {
+  assert.equal(requireServerObservability({ VERCEL_ENV: "preview" }), null);
+  assert.equal(requireRumPublicConfig({ NODE_ENV: "test" }), null);
+});
+
+test("production succeeds only when server and RUM keys are present", () => {
+  const env = {
+    VERCEL_ENV: "production",
+    DD_API_KEY: "server-key",
+    DD_APPLICATION_ID: "rum-app",
+    DD_CLIENT_TOKEN: "rum-token",
+    DD_SERVICE: "dealdex",
+  };
+  const server = requireServerObservability(env);
+  assert.ok(server);
+  assert.equal(server.site, "us5.datadoghq.com");
+  assert.equal(server.service, "dealdex");
+  const rum = requireRumPublicConfig(env);
+  assert.ok(rum);
+  assert.equal(rum.applicationId, "rum-app");
+  assert.equal(rum.clientToken, "rum-token");
+  assert.ok(!("apiKey" in rum));
+});
+
+test("trace header round-trip keeps Datadog and W3C ids", () => {
+  const headers = new Headers({
+    "x-datadog-trace-id": "42",
+    "x-datadog-parent-id": "7",
+    "x-datadog-sampling-priority": "1",
+    "x-datadog-origin": "rum",
+  });
+  const ctx = parseIncomingTrace(headers);
+  assert.equal(hexToDecimal(decimalToHex("42", 16)), "42");
+  assert.equal(ctx.origin, "rum");
+  const out = datadogTraceHeaders(ctx);
+  assert.equal(out["x-datadog-trace-id"], "42");
+  assert.match(out.traceparent, /^00-/);
+});
+
+test("root mounts Datadog RUM and privacy discloses it", () => {
+  const root = read("src/routes/__root.tsx");
+  assert.match(root, /from "@\/lib\/observability\/rum"/);
+  assert.match(root, /<DatadogRum /);
+  assert.match(root, /getRumPublicConfig/);
+  const privacy = read("src/routes/privacy.tsx");
+  assert.match(privacy, /Real User Monitoring to Datadog/);
+  assert.match(privacy, /Session Replay is off/);
+});
+
+test("no invented secrets and no iOS Datadog SDK", () => {
+  const config = read("src/lib/observability/config.ts");
+  assert.match(config, /DD_API_KEY/);
+  assert.match(config, /DATADOG_API_KEY/);
+  assert.doesNotMatch(config, /pubb[a-f0-9]{20,}/i);
+  const ios = read("native/ios/project.yml");
+  assert.doesNotMatch(ios, /Datadog/);
+  const middleware = read("server/middleware/datadog.ts");
+  assert.match(middleware, /throw err/);
+  assert.doesNotMatch(middleware, /--force-ship/);
+});

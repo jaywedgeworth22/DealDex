@@ -1,5 +1,9 @@
 # Current Handoff
 
+## 2026-08-27 DEPLOYER — rebase DealDex #183 Datadog onto main
+
+Rebased `cursor/datadog-web-observability-4edf` onto current main.  Production fail-closes only without `DD_API_KEY`.  Missing RUM tokens leave RUM dark (#184).  Infisical is source of truth.  Vercel gets machine identity only.  No pasted `DD_*` on Vercel.  Extra-ship no.
+
 ## 2026-08-27 CLAUDE — Landed and shipped: PR #203
 
 Merged as `121ea10` (squash).  The push fired `ios-ship.yml` run #212 on
