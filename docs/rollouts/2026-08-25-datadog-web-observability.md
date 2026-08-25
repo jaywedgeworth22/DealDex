@@ -13,8 +13,9 @@ by Vercel).  Sentry and PagerDuty are unchanged.
 - Resolve existing env names only: `DD_API_KEY` / `DATADOG_API_KEY`,
   `DD_SITE`, `DD_SERVICE`, `DD_ENV`, `DD_VERSION`, `DD_APPLICATION_ID`,
   `DD_CLIENT_TOKEN` (plus the `VITE_DD_*` aliases Vite can see).
-- Production (`VERCEL_ENV=production`) is fail-closed when those keys are
-  missing.  Preview, CI, and local skip instrumentation.
+- Production (`VERCEL_ENV=production`) is fail-closed without `DD_API_KEY`.
+  Missing RUM tokens stay dark and do not 503 the site.  Preview, CI, and
+  local skip instrumentation.
 - Nitro middleware ships JSON logs to HTTP log intake and one server span
   per request to OTLP HTTP intake.  Application errors are rethrown.
 - Browser `@datadog/browser-rum-slim` + `@datadog/browser-logs`.  Slim has

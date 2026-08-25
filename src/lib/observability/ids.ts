@@ -22,8 +22,13 @@ export function newTraceIdHex(): string {
   return randomHex(16);
 }
 
+function isHex(value: string): boolean {
+  return /^[0-9a-fA-F]+$/.test(value);
+}
+
 export function hexToDecimal(hex: string): string {
   const clean = hex.replace(/^0+/, "") || "0";
+  if (!isHex(clean)) return "0";
   return BigInt(`0x${clean}`).toString(10);
 }
 
@@ -39,7 +44,7 @@ export function parseIncomingTrace(headers: Headers): TraceContext {
   const traceparent = headers.get("traceparent");
   if (traceparent) {
     const parts = traceparent.split("-");
-    if (parts.length >= 4 && parts[1] && parts[2]) {
+    if (parts.length >= 4 && parts[1] && parts[2] && isHex(parts[1]) && isHex(parts[2])) {
       const sampled = parts[3]?.endsWith("01") ? 1 : 0;
       return {
         traceIdHex: parts[1].padStart(32, "0").slice(-32),

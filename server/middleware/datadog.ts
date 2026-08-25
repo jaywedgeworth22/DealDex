@@ -1,12 +1,13 @@
 /**
  * Agentless Datadog logs + APM for the Nitro / Vercel function.
  *
- * Production is fail-closed when DD_API_KEY / RUM tokens are missing.
+ * Production is fail-closed when DD_API_KEY is missing.  Missing RUM tokens
+ * stay dark and must not 503 the site.
  * Application errors are rethrown after they are shipped — they stay visible.
  */
 import {
   isProductionObservability,
-  missingProductionKeys,
+  missingServerKeys,
   requireServerObservability,
 } from "../../src/lib/observability/config";
 import { datadogTraceHeaders, parseIncomingTrace } from "../../src/lib/observability/ids";
@@ -34,7 +35,7 @@ function withTraceHeaders(response: Response, headers: Record<string, string>): 
 }
 
 function failClosedResponse(): Response {
-  const missing = missingProductionKeys(process.env);
+  const missing = missingServerKeys(process.env);
   return new Response(
     `DealDex Datadog is fail-closed in production.  Missing ${missing.join(", ")}.`,
     {
@@ -48,7 +49,7 @@ export default async function datadogMiddleware(
   event: DatadogEvent,
   next: () => unknown | Promise<unknown>,
 ): Promise<unknown> {
-  if (isProductionObservability(process.env) && missingProductionKeys(process.env).length) {
+  if (isProductionObservability(process.env) && missingServerKeys(process.env).length) {
     return failClosedResponse();
   }
 
