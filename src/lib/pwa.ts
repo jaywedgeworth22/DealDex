@@ -1,3 +1,5 @@
+import { shouldOfferServiceWorkerUpdate } from "@/lib/pwa-update";
+
 export function isFramed() {
   return typeof window !== "undefined" && window.parent !== window;
 }
@@ -20,6 +22,63 @@ export function isIos() {
   );
 }
 
+const PWA_UPDATE_DISMISS_KEY = "dealdex.pwaUpdate.dismissed";
+
+const updateListeners = new Set<(ready: boolean) => void>();
+let updateReady = false;
+
+function isUpdateDismissed(): boolean {
+  if (typeof sessionStorage === "undefined") return false;
+  try {
+    return sessionStorage.getItem(PWA_UPDATE_DISMISS_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function setUpdateReady(ready: boolean) {
+  if (updateReady === ready) return;
+  updateReady = ready;
+  updateListeners.forEach((fn) => fn(updateReady));
+}
+
+function offerFromRegistration(reg: ServiceWorkerRegistration) {
+  if (
+    shouldOfferServiceWorkerUpdate({
+      hasController: Boolean(navigator.serviceWorker.controller),
+      hasWaitingWorker: Boolean(reg.waiting),
+      installingState: reg.installing?.state ?? null,
+      dismissed: isUpdateDismissed(),
+    })
+  ) {
+    setUpdateReady(true);
+  }
+}
+
+function watchRegistration(reg: ServiceWorkerRegistration) {
+  offerFromRegistration(reg);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") return;
+    void reg.update().then(() => offerFromRegistration(reg)).catch(() => undefined);
+  });
+  reg.addEventListener("updatefound", () => {
+    const installing = reg.installing;
+    if (!installing) return;
+    installing.addEventListener("statechange", () => {
+      if (
+        shouldOfferServiceWorkerUpdate({
+          hasController: Boolean(navigator.serviceWorker.controller),
+          hasWaitingWorker: Boolean(reg.waiting) || installing.state === "installed",
+          installingState: installing.state,
+          dismissed: isUpdateDismissed(),
+        })
+      ) {
+        setUpdateReady(true);
+      }
+    });
+  });
+}
+
 export function shouldRegisterSw() {
   return (
     typeof window !== "undefined" &&
@@ -32,8 +91,39 @@ export function shouldRegisterSw() {
 export function registerServiceWorker() {
   if (!shouldRegisterSw()) return;
   window.addEventListener("load", () => {
-    void navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => undefined);
+    void navigator.serviceWorker
+      .register("/sw.js", { scope: "/" })
+      .then((reg) => {
+        watchRegistration(reg);
+      })
+      .catch(() => undefined);
   });
+}
+
+export function onServiceWorkerUpdateReady(fn: (ready: boolean) => void) {
+  updateListeners.add(fn);
+  fn(updateReady);
+  return () => {
+    updateListeners.delete(fn);
+  };
+}
+
+export function dismissServiceWorkerUpdate() {
+  try {
+    sessionStorage.setItem(PWA_UPDATE_DISMISS_KEY, "1");
+  } catch {
+    // Private mode can block sessionStorage.  Still hide for this page.
+  }
+  setUpdateReady(false);
+}
+
+export async function applyServiceWorkerUpdate() {
+  const reg = await navigator.serviceWorker.getRegistration();
+  const waiting = reg?.waiting;
+  if (waiting) {
+    waiting.postMessage({ type: "SKIP_WAITING" });
+  }
+  window.location.reload();
 }
 
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };

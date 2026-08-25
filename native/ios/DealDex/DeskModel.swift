@@ -109,45 +109,27 @@ final class DeskModel: ObservableObject {
         loading = false
     }
 
-    func signInGoogle() async {
+    func signInSocial(_ provider: String) async {
         accountBusy = true
         accountNote = nil
         do {
-            let session = try await NativeAuth.signIn(origin: origin, provider: "grok-google")
+            let session = try await NativeAuth.signIn(origin: origin, provider: provider)
             let site = NativeAuth.normalized(origin)
             DeskStore.origin = site
             DeskStore.token = session.token
             DeskStore.email = session.email
             self.origin = site
-            accountEmail = session.email.isEmpty ? "Google" : session.email
-            accountNote = "Signed in with Google.  Keys still live on this phone.  Pull or push to sync."
+            let label = provider == "twitter" ? "X" : provider.capitalized
+            accountEmail = session.email.isEmpty ? label : session.email
+            accountNote = "Signed in with \(label).  Keys still live on this phone.  Pull or push to sync."
         } catch {
             accountNote = error.localizedDescription + "  Scan still works without signing in."
         }
         accountBusy = false
     }
 
-    func signIn(signup: Bool) async {
-        let site = NativeAuth.normalized(origin)
-        if loginEmail.isEmpty || loginPassword.count < 8 {
-            accountNote = "Email and a password of 8+ characters — or use Sign in with Google if that is how you created the website account.  Scan still works without signing in."
-            return
-        }
-        accountBusy = true
-        accountNote = nil
-        do {
-            let session = try await AccountApi.signIn(origin: site, email: loginEmail, password: loginPassword, signup: signup)
-            DeskStore.origin = site
-            DeskStore.token = session.token
-            DeskStore.email = session.email
-            self.origin = site
-            accountEmail = session.email
-            loginPassword = ""
-            accountNote = "Signed in.  Keys still live on this phone.  Pull or push to sync."
-        } catch {
-            accountNote = error.localizedDescription + " Scan still works with saved keys."
-        }
-        accountBusy = false
+    func signInGoogle() async {
+        await signInSocial("google")
     }
 
     func pullKeys() async {

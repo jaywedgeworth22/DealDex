@@ -15,11 +15,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun SettingsScreen(vm: DeskViewModel, state: DeskState) {
+    val ctx = LocalContext.current
     Column(
         Modifier
             .fillMaxSize()
@@ -29,7 +30,7 @@ fun SettingsScreen(vm: DeskViewModel, state: DeskState) {
         Text("SETTINGS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("This Phone", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "Website is https://dealdex.net by default.  Leave it unless you are on a preview host.  Sign in to back up keys.  Keys stay on this phone.  Scan works signed out.",
+            "Website is https://dealdex.net by default.  Leave it unless you are on a preview host.  Sign in with Google, Apple, or X to back up keys.  Keys stay on this phone.  Scan works signed out.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
@@ -46,17 +47,6 @@ fun SettingsScreen(vm: DeskViewModel, state: DeskState) {
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
         )
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(state.loginEmail, vm::setLoginEmail, label = { Text("Email") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            state.loginPassword,
-            vm::setLoginPassword,
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-        )
         Spacer(Modifier.height(12.dp))
         if (state.accountEmail.isNotBlank()) {
             Text("Signed in as ${state.accountEmail}", style = MaterialTheme.typography.bodyMedium)
@@ -67,11 +57,17 @@ fun SettingsScreen(vm: DeskViewModel, state: DeskState) {
             Spacer(Modifier.height(8.dp))
             OutlinedButton(onClick = { vm.signOut() }) { Text("Sign Out") }
         } else {
-            Button(onClick = { vm.signIn(false) }, enabled = !state.accountBusy) {
-                Text(if (state.accountBusy) "Working…" else "Sign In")
+            Button(onClick = { vm.startOAuth(ctx, "google") }, enabled = !state.accountBusy, modifier = Modifier.fillMaxWidth()) {
+                Text("Sign in with Google")
             }
             Spacer(Modifier.height(8.dp))
-            OutlinedButton(onClick = { vm.signIn(true) }, enabled = !state.accountBusy) { Text("Create Account") }
+            Button(onClick = { vm.startOAuth(ctx, "apple") }, enabled = !state.accountBusy, modifier = Modifier.fillMaxWidth()) {
+                Text("Sign in with Apple")
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(onClick = { vm.startOAuth(ctx, "twitter") }, enabled = !state.accountBusy, modifier = Modifier.fillMaxWidth()) {
+                Text("Sign in with X")
+            }
         }
         if (state.accountNote != null) {
             Text(state.accountNote, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))

@@ -1,8 +1,83 @@
 # Current Handoff
 
+## 2026-08-25 CURSOR — testers.json Comcast typo
+
+`scripts/ios-fleet/testers.json` had `johnwedeworth@comcast.net`.  Spelling
+is `johnwedgeworth@comcast.net`.  Left `mail@jays.services`.  Did not add
+testers, expand invite-on-ship, change ios-ship, or use `--force-ship`.
+Invite-on-ship comments/tests are not on `main` (only an unmerged leftover
+on `cursor/android-pwa-update-alerts-c953`).  Remaining emails:
+`johnwedgeworth@comcast.net`, `mail@jays.services`.  Branch
+`cursor/testers-comcast-typo-160f`.
+
+## 2026-08-25 CURSOR — Center iOS Scan empty-loading spinner
+
+TestFlight Scan (2026-08-24) showed the gray spinner and
+"Reading eBay and Mercari…" left of center in the empty results area.
+`ScanView` parent `VStack` is `alignment: .leading`; the labeled
+`ProgressView` had no `maxWidth` / center frame, so it hugged leading.
+Now it uses `.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)`.
+Caption unchanged.  No ship-path / runner / `--force-ship` change.
+Branch `cursor/ios-scan-loading-center-1b16`.
+
+## 2026-08-25 CURSOR — Android Play + PWA skippable update alerts
+
+On-open update alert on Android (Play In-App Updates, flexible) and a
+PWA “update available / reload” banner when a waiting service worker
+exists.  Both are skippable (Update or Reload / Not Now).  Silent when
+already current or the check fails.  iOS AppUpdatePrompt left as-is:
+`knownAppleIds` already maps `net.dealdex`.  `versions.json` lives only
+in `jaywedgeworth22/ios-app-versions` (DealDex `net.dealdex` still
+`1.0.2` / `202608230250`).  Did not clone that repo or bump it.  Did
+not touch `scripts/ios-fleet`, testers, invite-on-ship, or ios-ship YAML.
+Branch `cursor/android-pwa-update-alerts-c953`.
+
+## 2026-08-25 CURSOR — Accept dealdex in vendored ship-testflight.sh
+
+ios-ship run 32791798491 imported signing on `macos-latest`, then Ship
+failed with `unknown arg: dealdex`.  The wrapper always passes `dealdex`.
+Vendored `scripts/ios-fleet/ship-testflight.sh` still only accepted
+`socratic|congress|usage|usage-local` (copied from Congress.Trade).
+`apps.json` already had the DealDex row (bundle `net.dealdex`, team
+`CC8UTF7ATG`, SKU `dealdex`).  Added `dealdex` to the usage header and
+positional case.  No `--force-ship`.  No secrets YAML.  Runner stays
+GitHub-hosted `macos-latest`.  Branch `cursor/ios-ship-dealdex-case-5bfb`.
+
+## 2026-08-24 CURSOR — GH-hosted macos-latest for iOS ship (protocol)
+
+#170 wrongly restored a local Mac self-hosted runner.  Updated fleet protocol
+bans that: iOS ships and all other Actions use GitHub-hosted runners
+(`macos-latest` here).  Keep vendored `scripts/ios-fleet` (bundle
+`net.dealdex`, train `1.0.N`).  Import ASC + Distribution secrets the same
+way Congress.Trade does (`scripts/ios-appstore-gm-prepare.sh`).  Branch
+`cursor/ios-gh-hosted-runners-709e`.
+
+## 2026-08-24 CURSOR — Vendor ios-fleet so hosted ships can find 1.0.N
+
+#165 landed the project regimen (`1.0.2` / `202608230250`).  #167 hosted
+ships died because `/Users/jay/apps/ios-fleet` is not on `macos-latest`.
+#170 vendored `scripts/ios-fleet`.  Do not send this job back to a local
+Mac runner.
+
+## 2026-08-23 CURSOR — iOS version regimen (1.0.N + UTC build)
+
+DealDex ASC showed `1.0 (1)` because `CURRENT_PROJECT_VERSION` was stuck at `1`
+while marketing was `1.0.2`.  Fleet regimen: marketing `1.0.<seq>`, build UTC
+`YYYYMMDDHHMM` so ASC reads `1.0.2 (202608230250)`.  `project.yml`, `pbxproj`,
+`CLAUDE.md`, and `ios-identity.test.mjs` updated.  Next Mac `ios-ship` run
+ships the next patch via `ios-fleet/ship-testflight.sh`.  Branch
+`cursor/ios-version-regimen-709e`.
+
 ## 2026-08-22 CURSOR — Publish native apps against dealdex.net
 
 Android Scan now POSTs to `https://dealdex.net/api/native/scan` first (same unsigned website scoring as iOS), then falls back to on-device scrape.  Scan chrome matches the site: SCAN, filters, Hide proxies, All/Deals/Verified.  Sideload APK is `public/DealDex.apk` (versionName 1.0.2).  iOS already used the website; TestFlight ship uses bundle `net.dealdex`.  Branch `cursor/native-publish`.
+
+## 2026-08-22 CURSOR — OG logo-only card
+
+Social sharing image (`public/og.jpg`) is logo-only: centered DealDex wordmark
+fills ~88% width on white, no subtitle or footer.  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
+Branch `cursor/og-logo-only-4780`.
 
 ## 2026-08-22 CURSOR — Vercel Speed Insights
 
@@ -90,8 +165,8 @@ All / Deals / Verified plus compact filter selects stay in the same card.
 Desktop and iPad show two listing cards per row (`md:grid-cols-2`, iOS
 `horizontalSizeClass == .regular`, Android `screenWidthDp >= 600`).
 
-OG wordmark is 840px (~70% of 1200), capped at 75%.  Re-render:
-`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=subtitle-20260821`.
+OG wordmark fills ~88% width, centered on white (logo only).  Re-render:
+`node scripts/render-og.mjs`.  Cache-bust `og.jpg?v=logo-only-20260822`.
 
 
 ## 2026-08-20 CURSOR — transparent DD favicon + ST-grid AppIcon
@@ -167,7 +242,7 @@ SKU `dealdex`).
 
 # Status
 
-Updated: 2026-08-21 (CURSOR — #118 deployed, scan layout + subtitle)
+Updated: 2026-08-25 (CURSOR — center iOS Scan empty-loading spinner)
 
 ## Current state
 
@@ -203,9 +278,10 @@ Updated: 2026-08-21 (CURSOR — #118 deployed, scan layout + subtitle)
   red + blue DD on the ST tiled field.  Tab favicon is the isolated DD
   on a transparent field.
 - iOS TestFlight ship workflow (`.github/workflows/ios-ship.yml`) runs on
-  `[self-hosted, macOS, ARM64, xcode26]`, calls
-  `scripts/ios-ship-testflight.sh` (fleet key `dealdex`), and gates cron
-  on `native/ios/` changes.  Secrets stay on the Mac.
+  GitHub-hosted `macos-latest`, calls `scripts/ios-ship-testflight.sh`
+  (fleet key `dealdex`, in-repo `scripts/ios-fleet`), imports ASC +
+  Distribution secrets via `scripts/ios-appstore-gm-prepare.sh`, and
+  gates cron on `native/ios/` changes.
 
 ## Blockers
 

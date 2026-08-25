@@ -1,0 +1,16 @@
+{
+  "teamId": "CC8UTF7ATG",
+  "apps": {
+    "dealdex": {
+      "displayName": "DealDex",
+      "bundleId": "net.dealdex",
+      "appleId": 6802474288,
+      "scheme": "DealDex",
+      "projectRel": "native/ios/DealDex.xcodeproj",
+      "xcodegenDir": "native/ios",
+      "worktreeHint": "~/apps/dealdex-grok",
+      "marketingVersionDefault": "1.0.2",
+      "notes": "Native iPhone app. Bundle ID net.dealdex (resource R2FAW69NPD, not a team id). Team CC8UTF7ATG. ASC app DealDex SKU dealdex id 6802474288. Marketing train is 1.0.N; build is UTC YYYYMMDDHHMM. Do not upload me.grok.dealdex or online.dealdex."
+    }
+  }
+}

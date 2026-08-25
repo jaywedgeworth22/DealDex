@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SUBTITLE = "Identify Best-Priced Pokémon Card Listings";
+const SUBTITLE = "Find the best-priced Pokémon card listings";
 
 function read(rel) {
   return readFileSync(join(ROOT, rel), "utf8");
@@ -16,10 +16,12 @@ test("shared subtitle constant matches the owner string", () => {
   assert.match(copy, new RegExp(SUBTITLE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
-test("site, OG, and apps use the new subtitle", () => {
+test("site and apps use the new subtitle (OG card is logo-only)", () => {
   assert.match(read("src/routes/index.tsx"), /APP_SUBTITLE/);
   assert.match(read("src/routes/__root.tsx"), /APP_SUBTITLE/);
-  assert.match(read("scripts/og-dealdex.html"), new RegExp(SUBTITLE.replace("é", "é")));
+  const og = read("scripts/og-dealdex.html");
+  assert.doesNotMatch(og, new RegExp(SUBTITLE.replace("é", "é")));
+  assert.match(og, /dealdex-wordmark\.png/);
   assert.match(read("native/android/app/src/main/res/values/strings.xml"), new RegExp(SUBTITLE));
   assert.doesNotMatch(read("src/routes/index.tsx"), /Find the best listings/);
   assert.doesNotMatch(read("src/routes/__root.tsx"), /Find the best listings/);
@@ -39,10 +41,13 @@ test("scan box has no suggested Pokémon chips and one marketplace toggle pair",
   assert.equal((scan.match(/MarketplaceToggle/g) || []).length, 3);
 });
 
-test("OG wordmark is sized to about 70% of the 1200px card", () => {
+test("OG card is logo-only and centers a large wordmark", () => {
   const og = read("scripts/og-dealdex.html");
-  assert.match(og, /width:\s*840px/);
-  assert.match(og, /max-width:\s*75%/);
+  assert.match(og, /align-items:\s*center/);
+  assert.match(og, /justify-content:\s*center/);
+  assert.match(og, /width:\s*88%/);
+  assert.doesNotMatch(og, /DealDex\.net/i);
+  assert.doesNotMatch(og, /eBay/i);
 });
 
 test("Android scan has no suggested chips and shows counts on source toggles", () => {

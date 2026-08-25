@@ -10,20 +10,13 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
   return (
     <Shell>
-      <section className="mb-8">
-        <h1 className="font-display text-3xl tracking-tight sm:text-4xl">
+      <section className="mb-8 text-center">
+        <h1 className="mx-auto max-w-4xl font-display text-4xl tracking-tight sm:text-5xl">
           {APP_SUBTITLE}
         </h1>
-        <p className="mt-4 text-muted">
+        <p className="mt-4 text-left text-muted">
           DealDex hunts live Buy It Now singles on eBay and Mercari, then scores each ask against a
           book of desks — TCGPlayer, Cardmarket, eBay solds, PriceCharting, and any keys you add.
-        </p>
-        <p className="mt-3 text-sm text-muted">
-          Android and iPhone apps are on{" "}
-          <a href="/install" className="text-fg underline-offset-4 hover:underline">
-            Apps
-          </a>
-          .
         </p>
       </section>
       <Scanner />

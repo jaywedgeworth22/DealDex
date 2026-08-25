@@ -31,11 +31,11 @@ DealDex
 Best-priced card listings
 
 App Store subtitle is capped at 30 characters.  The in-app, website, and OG
-subtitle is Identify Best-Priced Pokémon Card Listings (43 characters).
+subtitle is Find the best-priced Pokémon card listings (42 characters).
 
 ## Promotional text
 
-Identify Best-Priced Pokémon Card Listings.  Scan live eBay and Mercari singles, then score the ask against TCGPlayer, Cardmarket, sold comps, and PriceCharting.
+Find the best-priced Pokémon card listings.  Scan live eBay and Mercari singles, then score the ask against TCGPlayer, Cardmarket, sold comps, and PriceCharting.
 
 ## Description
 

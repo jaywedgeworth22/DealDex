@@ -14,17 +14,17 @@ struct SettingsView: View {
                         .textContentType(.URL)
                     if desk.accountEmail.isEmpty {
                         Button(desk.accountBusy ? "Working…" : "Sign in with Google") {
-                            Task { await desk.signInGoogle() }
+                            Task { await desk.signInSocial("google") }
                         }
                         .disabled(desk.accountBusy)
-                        TextField("Email", text: $desk.loginEmail)
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.emailAddress)
-                        SecureField("Password", text: $desk.loginPassword)
-                        Button(desk.accountBusy ? "Working…" : "Sign In with email") { Task { await desk.signIn(signup: false) } }
-                            .disabled(desk.accountBusy)
-                        Button("Create Account") { Task { await desk.signIn(signup: true) } }
-                            .disabled(desk.accountBusy)
+                        Button(desk.accountBusy ? "Working…" : "Sign in with Apple") {
+                            Task { await desk.signInSocial("apple") }
+                        }
+                        .disabled(desk.accountBusy)
+                        Button(desk.accountBusy ? "Working…" : "Sign in with X") {
+                            Task { await desk.signInSocial("twitter") }
+                        }
+                        .disabled(desk.accountBusy)
                     } else {
                         Text("Signed in as \(desk.accountEmail)")
                         Button("Pull Keys from Account") { Task { await desk.pullKeys() } }
@@ -36,7 +36,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Account")
                 } footer: {
-                    Text("Website is https://dealdex.net by default.  Leave it unless you are on a preview host.  Scan works without signing in.  Google website accounts use Sign in with Google — email and password is only for accounts you created that way.")
+                    Text("Website is https://dealdex.net by default.  Leave it unless you are on a preview host.  Scan works without signing in.  Use Google, Apple, or X — the same accounts as the website.")
                 }
 
                 Section {

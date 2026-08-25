@@ -27,7 +27,8 @@ test("native scan and oauth routes exist and are public (no session gate on scan
   assert.match(oauth, /createFileRoute\("\/api\/native\/oauth"\)/);
   assert.match(oauth, /NATIVE_SCHEME = "dealdex"/);
   assert.match(oauth, /:\/\/auth\?/);
-  assert.match(oauth, /grok-google/);
+  assert.match(oauth, /signInSocial/);
+  assert.match(oauth, /"google"/);
 });
 
 test("Android scan talks to the website without requiring a token", () => {
@@ -49,6 +50,10 @@ test("iOS scan talks to the website without requiring a token", () => {
   assert.match(market, /Scan never requires sign-in/);
   const settings = read("native/ios/DealDex/SettingsView.swift");
   assert.match(settings, /Sign in with Google/);
+  assert.match(settings, /Sign in with Apple/);
+  assert.match(settings, /Sign in with X/);
+  assert.doesNotMatch(settings, /Sign In with email/);
+  assert.doesNotMatch(settings, /Create Account/);
   const scanView = read("native/ios/DealDex/ScanView.swift");
   const marks = read("native/ios/DealDex/MarketplaceMarks.swift");
   assert.match(scanView, /MarketplaceToggle/);
@@ -56,6 +61,11 @@ test("iOS scan talks to the website without requiring a token", () => {
   assert.match(scanView, /count: desk\.ebayCount/);
   assert.match(scanView, /count: desk\.mercariCount/);
   assert.match(scanView, /DealDexCopy\.subtitle/);
+  assert.match(scanView, /ProgressView\("Reading eBay and Mercari…"\)/);
+  assert.match(
+    scanView,
+    /ProgressView\("Reading eBay and Mercari…"\)\s*\.frame\(maxWidth: \.infinity, maxHeight: \.infinity, alignment: \.center\)/,
+  );
   assert.doesNotMatch(scanView, /charizard/);
   assert.doesNotMatch(scanView, /POKÉMON LISTING DESK/);
   assert.match(marks, /EbayWordmark/);

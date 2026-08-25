@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { auth, SESSION_TOKEN_COOKIE } from "@/lib/auth/server";
-import { GROK_PROVIDERS } from "@/lib/auth/providers";
+import { SOCIAL_PROVIDER_IDS, type SocialProviderId } from "@/lib/auth/providers";
 
 const NATIVE_SCHEME = "dealdex";
-const ALLOWED = new Set(GROK_PROVIDERS.map((p) => p.providerId));
+const ALLOWED = SOCIAL_PROVIDER_IDS;
 
 function readCookie(request: Request, name: string): string | null {
   const header = request.headers.get("cookie");
@@ -58,16 +58,16 @@ export const Route = createFileRoute("/api/native/oauth")({
           return nativeRedirect({ token, email });
         }
 
-        const providerId = (url.searchParams.get("provider") ?? "grok-google").trim();
+        const providerId = (url.searchParams.get("provider") ?? "google").trim();
         if (!ALLOWED.has(providerId)) {
           return nativeRedirect({ error: "unknown_provider" });
         }
 
         const back = `${url.origin}/api/native/oauth?done=1`;
         try {
-          const apiRes = await auth.api.signInWithOAuth2({
+          const apiRes = await auth.api.signInSocial({
             body: {
-              providerId,
+              provider: providerId as SocialProviderId,
               callbackURL: back,
               errorCallbackURL: `${back}&error=1`,
             },

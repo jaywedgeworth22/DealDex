@@ -85,6 +85,42 @@ test("iOS identity includes DealDexWordmark imageset and official marketplace pa
   assert.match(marks, /viewBox\.width/);
 });
 
+test("iOS version regimen uses 1.0.N marketing and UTC build stamp", () => {
+  const spec = read("native/ios/project.yml");
+  const plist = read("native/ios/DealDex/Info.plist");
+  const pbx = read("native/ios/DealDex.xcodeproj/project.pbxproj");
+
+  const marketing = spec.match(/^ {4}MARKETING_VERSION: "([^"]+)"/m)?.[1];
+  const build = spec.match(/^ {4}CURRENT_PROJECT_VERSION: "([^"]+)"/m)?.[1];
+  assert.ok(marketing, "project.yml MARKETING_VERSION");
+  assert.ok(build, "project.yml CURRENT_PROJECT_VERSION");
+  assert.match(marketing, /^1\.0\.\d+$/);
+  assert.match(build, /^\d{12}$/);
+  assert.notEqual(marketing, build);
+
+  assert.match(
+    plist,
+    /<key>CFBundleShortVersionString<\/key>\s*<string>\$\(MARKETING_VERSION\)<\/string>/,
+  );
+  assert.match(
+    plist,
+    /<key>CFBundleVersion<\/key>\s*<string>\$\(CURRENT_PROJECT_VERSION\)<\/string>/,
+  );
+  assert.doesNotMatch(plist, /<key>CFBundleShortVersionString<\/key>\s*<string>1\.0<\/string>/);
+  assert.doesNotMatch(plist, /<key>CFBundleVersion<\/key>\s*<string>1<\/string>/);
+
+  const marketingHits = pbx.match(/MARKETING_VERSION = ([^;]+);/g) ?? [];
+  const buildHits = pbx.match(/CURRENT_PROJECT_VERSION = ([^;]+);/g) ?? [];
+  assert.ok(marketingHits.length >= 2);
+  assert.ok(buildHits.length >= 2);
+  for (const hit of marketingHits) {
+    assert.equal(hit, `MARKETING_VERSION = ${marketing};`);
+  }
+  for (const hit of buildHits) {
+    assert.equal(hit, `CURRENT_PROJECT_VERSION = ${build};`);
+  }
+});
+
 test("Apple bundle resource id is documented, never a team setting", () => {
   const spec = read("native/ios/project.yml");
   const onboarding = read("native/ios/CLAUDE.md");
