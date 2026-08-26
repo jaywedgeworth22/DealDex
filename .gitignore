@@ -28,12 +28,14 @@ public/dealdex-native-src.zip
 .env.*
 !.env.example
 .DS_Store
-*.icloud
-
-# Apple private keys (App Store Connect API keys, APNs auth keys). These live in ~/.secrets/
-# ONLY. A .p8 dropped in the repo root is untracked but NOT ignored without this rule, so a
-# single `git add -A` would stage a credential that signs pushes for every app in the team.
-# One APNs key is team-wide, so leaking it is not scoped to one app.
+# Apple private keys and signing credentials. Per secrets policy, authoritative
+# credentials live in Infisical and ~/.secrets/ is used for local handoff only.
+# Exclude key and keystore files so accidental drops in the repo are never staged.
 *.p8
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
 
 AGENTS.project.md
