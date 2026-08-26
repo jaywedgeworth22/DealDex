@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 import { SOCIAL_PROVIDERS, type SocialProviderId } from "./providers";
+import { safeInternalPath } from "./safe-redirect";
 
 /**
  * Better Auth client for this React SPA (browser-side).
@@ -92,8 +93,8 @@ export async function signIn(
   providerId: SocialProviderId,
   opts: { callbackURL?: string; errorCallbackURL?: string } = {},
 ): Promise<void> {
-  const callbackURL = opts.callbackURL ?? "/";
-  const errorCallbackURL = opts.errorCallbackURL ?? "/";
+  const callbackURL = safeInternalPath(opts.callbackURL, "/");
+  const errorCallbackURL = safeInternalPath(opts.errorCallbackURL, "/");
 
   // Open the popup SYNCHRONOUSLY on the user gesture — before any await
   // (including signOut). Awaiting first drops user-gesture privilege in some
@@ -129,8 +130,9 @@ export async function signIn(
     if (typeof window !== "undefined") {
       const dest = new URL(callbackURL, window.location.origin);
       const here = window.location;
-      if (dest.origin !== here.origin || dest.pathname !== here.pathname || dest.search !== here.search) {
-        window.location.href = callbackURL;
+      if (dest.origin !== here.origin) return;
+      if (dest.pathname !== here.pathname || dest.search !== here.search) {
+        window.location.assign(dest.href);
       }
     }
     return;
