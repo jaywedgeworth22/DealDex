@@ -1,5 +1,20 @@
 # Current Handoff
 
+## 2026-08-25 ANTIGRAVITY — Configure Google/Apple/X OAuth & Polish Web Scan UI
+
+- **OAuth Authentication Configuration**:
+  - Wired provider resolution in `src/lib/auth/social.ts` to support all DealDex key aliases (`DD_WEB_GOOGLE_ID`, `DD_WEB_GOOGLE_SECRET`, `DEALDEX_X_CLIENT_ID`, `DEALDEX_X_CLIENT_SECRET`, `APPLE_CLIENT_ID`, etc.).
+  - Placed Google client configs in native projects (`native/ios/DealDex/GoogleService-Info.plist` and `native/android/app/google-services.json`).
+  - Added brand SVG icons and polished styling to the OAuth buttons on `/login`.
+- **Web Scan UI Redesign**:
+  - Replaced cramped scan bar with an integrated, high-contrast, prominent **⚡ SCAN MARKET** button featuring animated spinning state and a live scanning status banner.
+  - Sized and padded eBay and Mercari source toggle buttons to render official logos with full proportions, active dot indicators, and live hit count badges.
+  - Balanced 6-column filter controls (Verdict, Max Ask, Condition, Min Discount, Finish, and Hide Proxies switch) with clean Quick View tabs.
+- **Verification & Native Builds**:
+  - `npm test` (78/78 passing), `npm run lint` (0 errors), `npm run typecheck` (0 errors), and `npm run build` (clean production build).
+  - iOS Simulator build verified with `xcodebuild` (**BUILD SUCCEEDED**).
+  - Android debug APK verified with Gradle 8.7 (**BUILD SUCCESSFUL**) and copied to `public/DealDex.apk`.
+
 ## 2026-08-25 CURSOR — Pin AppUpdatePrompt.swift; move Apple IDs off Swift
 
 One in-repo pin at `scripts/ios-fleet/AppUpdatePrompt.swift`, copied

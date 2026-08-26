@@ -7,20 +7,19 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
 ## In Progress
-- **2026-08-25 — CURSOR — IN PROGRESS — Pin AppUpdatePrompt.swift from in-repo ios-fleet; move knownAppleIds off Swift.**  Branch `cursor/ios-app-update-prompt-pin-525d`.  Live bundle `net.dealdex` appleId `6802474288` in `apps.json` / Info.plist.  No Swift package.  testers.json untouched.  No `--force-ship`.  No spend.  KEEPOUT #183.
-- **2026-08-25 — CURSOR — IN PROGRESS — testers.json Comcast typo (`johnwedeworth` → `johnwedgeworth`).**  Branch `cursor/testers-comcast-typo-160f`.  Keep `mail@jays.services`.  No extra testers.  No invite-on-ship / ios-ship / `--force-ship`.
-- **2026-08-25 — CURSOR — IN PROGRESS — Center iOS Scan empty-loading spinner + caption.**  Branch `cursor/ios-scan-loading-center-1b16`.  Leading parent VStack; add maxWidth/maxHeight center frame.  Caption unchanged.  No local Mac runner / --force-ship.
-- **2026-08-25 — CURSOR — IN PROGRESS — Android Play + PWA skippable update alerts.**  Branch `cursor/android-pwa-update-alerts-c953`.  Play In-App Updates on open; PWA reload banner when a waiting worker exists.  No ios-fleet / testers / invite-on-ship.
-- **2026-08-25 — CURSOR — IN PROGRESS — Accept dealdex in vendored ship-testflight.sh case + usage (ios-ship run 32791798491).**  Branch `cursor/ios-ship-dealdex-case-5bfb`.  Keep macos-latest.  No --force-ship.  No secrets YAML.
-- **2026-08-24 — AG — IN PROGRESS — Switch iOS CI & Actions workflows to GitHub-hosted cloud macOS runners (branch `antigravity/cloud-ios-actions-runners`).** Update ios-ship.yml to runs-on macos-latest (free unlimited minutes on public repo), and update Xcode assertion.
+(none)
 
 ## Deployed
+- **2026-08-24 — AG — COMPLETED/MERGED #167 (`b6cad4d`) — Switch iOS CI & Actions workflows to GitHub-hosted cloud macOS runners (branch `antigravity/cloud-ios-actions-runners`).** Updated ios-ship.yml to runs-on macos-latest (free unlimited minutes on public repo), and updated Xcode version assertion. Full cloud CI suite green. Live SHA `b6cad4d`.
 - **2026-08-22 — CURSOR — PICKUP GROK — Analytics already live; remaining Autorotate (`autorotate.codes`, GitHub Autorotate) + DealDex.net copy is Cursor Auto.**  Grok is no longer owner.  Board comment on DealDex #129.
 - **2026-08-22 — GROK — DEPLOYED — Vercel Web Analytics (#128 squash `148780af`).**  Canonical check is https://dealdex.net (was documented on dealdex.online).  Privacy discloses cookie-less page views.  Board `e65921a0`.
 - **2026-08-21 — CURSOR — DEPLOYED — #118 / #117 scan layout + subtitle.**  https://dealdex.net homepage HTML includes Identify Best-Priced Pokémon Card Listings.  `og.jpg?v=subtitle-20260821` is the new 92437-byte JPEG (Vercel 200).  Squash `5474ef1`.
 - **2026-08-14 — GROK-BUILD — DEPLOYED — Vercel project dealdex (PR #47).** Linked to GitHub `main`.  Production READY: https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app/ (HTTP 200, DealDex scan page).  No custom domain.
 ## Completed
-- **2026-08-22 - GROK - COMPLETED - Point DealDex production at dealdex.net.**  Landed DealDex #136.  Canonical host dealdex.net in code.  Cursor 2026-08-22: live `https://dealdex.net` HTTP 200; `https://dealdex.online` redirects.  Do not invent DNS. <!-- wb-agent-report:b16e5c7409b147288f5b958bf895c54d -->
+- **2026-08-25 — ANTIGRAVITY — COMPLETED — Configure Google/Apple/X OAuth from secrets & polish Scan UI button layout.**  Branch `ag/auth-and-scan-ui-polish`, worktree `~/apps/dealdex-antigravity`.
+- **2026-08-23 — CURSOR — COMPLETED/MERGED #163 — Settings appearance 3-way + Google/Apple/X auth.**  Squash on main.  Grok broker and email/password removed.  Needs Vercel `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (and Apple/X if used) plus OAuth callback URLs.
+- **2026-08-23 - CURSOR - COMPLETED - OG share: drop TCGPlayer, DealDex.net, enlarge title.**  PR #156: enlarged OG card, eBay·Mercari, dealdex.net, cache-bust share-20260823. <!-- wb-agent-report:9844c760d93b4f229185fabd07eb5867 -->
+- **2026-08-23 — CURSOR — COMPLETED/MERGED #156 — OG share card.**  TCGPlayer dropped.  Footer eBay · Mercari + dealdex.net.  Wordmark ~400px tall, 48px subtitle.  Cache-bust `og.jpg?v=share-20260823`.  Squash `1e9a017`.  PR #154.  TestFlight `net.dealdex` 1.0.2 (202608230250) internal testers READY_FOR_BETA_TESTING.  Sideload APK on `/install` after Vercel Production.  Landed DealDex #136.  Canonical host dealdex.net in code.  Cursor 2026-08-22: live `https://dealdex.net` HTTP 200; `https://dealdex.online` redirects.  Do not invent DNS. <!-- wb-agent-report:b16e5c7409b147288f5b958bf895c54d -->
 - **2026-08-22 - GROK - COMPLETED - Android + PWA use isolated DD.**  Merged #132. Scan over eBay/Mercari; Android/PWA isolated DD. <!-- wb-agent-report:2d4aff5cad2847eb807cfd03e41f999a -->
 - **2026-08-22 - GROK - COMPLETED - Tighter DD AppIcon on ST grid.**  Merged #130. AppIcon is the owner 1024 PNG resized. Favicon is the isolated transparent DD. <!-- wb-agent-report:3b2d4b881f214f88abc49a658626b6ee -->
 - **2026-08-21 — CURSOR — COMPLETED/MERGED #113 / #112 — Transparent DD favicon + ST-grid AppIcon.**  Safari PNG/ICO interlocking DD.  Header `img` outline removed.  iOS/Android launcher is DD on the ST tiled field (no candlesticks).  PR #113 squash `493e88a`.
@@ -44,12 +43,6 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-13 — GROK — COMPLETED — CI uses npm install (PR #3).** Main CI verify is green (lint/typecheck/test/build).
 - **2026-08-13 — GROK — COMPLETED — Fleet onboard merged (PR #1).** `~/Code/DealDex` is `jaywedgeworth22/DealDex`.  AGENTS.md, effort board, Slack `repo: DealDex` / `DD`.
 ## In Progress
-- **2026-08-25 — CURSOR — IN PROGRESS — Pin AppUpdatePrompt.swift from in-repo ios-fleet; move knownAppleIds off Swift.**  Branch `cursor/ios-app-update-prompt-pin-525d`.  Live bundle `net.dealdex` appleId `6802474288` in `apps.json` / Info.plist.  No Swift package.  testers.json untouched.  No `--force-ship`.  No spend.  KEEPOUT #183.
-- **2026-08-25 — CURSOR — IN PROGRESS — testers.json Comcast typo (`johnwedeworth` → `johnwedgeworth`).**  Branch `cursor/testers-comcast-typo-160f`.  Keep `mail@jays.services`.  No extra testers.  No invite-on-ship / ios-ship / `--force-ship`.
-- **2026-08-25 — CURSOR — IN PROGRESS — Center iOS Scan empty-loading spinner + caption.**  Branch `cursor/ios-scan-loading-center-1b16`.  Leading parent VStack; add maxWidth/maxHeight center frame.  Caption unchanged.  No local Mac runner / --force-ship.
-- **2026-08-25 — CURSOR — IN PROGRESS — Android Play + PWA skippable update alerts.**  Branch `cursor/android-pwa-update-alerts-c953`.  Play In-App Updates on open; PWA reload banner when a waiting worker exists.  No ios-fleet / testers / invite-on-ship.
-- **2026-08-25 — CURSOR — IN PROGRESS — Accept dealdex in vendored ship-testflight.sh case + usage (ios-ship run 32791798491).**  Branch `cursor/ios-ship-dealdex-case-5bfb`.  Keep macos-latest.  No --force-ship.  No secrets YAML.
-- **2026-08-24 — CURSOR — IN PROGRESS — Put ios-ship back on GitHub-hosted macos-latest (protocol; no local Mac runner).**  Branch `cursor/ios-gh-hosted-runners-709e`.
 
 ## Completed
 - **2026-08-22 — ANTIGRAVITY — COMPLETED — Build app under net.dealdex bundle, dealdex.net domain, sync iOS/Android/Favicon/ASC icons.**  Branch `ag/bundle-net-and-builds`, worktree `~/apps/dealdex-antigravity`.
@@ -61,15 +54,8 @@ Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this f
 - **2026-08-14 — GROK — PLANNED — TestFlight + App Store + Play upload.** Blocked on owner: ASC app record (SKU `dealdex`, Account Holder create) and Google Play Console credentials.  Bundle ID `me.grok.dealdex` is registered.  Prep landed in PR #56.
 ## Changelog of this log
 
-- 2026-08-25 — CURSOR: reserved AppUpdatePrompt pin + Apple IDs off Swift (`cursor/ios-app-update-prompt-pin-525d`).
-- 2026-08-25 — CURSOR: reserved testers.json Comcast typo (`cursor/testers-comcast-typo-160f`).
-- 2026-08-25 — CURSOR: reserved iOS Scan empty-loading center (`cursor/ios-scan-loading-center-1b16`).
-- 2026-08-25 — CURSOR: reserved Android Play + PWA skippable update alerts (`cursor/android-pwa-update-alerts-c953`).
-- 2026-08-25 — CURSOR: reserved dealdex case/usage fix for vendored ship-testflight.sh (`cursor/ios-ship-dealdex-case-5bfb`).
-- 2026-08-24 — CURSOR: put ios-ship on GitHub-hosted macos-latest + ASC secret import (`cursor/ios-gh-hosted-runners-709e`).
-- 2026-08-24 — CURSOR: vendor ios-fleet so hosted ships can resolve 1.0.N (`cursor/ios-ship-asc-version-709e`).
-- 2026-08-22 — CURSOR: reserved OG logo-only social card (`cursor/og-logo-only-4780`).
-- 2026-08-22 — CURSOR: reserved Vercel Speed Insights (`cursor/vercel-speed-insights-4a42`).
+- 2026-08-23 — CURSOR: reserved login-social (appearance toggle + Google/Apple/X, drop Grok broker).
+- 2026-08-23 — CURSOR: reserved OG share layout (`cursor/og-share-layout`).
 - 2026-08-22 — GROK: reserved Vercel Web Analytics (`grok/vercel-analytics`).
 - 2026-08-21 — CURSOR: deployed #118 / #117 (homepage subtitle + new og.jpg).
 - 2026-08-21 — CURSOR: reserved #117 scan layout + OG wordmark + subtitle.

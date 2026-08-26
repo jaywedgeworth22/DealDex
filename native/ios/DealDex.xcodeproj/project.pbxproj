@@ -14,6 +14,7 @@
 		4528ED88A9A6DC8FD799755B /* CardDossierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8145DEE26D0AAA855D8E235F /* CardDossierView.swift */; };
 		4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6ED06FC5E7DA4B309E90F /* Models.swift */; };
 		68974D10BC0FEF2DC8A3A261 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */; };
+		7265A8C3098CCF4BE78D8EB5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 451EF180EE98E8D5352F1E16 /* GoogleService-Info.plist */; };
 		738AFF1EAE0CCF70FB43D190 /* DealDexBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4102913782BABF7A13EFA78 /* DealDexBrand.swift */; };
 		82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */; };
 		90341ABD2FBF83991C619ED2 /* AccountApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311B6F98D562C40268CAF219 /* AccountApi.swift */; };
@@ -39,6 +40,7 @@
 		311B6F98D562C40268CAF219 /* AccountApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountApi.swift; sourceTree = "<group>"; };
 		392D9849BF8E736108C78668 /* NativeAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuth.swift; sourceTree = "<group>"; };
 		41A1CF63DDE0119868E72E12 /* EvaluatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvaluatorView.swift; sourceTree = "<group>"; };
+		451EF180EE98E8D5352F1E16 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		50067F711863E53C8B62C880 /* DealDex.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DealDex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DealDexApp.swift; sourceTree = "<group>"; };
 		66E96EE4589197B685843AB3 /* Market.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Market.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				8027642EE047BC6844FC1731 /* DeskModel.swift */,
 				79BE02B033E727EE0760B492 /* DeskStore.swift */,
 				41A1CF63DDE0119868E72E12 /* EvaluatorView.swift */,
+				451EF180EE98E8D5352F1E16 /* GoogleService-Info.plist */,
 				66E96EE4589197B685843AB3 /* Market.swift */,
 				6FF1D125C85BFF24812178C0 /* MarketplaceMarks.swift */,
 				04E6ED06FC5E7DA4B309E90F /* Models.swift */,
@@ -187,6 +190,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9AFAB03F7D764259A2719768 /* Assets.xcassets in Resources */,
+				7265A8C3098CCF4BE78D8EB5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
