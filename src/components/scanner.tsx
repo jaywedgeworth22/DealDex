@@ -157,130 +157,187 @@ export function Scanner() {
 
   return (
     <section className="min-w-0 space-y-4">
-      <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-border)] sm:p-4">
-        <h2 className="pl-[1ch] text-xs uppercase tracking-[0.16em] text-subtle">Live market scan</h2>
-        <div className="mt-2">
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") void run();
-            }}
-            placeholder="Card, set, or leave blank for the whole market"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            name="dealdex-scan"
-            inputMode="search"
+      <div className="rounded-2xl bg-surface p-4 shadow-[var(--shadow-border)] sm:p-5 space-y-4">
+        {/* Header & Source Toggles Row */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/20 pb-3.5">
+          <div>
+            <h2 className="text-xs uppercase tracking-[0.16em] font-semibold text-subtle">
+              Live Market Scanner
+            </h2>
+            <p className="text-xs text-muted mt-0.5">
+              Hunts Buy It Now singles and scores asks against real-time book values.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-muted mr-0.5">Scan Sources:</span>
+            <MarketplaceToggle
+              marketplace="ebay"
+              selected={sources.includes("ebay")}
+              onClick={() => toggle("ebay")}
+              count={ebayCount}
+              size="lg"
+            />
+            <MarketplaceToggle
+              marketplace="mercari"
+              selected={sources.includes("mercari")}
+              onClick={() => toggle("mercari")}
+              count={mercariCount}
+              size="lg"
+            />
+          </div>
+        </div>
+
+        {/* Search Input & Prominent SCAN Action */}
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-stretch">
+          <div className="relative flex-1">
+            <Input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") void run();
+              }}
+              placeholder="Card name, set, number, or leave blank for whole market..."
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              name="dealdex-scan"
+              inputMode="search"
+              className="h-14 pl-4 pr-16 text-base rounded-xl bg-elevated/40 border-border/40 focus:bg-surface focus:border-border"
+            />
+            {q && (
+              <button
+                type="button"
+                onClick={() => {
+                  setQ("");
+                  void run("", sources);
+                }}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-muted hover:text-fg px-2 py-1 rounded-md bg-elevated transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => void run()}
+            disabled={loading}
+            className={cn(
+              "inline-flex h-14 min-w-[170px] shrink-0 items-center justify-center gap-2.5 rounded-xl px-6 text-base font-bold tracking-wide bg-scan text-scan-fg transition-all shadow-md active:scale-[0.98] select-none cursor-pointer",
+              loading
+                ? "cursor-not-allowed opacity-80"
+                : "hover:opacity-90 hover:shadow-lg",
+            )}
+          >
+            {loading ? (
+              <>
+                <LoaderCircle className="size-5 animate-spin shrink-0" />
+                <span>SCANNING...</span>
+              </>
+            ) : (
+              <span>⚡ SCAN MARKET</span>
+            )}
+          </button>
+        </div>
+
+        {/* Scanning Live Indicator Banner */}
+        {loading && (
+          <div className="flex items-center gap-3 rounded-xl bg-elevated/70 px-4 py-2.5 text-xs text-fg animate-pulse border border-border/20">
+            <span className="relative flex size-2.5 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-deal-good opacity-75"></span>
+              <span className="relative inline-flex size-2.5 rounded-full bg-deal-good"></span>
+            </span>
+            <span className="font-medium">
+              Scanning live {sources.map((s) => (s === "ebay" ? "eBay" : "Mercari")).join(" & ")} Buy It Now listings & scoring spreads...
+            </span>
+          </div>
+        )}
+
+        {/* Filters Grid */}
+        <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6 items-end pt-1">
+
+          <FilterSelect
+            label="Verdict"
+            value={verdict}
+            onChange={setVerdict}
+            options={[
+              ["any", "Any Verdict"],
+              ["steal", "Steal (High Spread)"],
+              ["good", "Good Deal"],
+              ["fair", "Fair Ask"],
+              ["high", "High Ask"],
+              ["avoid", "Overpriced"],
+            ]}
           />
-        </div>
-        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-start">
-          <div className="grid min-w-0 flex-1 grid-cols-3 gap-2">
-            <FilterSelect
-              label="Verdict"
-              value={verdict}
-              onChange={setVerdict}
-              options={[
-                ["any", "Any Verdict"],
-                ["steal", "Steal"],
-                ["good", "Good Deal"],
-                ["fair", "Fair"],
-                ["high", "High Ask"],
-                ["avoid", "Overpriced"],
-              ]}
-            />
-            <FilterSelect
-              label="Max Ask"
-              value={priceCap}
-              onChange={setPriceCap}
-              options={[
-                ["any", "Any Price"],
-                ["25", "Under $25"],
-                ["50", "Under $50"],
-                ["100", "Under $100"],
-                ["250", "Under $250"],
-              ]}
-            />
-            <FilterSelect
-              label="Condition"
-              value={condition}
-              onChange={setCondition}
-              options={[
-                ["any", "Raw or Graded"],
-                ["raw", "Raw Only"],
-                ["graded", "Graded Only"],
-              ]}
-            />
-            <FilterSelect
-              label="Min Discount"
-              value={spreadMin}
-              onChange={setSpreadMin}
-              options={[
-                ["any", "Any vs Book"],
-                ["10", "10%+ Under Book"],
-                ["20", "20%+ Under Book"],
-                ["40", "40%+ Under Book"],
-              ]}
-            />
-            <FilterSelect
-              label="Finish"
-              value={finish}
-              onChange={setFinish}
-              options={[
-                ["any", "Any Finish"],
-                ["holo", "Holo"],
-                ["reverse", "Reverse"],
-                ["promo", "Promo"],
-              ]}
-            />
-            <label className="flex min-w-0 cursor-pointer select-none flex-col items-center justify-end">
-              <span className="mb-0.5 block h-4" aria-hidden="true" />
-              <span className="flex h-9 items-center justify-center gap-2 text-sm text-fg">
-                <input
-                  type="checkbox"
-                  checked={hideRepacks}
-                  onChange={(e) => setHideRepacks(e.target.checked)}
-                  className="rounded"
-                />
-                <span className="truncate">Hide Proxies</span>
-              </span>
-            </label>
-          </div>
-          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-56">
-            <button
-              type="button"
-              onClick={() => void run()}
-              disabled={loading}
-              className="inline-flex h-16 w-full items-center justify-center rounded-md bg-scan text-[2.1875rem] font-semibold leading-none tracking-[0.12em] text-scan-fg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {loading ? <LoaderCircle className="size-8 animate-spin" /> : "SCAN"}
-            </button>
-            <div className="grid grid-cols-2 gap-2">
-              <MarketplaceToggle
-                marketplace="ebay"
-                selected={sources.includes("ebay")}
-                onClick={() => toggle("ebay")}
-                count={ebayCount}
-                size="lg"
+          <FilterSelect
+            label="Max Ask"
+            value={priceCap}
+            onChange={setPriceCap}
+            options={[
+              ["any", "Any Price"],
+              ["25", "Under $25"],
+              ["50", "Under $50"],
+              ["100", "Under $100"],
+              ["250", "Under $250"],
+            ]}
+          />
+          <FilterSelect
+            label="Condition"
+            value={condition}
+            onChange={setCondition}
+            options={[
+              ["any", "Raw or Graded"],
+              ["raw", "Raw Singles Only"],
+              ["graded", "Graded Slabs Only"],
+            ]}
+          />
+          <FilterSelect
+            label="Min Discount"
+            value={spreadMin}
+            onChange={setSpreadMin}
+            options={[
+              ["any", "Any vs Book"],
+              ["10", "10%+ Under Book"],
+              ["20", "20%+ Under Book"],
+              ["40", "40%+ Under Book"],
+            ]}
+          />
+          <FilterSelect
+            label="Card Finish"
+            value={finish}
+            onChange={setFinish}
+            options={[
+              ["any", "Any Finish"],
+              ["holo", "Holo"],
+              ["reverse", "Reverse Holo"],
+              ["promo", "Promo"],
+            ]}
+          />
+          <label className="flex min-w-0 cursor-pointer select-none flex-col items-center justify-end">
+            <span className="mb-1 block text-center text-xs uppercase tracking-[0.12em] text-subtle">
+              Integrity
+            </span>
+            <span className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border/40 bg-surface px-2 text-xs font-medium text-fg shadow-xs">
+              <input
+                type="checkbox"
+                checked={hideRepacks}
+                onChange={(e) => setHideRepacks(e.target.checked)}
+                className="size-3.5 rounded text-accent"
               />
-              <MarketplaceToggle
-                marketplace="mercari"
-                selected={sources.includes("mercari")}
-                onClick={() => toggle("mercari")}
-                count={mercariCount}
-                size="lg"
-              />
-            </div>
-          </div>
+              <span className="truncate">Hide Proxies</span>
+            </span>
+          </label>
         </div>
+
+        {/* Results Quick View Tabs */}
         {rows && (
-          <div className="mt-2 flex flex-wrap gap-1">
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/20">
+            <span className="text-xs font-medium text-muted mr-1">Quick View:</span>
             {(
               [
-                ["all", `All ${rows.length}`],
-                ["deals", `Deals ${dealCount}`],
-                ["verified", `Verified ${verifiedCount}`],
+                ["all", `All (${rows.length})`],
+                ["deals", `Deals (${dealCount})`],
+                ["verified", `Verified Steals (${verifiedCount})`],
               ] as const
             ).map(([key, label]) => (
               <button
@@ -288,8 +345,10 @@ export function Scanner() {
                 type="button"
                 onClick={() => setView(key)}
                 className={cn(
-                  "h-9 rounded-md px-3 text-xs tabular-nums transition-colors duration-150",
-                  view === key ? "bg-accent text-accent-fg" : "bg-elevated text-muted hover:text-fg",
+                  "h-8 rounded-lg px-3 text-xs font-medium tabular-nums transition-all select-none cursor-pointer",
+                  view === key
+                    ? "bg-fg text-surface shadow-xs"
+                    : "bg-elevated/70 text-muted hover:bg-elevated hover:text-fg",
                 )}
               >
                 {label}
@@ -298,6 +357,7 @@ export function Scanner() {
           </div>
         )}
       </div>
+
 
       {loading && !rows && (
         <div className="grid gap-3 md:grid-cols-2">

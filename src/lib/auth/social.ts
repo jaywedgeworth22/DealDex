@@ -2,9 +2,17 @@ import type { SocialProviderId } from "./providers";
 
 type Pair = { clientId: string; clientSecret: string };
 
-function pair(idKey: string, secretKey: string, altId?: string, altSecret?: string): Pair | undefined {
-  const clientId = (process.env[idKey] ?? (altId ? process.env[altId] : undefined))?.trim();
-  const clientSecret = (process.env[secretKey] ?? (altSecret ? process.env[altSecret] : undefined))?.trim();
+function firstEnv(...keys: string[]): string | undefined {
+  for (const k of keys) {
+    const val = process.env[k]?.trim();
+    if (val) return val;
+  }
+  return undefined;
+}
+
+function resolvePair(idKeys: string[], secretKeys: string[]): Pair | undefined {
+  const clientId = firstEnv(...idKeys);
+  const clientSecret = firstEnv(...secretKeys);
   if (!clientId || !clientSecret) return undefined;
   return { clientId, clientSecret };
 }
@@ -15,10 +23,21 @@ export function socialProviderConfig(): {
   apple?: Pair & { appBundleIdentifier?: string };
   twitter?: Pair;
 } {
-  const google = pair("GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET");
-  const appleBase = pair("APPLE_CLIENT_ID", "APPLE_CLIENT_SECRET");
-  const twitter = pair("TWITTER_CLIENT_ID", "TWITTER_CLIENT_SECRET", "X_CLIENT_ID", "X_CLIENT_SECRET");
-  const appleBundle = process.env.APPLE_APP_BUNDLE_IDENTIFIER?.trim() || process.env.APPLE_BUNDLE_ID?.trim();
+  const google = resolvePair(
+    ["GOOGLE_CLIENT_ID", "DD_WEB_GOOGLE_ID", "DEALDEX_GOOGLE_CLIENT_ID", "DEALDEX_WEB_GOOGLE_ID"],
+    ["GOOGLE_CLIENT_SECRET", "DD_WEB_GOOGLE_SECRET", "DEALDEX_GOOGLE_CLIENT_SECRET", "DEALDEX_WEB_GOOGLE_SECRET"]
+  );
+  const appleBase = resolvePair(
+    ["APPLE_CLIENT_ID", "DEALDEX_APPLE_CLIENT_ID", "DD_APPLE_CLIENT_ID"],
+    ["APPLE_CLIENT_SECRET", "DEALDEX_APPLE_CLIENT_SECRET", "DD_APPLE_CLIENT_SECRET"]
+  );
+  const twitter = resolvePair(
+    ["TWITTER_CLIENT_ID", "X_CLIENT_ID", "DEALDEX_X_CLIENT_ID", "DD_X_CLIENT_ID"],
+    ["TWITTER_CLIENT_SECRET", "X_CLIENT_SECRET", "DEALDEX_X_CLIENT_SECRET", "DD_X_CLIENT_SECRET"]
+  );
+  const appleBundle =
+    firstEnv("APPLE_APP_BUNDLE_IDENTIFIER", "APPLE_BUNDLE_ID", "DEALDEX_APPLE_BUNDLE_ID") || "net.dealdex";
+
   return {
     ...(google ? { google } : {}),
     ...(appleBase
@@ -36,3 +55,4 @@ export function socialProviderConfig(): {
 export function hasSocialProvider(id: SocialProviderId, cfg = socialProviderConfig()): boolean {
   return Boolean(cfg[id]);
 }
+

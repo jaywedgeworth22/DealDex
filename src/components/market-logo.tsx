@@ -153,22 +153,42 @@ export function MarketplaceToggle({
       aria-pressed={selected}
       aria-label={count != null ? `${LABEL[marketplace]} ${count}` : LABEL[marketplace]}
       className={cn(
-        "inline-flex items-center gap-2 border transition-colors duration-150",
-        large
-          ? "h-14 w-full justify-between rounded-xl px-4"
-          : "h-11 rounded-full px-3",
+        "group relative inline-flex items-center justify-between gap-3 rounded-xl border font-medium transition-all duration-150 select-none",
+        large ? "h-12 min-w-[130px] px-3.5 sm:h-14 sm:px-4" : "h-10 px-3",
         selected
-          ? "border-accent bg-accent"
-          : "border-fg/20 bg-fg/80 opacity-70 hover:opacity-100",
+          ? "border-fg/30 bg-surface text-fg shadow-xs ring-1 ring-fg/10"
+          : "border-border/40 bg-elevated/40 text-muted opacity-60 grayscale hover:opacity-90 hover:grayscale-0",
         className,
       )}
     >
-      <MarketplaceLogo marketplace={marketplace} tone="white" size={size} />
+      <div className="flex items-center gap-2">
+        <span
+          className={cn(
+            "size-2 rounded-full transition-colors",
+            selected ? "bg-deal-good shadow-[0_0_6px_rgba(63,90,56,0.5)]" : "bg-border",
+          )}
+          aria-hidden="true"
+        />
+        <MarketplaceLogo
+          marketplace={marketplace}
+          tone="color"
+          size={size}
+          className="shrink-0"
+        />
+      </div>
       {count != null && (
-        <span className={cn("tabular-nums text-white", large ? "text-sm font-medium" : "text-xs text-white/80")}>
+        <span
+          className={cn(
+            "rounded-md px-1.5 py-0.5 text-xs font-semibold tabular-nums",
+            selected
+              ? "bg-elevated text-fg"
+              : "bg-surface/60 text-muted",
+          )}
+        >
           {count}
         </span>
       )}
     </button>
   );
 }
+
