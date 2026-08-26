@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Copy, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -52,15 +52,17 @@ export function Scanner() {
   const [spreadMin, setSpreadMin] = useState<SpreadFilter>("any");
   const [finish, setFinish] = useState<FinishFilter>("any");
   const [hideRepacks, setHideRepacks] = useState(true);
+  const scanReqIdRef = useRef(0);
 
   async function run(query = q, src = sources) {
+    const reqId = ++scanReqIdRef.current;
     const term = query.trim();
     setLoading(true);
-    setView("all");
     try {
       const res = await scanMarketplaces({
         data: { q: term, sources: src, keys: loadDeskKeys() },
       });
+      if (reqId !== scanReqIdRef.current) return;
       setRows(res.rows);
       setMeta({ ebay: res.ebay, mercari: res.mercari, notes: res.notes });
       rememberListings(res.rows);
@@ -80,9 +82,12 @@ export function Scanner() {
         toast(`${hits.length} alert${hits.length === 1 ? "" : "s"} matched this scan.`);
       }
     } catch (err) {
+      if (reqId !== scanReqIdRef.current) return;
       toast(err instanceof Error ? err.message : "Scan failed");
     } finally {
-      setLoading(false);
+      if (reqId === scanReqIdRef.current) {
+        setLoading(false);
+      }
     }
   }
 
@@ -208,11 +213,16 @@ export function Scanner() {
             {q && (
               <button
                 type="button"
+                disabled={loading}
                 onClick={() => {
+                  if (loading) return;
                   setQ("");
                   void run("", sources);
                 }}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-muted hover:text-fg px-2 py-1 rounded-md bg-elevated transition-colors"
+                className={cn(
+                  "absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-muted hover:text-fg px-2 py-1 rounded-md bg-elevated transition-colors",
+                  loading && "cursor-not-allowed opacity-50 pointer-events-none"
+                )}
               >
                 Clear
               </button>

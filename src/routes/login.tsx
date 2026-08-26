@@ -4,7 +4,16 @@ import { Button } from "@/components/ui/button";
 import { DealDexWordmark } from "@/components/app-mark";
 import { APP_SUBTITLE } from "@/lib/copy";
 
-export const Route = createFileRoute("/login")({ component: Login });
+type LoginSearch = {
+  redirect?: string;
+};
+
+export const Route = createFileRoute("/login")({
+  validateSearch: (search: Record<string, unknown>): LoginSearch => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
+  component: Login,
+});
 
 function ProviderIcon({ id }: { id: SocialProviderId }) {
   if (id === "google") {
@@ -44,6 +53,9 @@ function ProviderIcon({ id }: { id: SocialProviderId }) {
 }
 
 function Login() {
+  const search = Route.useSearch();
+  const callbackURL = search.redirect || "/settings";
+
   return (
     <main className="grid min-h-dvh place-items-center bg-bg px-4 text-fg">
       <div className="w-full max-w-sm space-y-6 rounded-2xl bg-surface p-6 sm:p-7 shadow-[var(--shadow-border)]">
@@ -52,7 +64,7 @@ function Login() {
           <p className="mt-3 text-center text-sm font-medium text-muted">{APP_SUBTITLE}</p>
           <h1 className="mt-4 text-lg font-semibold tracking-tight">Sign in to DealDex</h1>
           <p className="mt-1.5 text-xs text-muted leading-relaxed">
-            Guests can scan freely. An account backs up your saved deals and API desk keys across devices.
+            Guests can scan freely.  An account backs up your saved deals and API desk keys across devices.
           </p>
         </div>
 
@@ -64,7 +76,7 @@ function Login() {
                 type="button"
                 variant="secondary"
                 className="h-11 w-full justify-center gap-2.5 rounded-xl font-medium shadow-xs"
-                onClick={() => void signIn(p.id, { callbackURL: "/settings" })}
+                onClick={() => void signIn(p.id, { callbackURL })}
               >
                 <ProviderIcon id={p.id} />
                 <span>Continue with {p.label}</span>
