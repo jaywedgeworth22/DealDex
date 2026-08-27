@@ -53,17 +53,28 @@ object Appraise {
      * matched "Delphox"; `"mp" in t` matched "champion"; `"played" in t` even
      * matched "lightly played" before the LP branch could see it.
      */
+    /**
+     * `HP` is the only condition code that collides with card text — it is also
+     * the hit-point stat.  `LP`, `MP` and `DMG` never are, so the digit guard
+     * applies to `hp` alone.  Applying it to all four swallowed the code in
+     * `Charizard Base Set 4/102 LP`, which came back Near Mint.
+     */
+    private val digitAmbiguous = setOf("hp")
+
     fun hasConditionCode(text: String, code: String): Boolean {
         // Bracketed, slash-joined or explicitly labelled: never a stat line.
         if (Regex("([(\\[/]|cond(ition)?[ :-]*)\\s*$code\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)) {
             return true
         }
         val re = Regex("(^|[^a-z0-9])$code([^a-z0-9]|$)", RegexOption.IGNORE_CASE)
+        val guardDigits = code in digitAmbiguous
         for (m in re.findAll(text)) {
-            val before = text.substring(0, m.range.first + m.groupValues[1].length)
-            val after = text.substring(minOf(m.range.last + 1, text.length))
-            if (Regex("\\d\\s*\\W?\\s*$").containsMatchIn(before)) continue
-            if (Regex("^\\W?\\s*\\d").containsMatchIn(after)) continue
+            if (guardDigits) {
+                val before = text.substring(0, m.range.first + m.groupValues[1].length)
+                val after = text.substring(minOf(m.range.last + 1, text.length))
+                if (Regex("\\d\\s*\\W?\\s*$").containsMatchIn(before)) continue
+                if (Regex("^\\W?\\s*\\d").containsMatchIn(after)) continue
+            }
             return true
         }
         return false
@@ -96,7 +107,10 @@ object Appraise {
     fun gradeMult(card: TcgCard?, grade: String): Double {
         if (grade == "raw") return 1.0
         val base = gradeMultBase[grade] ?: 1.0
-        if (card == null || !grade.endsWith("10")) return base
+        // The bucket scales this card's WHOLE grade curve, anchored on PSA 10.
+        // Scaling only the 10s inverted the ordering on modern cards: PSA 10
+        // came back 1.25 while PSA 9 kept its flat 1.35.
+        if (card == null) return base
         val set = "${card.setId} ${card.setName}".lowercase()
         val rarity = card.rarity.orEmpty().lowercase()
         // Same vintage set list as the web: base2/base3/base4/gym/team rocket
@@ -111,8 +125,7 @@ object Appraise {
             chase -> 2.1
             else -> 1.25
         }
-        // Keep each 10-grade's own ratio to PSA 10 instead of flattening them.
-        return bucket * (base / 2.8)
+        return base * (bucket / 2.8)
     }
 
     fun pickMarket(card: TcgCard): Double? =

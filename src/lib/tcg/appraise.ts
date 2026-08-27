@@ -60,14 +60,17 @@ const PSA10_BY_BUCKET = {
 export function gradeMultiplier(card: TcgCard | null, grade: Grade): number {
   if (grade === "raw") return 1;
   const base = GRADE_MULT[grade] ?? 1;
-  // Only gem-mint (10) grades get the set-aware bucket — that is what
-  // PSA10_BY_BUCKET actually measures. 9 and 9.5 slabs keep their flat value.
-  if (!card || !/\b10$/.test(grade)) return base;
-  // Scale by each 10-grade's own relationship to PSA 10 rather than collapsing
-  // BGS 10 / CGC 10 / ACE 10 onto the PSA 10 number, which is what the previous
-  // `return PSA10_BY_BUCKET[bucket]` did — it threw away GRADE_MULT entirely
-  // whenever a card object happened to be present.
-  return PSA10_BY_BUCKET[gradeBucket(card)] * (base / GRADE_MULT["PSA 10"]);
+  if (!card) return base;
+  // The bucket scales this card's WHOLE grade curve, anchored on PSA 10.
+  //
+  // Two earlier versions got this wrong. The first returned the bucket value
+  // for every 10-grade, collapsing BGS 10 / CGC 10 / ACE 10 onto PSA 10. The
+  // second scaled only the 10s and left 9s on their flat multiplier, which
+  // INVERTED the ordering on modern cards: PSA 10 came back 1.25 while PSA 9
+  // kept 1.35, so a gem-mint slab booked below a near-mint one. Scaling the
+  // whole curve keeps every grade in order for every bucket.
+  const scale = PSA10_BY_BUCKET[gradeBucket(card)] / GRADE_MULT["PSA 10"];
+  return base * scale;
 }
 
 export function finishLabel(key: string) {

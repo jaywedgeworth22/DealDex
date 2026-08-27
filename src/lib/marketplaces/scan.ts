@@ -190,7 +190,11 @@ export async function scanAndScore(
   const keyedCache = new Map<string, Awaited<ReturnType<typeof fetchKeyedQuotes>>>();
   await mapPool(toConfirm, 3, async (row) => {
     if (!row.card || !row.appraisal) return row;
-    const sold = await fetchEbaySoldMedian(row.card, row.parsed.grade).catch(() => null);
+    const sold = await fetchEbaySoldMedian(
+      row.card,
+      row.parsed.grade,
+      row.appraisal.finish,
+    ).catch(() => null);
     let extraQuotes = keyedCache.get(row.card.id);
     if (!extraQuotes && (keys.justtcg || keys.pricecharting || keys.pokemontcg)) {
       extraQuotes = await fetchKeyedQuotes(row.card, keys).catch(() => []);

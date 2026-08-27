@@ -64,3 +64,15 @@ test("significantTokens drops generic Pokemon boilerplate", () => {
   assert.deepEqual(significantTokens("pokemon tcg card"), []);
   assert.deepEqual(significantTokens("Charizard Base Set"), ["charizard", "base", "set"]);
 });
+
+test("a neighbouring listing's free shipping does not zero this row's postage", () => {
+  // The free-shipping test scanned the whole window, so a later result's
+  // "Free delivery" beat this listing's own explicitly quoted amount.
+  const chunk = `$120.00 +$8.99 delivery Charizard${" ".repeat(120)}NEXT Free delivery`;
+  assert.deepEqual(parseShipping(chunk, "ebay"), { amount: 8.99, estimated: false });
+});
+
+test("free shipping still wins when it is this listing's own line", () => {
+  const chunk = `$120.00 Free delivery Charizard${" ".repeat(120)}NEXT +$8.99 delivery`;
+  assert.deepEqual(parseShipping(chunk, "ebay"), { amount: 0, estimated: false });
+});

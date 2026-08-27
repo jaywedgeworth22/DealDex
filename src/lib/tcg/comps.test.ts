@@ -117,3 +117,40 @@ test("an empty book says so rather than inventing a price", () => {
   assert.equal(book.confidence, "low");
   assert.match(book.note, /No desk/i);
 });
+
+test("two disagreeing desks are not reported as agreeing", () => {
+  // The percentile band was computed as desks[floor(1 * 0.2)] and
+  // desks[floor(1 * 0.8)] — both index 0 at exactly two desks — so relSpread
+  // came out as exactly 0 and the note read "agree within ~0%" for a book where
+  // one desk said $50 and the other said $150.
+  const book = scoreBook([
+    quote({ source: "tcgplayer", usd: 50, weight: 0.18 }),
+    quote({ source: "cardmarket-7d", desk: "cardmarket", usd: 150, weight: 0.14, family: "sold" }),
+  ]);
+  assert.equal(book.sourcesUsed, 2);
+  assert.ok((book.relSpread ?? 0) > 0.5, `relSpread was ${book.relSpread}`);
+  assert.equal(book.confidence, "low");
+  assert.equal(book.conflict, true);
+});
+
+test("a desk is represented by its highest-weighted quote, not its median", () => {
+  // TCGPlayer publishes market (0.18), mid (0.06) and direct-low (0.04).
+  // Medianing them made the desk's value the midpoint, which is the number the
+  // weights specifically say not to trust.
+  const book = scoreBook([
+    quote({ source: "tcgplayer", usd: 43, weight: 0.18 }),
+    quote({ source: "tcgplayer-mid", usd: 70, weight: 0.06 }),
+    quote({ source: "tcgplayer-direct", usd: 120, weight: 0.04, family: "retail" }),
+    quote({ source: "ebay-sold", desk: "ebay", usd: 45, weight: 0.28, family: "sold" }),
+  ]);
+  assert.equal(book.sourcesUsed, 2);
+  assert.equal(book.rangeLow, 43, "TCGPlayer's representative is its market price");
+  assert.equal(book.rangeHigh, 45);
+});
+
+test("soldStats medians the middle of the comps, not the cheapest of them", () => {
+  // iqrTrim returns its input sorted, so `.slice(0, 16)` took the 16 cheapest.
+  const prices = Array.from({ length: 24 }, (_, i) => 10 + i * 10); // 10..240
+  const m = soldStats(prices).median;
+  assert.ok(m != null && m > 110 && m < 140, `expected a real median, got ${m}`);
+});

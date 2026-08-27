@@ -63,3 +63,22 @@ test("shipping defaults are per marketplace and never negative", () => {
   assert.ok((parseListingBlob("Mercari Charizard $10").shipping ?? 0) > 0);
   assert.equal(parseListingBlob("Charizard $10").shipping, 0);
 });
+
+test("a condition code after a collector number still counts", () => {
+  // Nearly every listing carries a collector number, and the condition code
+  // usually follows it. Applying the HP-stat digit guard to LP/MP/DMG too meant
+  // the digits in "4/102" swallowed the grade and the card came back Near Mint.
+  assert.equal(cond("eBay Charizard Base Set 4/102 LP $620"), "LP");
+  assert.equal(cond("eBay Blastoise Base Set 2/102 MP $80"), "MP");
+  assert.equal(cond("eBay Machamp 8/102 DMG $20"), "DMG");
+  assert.equal(cond("Mercari Umbreon VMAX 215/203 LP $2800"), "LP");
+});
+
+test("the HP guard still holds, and its cost is documented", () => {
+  // HP is the one code that collides with card text, so it keeps the digit
+  // guard. The accepted cost: a genuine "6/102 HP" reads as NM. That errs
+  // toward a lower book, which hides a deal rather than inventing one.
+  assert.equal(cond("eBay Charizard Base Set Holo 120 HP 4/102 $620"), "NM");
+  assert.equal(cond("eBay Gyarados 6/102 HP $30"), "NM");
+  assert.equal(cond("eBay Gyarados 6/102 Heavily Played $30"), "HP");
+});

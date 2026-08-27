@@ -12,7 +12,9 @@ export function applyVerification(
     extraQuotes?: ValuationQuote[];
   } = {},
 ): Appraisal {
-  const quotes = opts.book?.quotes ?? onHandQuotes(card, opts.fx ?? null);
+  // `appraisal.finish` is the printing `appraise` priced against. Passing it on
+  // keeps the verified book on the same card the ask was scored against.
+  const quotes = opts.book?.quotes ?? onHandQuotes(card, opts.fx ?? null, appraisal.finish);
   const extra = [...quotes, ...(opts.extraQuotes ?? [])];
   if (opts.sold != null && !extra.some((q) => q.source === "ebay-sold")) {
     extra.push({

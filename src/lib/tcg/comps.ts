@@ -3,7 +3,7 @@ import { parseMoney } from "@/lib/marketplaces/html";
 import type { DeskKeys } from "@/lib/settings/keys";
 import { gradeMultiplier } from "./appraise";
 import { fetchKeyedQuotes } from "./paid-sources";
-import type { Confidence, Grade, TcgCard } from "./types";
+import type { Confidence, FinishPrices, Grade, TcgCard } from "./types";
 
 export type QuoteFamily = "listed" | "sold" | "retail" | "model";
 
@@ -110,11 +110,32 @@ function parseSoldPrices(md: string, hint?: number | null): number[] {
 
 export function soldStats(prices: number[]): { median: number | null; n: number } {
   const trimmed = iqrTrim(prices.filter((n) => n < 50000));
-  return { median: median(trimmed.slice(0, 16)), n: trimmed.length };
+  // `iqrTrim` returns its input SORTED, so the old `.slice(0, 16)` took the 16
+  // cheapest comps and medianed those — a systematic downward bias on every
+  // sold median, which made real listings look expensive against the book. The
+  // set is already outlier-trimmed; median the whole of it.
+  return { median: median(trimmed), n: trimmed.length };
 }
 
-export async function fetchEbaySoldMedian(card: TcgCard, grade: Grade): Promise<number | null> {
-  const hint = card.finishes.find((f) => f.market != null)?.market ?? null;
+/**
+ * Expected price for THIS grade, used to reject scraped numbers that cannot be
+ * this card. Scaling by the grade matters: `parseSoldPrices` keeps values within
+ * 0.22x-3.8x of the hint, and a vintage-holo PSA 10 trades near 8x raw — so
+ * hinting with the raw price threw away every genuine graded comp and left the
+ * median built from page furniture, or null.
+ */
+function priceHint(card: TcgCard, grade: Grade, printing?: FinishPrices | null): number | null {
+  const raw = printing?.market ?? card.finishes.find((f) => f.market != null)?.market ?? null;
+  if (raw == null) return null;
+  return raw * gradeMultiplier(card, grade);
+}
+
+export async function fetchEbaySoldMedian(
+  card: TcgCard,
+  grade: Grade,
+  printing?: FinishPrices | null,
+): Promise<number | null> {
+  const hint = priceHint(card, grade, printing);
   const q = encodeURIComponent(
     `${card.name} ${card.setName} ${card.localId}${grade === "raw" ? "" : ` ${grade}`}`,
   );
@@ -123,8 +144,12 @@ export async function fetchEbaySoldMedian(card: TcgCard, grade: Grade): Promise<
   return soldStats(parseSoldPrices(md, hint)).median;
 }
 
-export async function fetchEbayActiveMedian(card: TcgCard, grade: Grade): Promise<number | null> {
-  const hint = card.finishes.find((f) => f.market != null)?.market ?? null;
+export async function fetchEbayActiveMedian(
+  card: TcgCard,
+  grade: Grade,
+  printing?: FinishPrices | null,
+): Promise<number | null> {
+  const hint = priceHint(card, grade, printing);
   const q = encodeURIComponent(
     `${card.name} ${card.setName} ${card.localId}${grade === "raw" ? "" : ` ${grade}`}`,
   );
@@ -273,8 +298,22 @@ function usd(eur: number | null | undefined, fx: number | null): number | null {
   return eur * fx;
 }
 
-export function onHandQuotes(card: TcgCard, fx: number | null): ValuationQuote[] {
-  const finish = card.finishes.find((f) => f.market != null) ?? card.finishes[0] ?? null;
+/**
+ * Quotes we already hold on the card record.
+ *
+ * `printing` is the finish the appraisal actually chose. Without it this fell
+ * back to "the first priced finish", so a reverse-holo listing was booked off
+ * the holo prices — a different card, often several times the value. `appraise`
+ * picks the right printing via `pickFinish`, and `applyVerification` then
+ * replaced its number with a blend built from the wrong one.
+ */
+export function onHandQuotes(
+  card: TcgCard,
+  fx: number | null,
+  printing?: FinishPrices | null,
+): ValuationQuote[] {
+  const finish =
+    printing ?? card.finishes.find((f) => f.market != null) ?? card.finishes[0] ?? null;
   const cmNote = fx ? `Frankfurter EUR→USD ${fx.toFixed(3)}` : "Need FX for USD";
   return [
     {
@@ -433,15 +472,27 @@ export function scoreBook(
   // desk that publishes market, mid and direct-low is one opinion, not three,
   // and comparing its own low against its own high produced conflict warnings
   // like "TCGPlayer market $43 vs TCGPlayer direct low $120".
-  const byDesk = new Map<string, { label: string; values: number[] }>();
+  const byDesk = new Map<string, { label: string; best: ValuationQuote; tied: number[] }>();
   for (const q of core) {
     const key = deskOf(q);
-    const hit = byDesk.get(key) ?? { label: DESK_LABEL[key] ?? q.label, values: [] };
-    hit.values.push(basisOf(q)!);
-    byDesk.set(key, hit);
+    const hit = byDesk.get(key);
+    if (!hit) {
+      byDesk.set(key, { label: DESK_LABEL[key] ?? q.label, best: q, tied: [basisOf(q)!] });
+      continue;
+    }
+    // A desk's representative is its HIGHEST-WEIGHTED quote, not the median of
+    // everything it publishes. Medianing threw the weights away, so TCGPlayer's
+    // desk value became the midpoint of market / mid / direct-low rather than
+    // the market price the weights say to trust.
+    if (q.weight > hit.best.weight) {
+      hit.best = q;
+      hit.tied = [basisOf(q)!];
+    } else if (q.weight === hit.best.weight) {
+      hit.tied.push(basisOf(q)!);
+    }
   }
   const desks = [...byDesk.entries()]
-    .map(([id, row]) => ({ id, label: row.label, usd: median(row.values)! }))
+    .map(([id, row]) => ({ id, label: row.label, usd: median(row.tied)! }))
     .sort((a, b) => a.usd - b.usd);
 
   const sourcesUsed = desks.length;
@@ -450,11 +501,16 @@ export function scoreBook(
   const lo = loQ?.usd ?? null;
   const hi = hiQ?.usd ?? null;
   const conflict = lo != null && hi != null && lo > 0 && hi / lo > 1.35;
-  const p20 = desks[Math.floor((desks.length - 1) * 0.2)]?.usd ?? lo;
-  const p80 = desks[Math.floor((desks.length - 1) * 0.8)]?.usd ?? hi;
   const rangeLow = lo;
   const rangeHigh = hi;
-  const relSpread = blend && p20 != null && p80 != null ? (p80 - p20) / blend : null;
+  // Full desk-to-desk spread, not a percentile band. With at most a handful of
+  // desks the percentile version was worse than useless: at exactly two desks
+  // `floor(1 * 0.2)` and `floor(1 * 0.8)` are BOTH index 0, so relSpread came
+  // out as exactly 0 — "2 desks agree within ~0%" — even when they disagreed
+  // three to one, and the confidence gate read that 0 as agreement.
+  const relSpread = blend && lo != null && hi != null ? (hi - lo) / blend : null;
+  // Conservative value: the lowest desk, never above the blend.
+  const p20 = lo;
 
   let confidence: Confidence = "low";
   if (sourcesUsed >= 3 && (relSpread ?? 1) < 0.22) confidence = "high";
@@ -496,13 +552,15 @@ export async function buildValuationBook(
   card: TcgCard,
   grade: Grade = "raw",
   keys: DeskKeys = {},
+  printing?: FinishPrices | null,
 ): Promise<ValuationBook> {
-  const finish = card.finishes.find((f) => f.market != null) ?? card.finishes[0] ?? null;
+  const finish =
+    printing ?? card.finishes.find((f) => f.market != null) ?? card.finishes[0] ?? null;
   const market = finish?.market ?? null;
   const [fx, sold, active, chart, csv, keyed] = await Promise.all([
     eurUsd(),
-    fetchEbaySoldMedian(card, grade).catch(() => null),
-    fetchEbayActiveMedian(card, grade).catch(() => null),
+    fetchEbaySoldMedian(card, grade, finish).catch(() => null),
+    fetchEbayActiveMedian(card, grade, finish).catch(() => null),
     fetchPriceCharting(card).catch(() => ({ ungraded: null, psa10: null, psa9: null, url: "" })),
     fetchTcgcsv(card).catch(() => null),
     fetchKeyedQuotes(card, keys).catch(() => [] as ValuationQuote[]),
@@ -520,7 +578,7 @@ export async function buildValuationBook(
   const hasPcApi = keyed.some((q) => q.source === "pricecharting-api" && q.usd != null);
 
   const quotes: ValuationQuote[] = [
-    ...onHandQuotes(card, fx),
+    ...onHandQuotes(card, fx, finish),
     {
       source: "tcgcsv",
       desk: "tcgplayer",

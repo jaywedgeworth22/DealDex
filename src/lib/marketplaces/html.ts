@@ -67,13 +67,21 @@ export type ShippingRead = { amount: number; estimated: boolean };
 export function parseShipping(chunk: string, marketplace: "ebay" | "mercari"): ShippingRead {
   const fallback = ASSUMED_SHIPPING[marketplace];
   const window = chunk.slice(0, 300);
-  if (/\bfree\s+(?:delivery|shipping|postage|returns\s+and\s+shipping)\b/i.test(window)) {
-    return { amount: 0, estimated: false };
-  }
-  const m = window.match(
+
+  const free = window.match(/\bfree\s+(?:delivery|shipping|postage)\b/i);
+  const priced = window.match(
     /\+?\s*\$([0-9]{1,3}(?:,[0-9]{3})*\.\d{2})\s{0,3}(?:for\s+)?(?:delivery|shipping|postage)\b/i,
   );
-  const n = parseMoney(m?.[1]);
+
+  // Whichever appears FIRST belongs to this listing. Testing for "free" across
+  // the whole window let a neighbouring result's "Free delivery" zero out this
+  // row's real, explicitly quoted postage.
+  const freeAt = free?.index ?? Infinity;
+  const pricedAt = priced?.index ?? Infinity;
+  if (freeAt === Infinity && pricedAt === Infinity) return { amount: fallback, estimated: true };
+  if (freeAt < pricedAt) return { amount: 0, estimated: false };
+
+  const n = parseMoney(priced?.[1]);
   // Postage on a single card is not $80. Anything above that is a mis-read.
   if (n != null && n <= 60) return { amount: n, estimated: false };
   return { amount: fallback, estimated: true };

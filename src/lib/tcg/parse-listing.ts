@@ -156,12 +156,21 @@ function detectMarketplace(text: string): Marketplace {
 }
 
 /**
- * A bare `HP` in a Pokémon listing title is almost always the hit-point stat,
- * not Heavily Played — `Charizard 120 HP` is a NM card, and reading it as HP
- * applied a 0.35x haircut to a large share of every scan. So an abbreviation
- * only counts when it is a standalone token that is NOT adjacent to digits,
- * unless it appears in an unambiguous condition context.
+ * `HP` is the only condition abbreviation that collides with Pokémon card text:
+ * it is also the hit-point stat, so `Charizard 120 HP` is a NM card and reading
+ * it as Heavily Played applied a 0.35x haircut to a large share of every scan.
+ *
+ * `LP`, `MP` and `DMG` have no such collision — they are never stats — so they
+ * need only the standalone-token rule, which already rejects the substring
+ * matches that started all this (`lp` inside "Delphox", `mp` inside "champion":
+ * both are preceded by a letter, so neither is a standalone token).
+ *
+ * Applying the digit guard to all four was its own bug: nearly every listing
+ * carries a collector number, so `Charizard Base Set 4/102 LP` had its `LP`
+ * swallowed by the digits in `4/102` and came back Near Mint.
  */
+const DIGIT_AMBIGUOUS = new Set(["hp"]);
+
 function conditionCodeAt(text: string, code: string): boolean {
   // `(LP)`, `[MP]`, `NM/LP`, `Cond: HP`, `Condition - MP` are never stat lines.
   const explicit = new RegExp(
@@ -171,12 +180,15 @@ function conditionCodeAt(text: string, code: string): boolean {
   if (explicit.test(text)) return true;
 
   const re = new RegExp(`(^|[^a-z0-9])${code}([^a-z0-9]|$)`, "gi");
+  const guardDigits = DIGIT_AMBIGUOUS.has(code);
   for (const m of text.matchAll(re)) {
     if (m.index == null) continue;
-    const before = text.slice(Math.max(0, m.index - 12), m.index + m[1]!.length);
-    const after = text.slice(m.index + m[0].length - (m[2]?.length ?? 0));
-    if (/\d\s*\W?\s*$/.test(before)) continue; // "120 HP"
-    if (/^\W?\s*\d/.test(after)) continue; // "HP 120"
+    if (guardDigits) {
+      const before = text.slice(Math.max(0, m.index - 12), m.index + m[1]!.length);
+      const after = text.slice(m.index + m[0].length - (m[2]?.length ?? 0));
+      if (/\d\s*\W?\s*$/.test(before)) continue; // "120 HP"
+      if (/^\W?\s*\d/.test(after)) continue; // "HP 120"
+    }
     return true;
   }
   return false;

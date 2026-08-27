@@ -85,11 +85,25 @@ test("gradeMultiplier keeps each 10-grade distinct instead of collapsing to PSA 
   assert.notEqual(bgs10, cgc10);
 });
 
-test("gradeMultiplier leaves 9 and 9.5 grades on their flat multiplier", () => {
-  assert.equal(gradeMultiplier(card(), "PSA 9"), GRADE_MULT["PSA 9"]);
-  assert.equal(gradeMultiplier(card(), "BGS 9.5"), GRADE_MULT["BGS 9.5"]);
-  assert.equal(gradeMultiplier(card(), "CGC 9.5"), GRADE_MULT["CGC 9.5"]);
-  assert.equal(gradeMultiplier(null, "PSA 9"), GRADE_MULT["PSA 9"]);
+test("without a card, every grade is its flat multiplier", () => {
+  for (const g of ["PSA 10", "PSA 9", "PSA 8", "BGS 10", "BGS 9.5", "CGC 10", "CGC 9.5"] as const) {
+    assert.equal(gradeMultiplier(null, g), GRADE_MULT[g]);
+  }
+});
+
+test("grade multipliers never invert, for any card", () => {
+  // Bucketing only the 10-grades left 9s on their flat value, so on a modern
+  // card PSA 10 came back 1.25 while PSA 9 kept 1.35 — a gem-mint slab booked
+  // BELOW a near-mint one. The bucket scales the whole curve now.
+  for (const c of [card(), modernCard(), card({ rarity: "Illustration Rare", setId: "sv4" })]) {
+    const psa10 = gradeMultiplier(c, "PSA 10");
+    const psa9 = gradeMultiplier(c, "PSA 9");
+    const psa8 = gradeMultiplier(c, "PSA 8");
+    assert.ok(psa10 > psa9, `PSA 10 (${psa10}) must beat PSA 9 (${psa9}) on ${c.setName}`);
+    assert.ok(psa9 > psa8, `PSA 9 (${psa9}) must beat PSA 8 (${psa8}) on ${c.setName}`);
+    assert.ok(gradeMultiplier(c, "BGS 10") > psa10, "BGS 10 sits above PSA 10");
+    assert.ok(gradeMultiplier(c, "CGC 10") < psa10, "CGC 10 sits below PSA 10");
+  }
 });
 
 test("a modern card grades lower than a vintage holo", () => {
@@ -152,4 +166,25 @@ test("grading arbitrage only fires on a raw NM card with real upside", () => {
   // Already slabbed: there is no grading arbitrage left to compute.
   const slabbed = appraise(card(), listing({ price: 20, grade: "PSA 10" }));
   assert.equal(slabbed.grading, null);
+});
+
+test("a reverse-holo listing is priced off the reverse-holo printing", () => {
+  // `pickFinish` gets this right; the verified book used to ignore it and fall
+  // back to "the first priced finish", so a $4 reverse holo was booked against
+  // the $100 holo.
+  const c = card({
+    finishes: [
+      finish({ key: "holofoil", market: 100, low: 90, high: 120 }),
+      finish({ key: "reverse-holofoil", market: 4, low: 3, high: 6 }),
+    ],
+  });
+  const a = appraise(c, listing({ price: 5, shipping: 0, finish: "reverse-holofoil" }));
+  assert.equal(a.finish?.key, "reverse-holofoil");
+  assert.equal(a.market, 4);
+  // $5 against a $4 book is 25% over — "high". Booked off the holo it would
+  // have read as a 95%-under steal.
+  assert.equal(a.verdict, "high");
+
+  const asHolo = appraise(c, listing({ price: 5, shipping: 0, finish: "holofoil" }));
+  assert.equal(asHolo.verdict, "steal", "the holo printing genuinely is a steal at $5");
 });

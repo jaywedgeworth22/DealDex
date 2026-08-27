@@ -92,6 +92,50 @@ what this branch closes.
 - Rate limits on both scan entry points; `scan_cache` gains a TTL sweep, a row
   cap, and a paid-desk key so one user's paid book is not served to another.
 
+### A second pass, after an adversarial review of this branch
+
+Running five reviewers over the diff found that several of the fixes above were
+themselves wrong.  Worth recording, because the pattern is instructive: each one
+passed the tests I had written, because I had written the tests to describe what
+I *meant* rather than what the code did.
+
+- **The PKCE fix did not work.**  Covered under Security above — the challenge
+  was caller-supplied at the return leg, so the whole scheme was bypassable in
+  one request.
+- **The condition guard over-fired.**  Requiring "no adjacent digits" was right
+  for `HP` (the hit-point stat) and wrong for everything else: nearly every
+  listing carries a collector number, so `Charizard Base Set 4/102 LP` had its
+  `LP` swallowed by `4/102` and came back Near Mint.  The guard now applies to
+  `hp` alone — `LP`, `MP` and `DMG` are never card stats, and the
+  standalone-token rule already rejected "Delphox" and "champion".
+- **Grade multipliers inverted.**  Bucketing only the 10-grades left the 9s on
+  their flat value, so on a modern card PSA 10 booked at 1.25 and PSA 9 at 1.35
+  — a gem-mint slab worth less than a near-mint one.  The bucket now scales the
+  whole curve.
+- **`relSpread` was always exactly 0 with two desks.**  `floor(1 × 0.2)` and
+  `floor(1 × 0.8)` are both index 0, so a book where one desk said $50 and
+  another said $150 reported "2 desks agree within ~0%" and earned medium
+  confidence.  Uses the full desk-to-desk spread now.
+- **`soldStats` medianed the 16 *cheapest* comps.**  `iqrTrim` returns its input
+  sorted, so `.slice(0, 16)` took the bottom of the range — a systematic
+  downward bias on every eBay sold median, which made real listings look
+  expensive.  Pre-existing, not introduced here.
+- **The graded price hint was the raw price.**  `parseSoldPrices` keeps values
+  within 0.22×–3.8× of a hint, and a vintage-holo PSA 10 trades near 8× raw, so
+  hinting with the raw price discarded every genuine graded comp.  That silently
+  undercut the `basisUsd` fix above.
+- **A desk's representative was the median of its own quotes**, discarding the
+  weights that separate TCGPlayer's market price from its direct-low floor.
+- **The book ignored which printing the listing was.**  `appraise` picks the
+  right finish via `pickFinish`, then `applyVerification` replaced its number
+  with a blend built from "the first priced finish" — so a $4 reverse holo was
+  booked against the $100 holo and read as a 95 %-under steal.  Pre-existing.
+- **Free-shipping detection was not position-bounded**, so a neighbouring
+  result's "Free delivery" zeroed this listing's own quoted postage.
+
+One reported finding was **refuted**: `MIN_MATCH_SCORE = 40` does not reject
+good matches — an exact name plus an exact set scores 78–96.
+
 ### Build and release
 
 - `npm ci` failed on the committed lockfile while `vercel.json` runs exactly

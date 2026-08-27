@@ -54,19 +54,28 @@ enum Appraise {
     /// Heavily Played. `t.contains("hp")` matched a large share of every scan
     /// and cut the book to 35%, so the app called real deals overpriced. It also
     /// matched `lp` inside "Delphox" and `mp` inside "champion".
+    /// `HP` is the only condition code that collides with card text — it is also
+    /// the hit-point stat.  `LP`, `MP` and `DMG` never are, so the digit guard
+    /// applies to `hp` alone.  Applying it to all four swallowed the code in
+    /// `Charizard Base Set 4/102 LP`, which came back Near Mint.
+    static let digitAmbiguous: Set<String> = ["hp"]
+
     static func hasConditionCode(_ text: String, _ code: String) -> Bool {
         // Bracketed, slash-joined or explicitly labelled: never a stat line.
         let explicit = "(\\(|\\[|/|cond(ition)?[ :-]*)\\s*\(code)\\b"
         if text.range(of: explicit, options: [.regularExpression, .caseInsensitive]) != nil { return true }
-        // Otherwise it must be a standalone token with no digit on either side.
+        // Otherwise it must be a standalone token.
         let standalone = "(^|[^a-z0-9])\(code)([^a-z0-9]|$)"
         let ns = text as NSString
         guard let re = try? NSRegularExpression(pattern: standalone, options: [.caseInsensitive]) else { return false }
+        let guardDigits = digitAmbiguous.contains(code)
         for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
-            let before = ns.substring(to: m.range.location)
-            let after = ns.substring(from: min(m.range.location + m.range.length, ns.length))
-            if before.range(of: #"\d\s*\W?\s*$"#, options: .regularExpression) != nil { continue }
-            if after.range(of: #"^\W?\s*\d"#, options: .regularExpression) != nil { continue }
+            if guardDigits {
+                let before = ns.substring(to: m.range.location)
+                let after = ns.substring(from: min(m.range.location + m.range.length, ns.length))
+                if before.range(of: #"\d\s*\W?\s*$"#, options: .regularExpression) != nil { continue }
+                if after.range(of: #"^\W?\s*\d"#, options: .regularExpression) != nil { continue }
+            }
             return true
         }
         return false
@@ -101,7 +110,10 @@ enum Appraise {
     static func gradeMult(card: TcgCard?, grade: String) -> Double {
         if grade == "raw" { return 1 }
         let base = gradeMultBase[grade] ?? 1
-        guard let card, grade.hasSuffix("10") else { return base }
+        // The bucket scales this card's WHOLE grade curve, anchored on PSA 10.
+        // Scaling only the 10s inverted the ordering on modern cards: PSA 10
+        // came back 1.25 while PSA 9 kept its flat 1.35.
+        guard let card else { return base }
         let set = "\(card.setId) \(card.setName)".lowercased()
         let rarity = (card.rarity ?? "").lowercased()
         let vintage = set.range(
@@ -117,8 +129,7 @@ enum Appraise {
         else if vintage { bucket = 4 }
         else if chase { bucket = 2.1 }
         else { bucket = 1.25 }
-        // Keep each 10-grade's own ratio to PSA 10 instead of flattening them.
-        return bucket * (base / 2.8)
+        return base * (bucket / 2.8)
     }
 
     static func nameQuery(_ title: String) -> String {
