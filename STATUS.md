@@ -28,6 +28,15 @@ same install command `vercel.json` does.
 `npm test` went from 97 source-grep guards to 155 including 51 that exercise
 real prices — two of which caught bugs while being written.
 
+An adversarial review of this branch caught that the FIRST version of the PKCE
+fix did not work: binding the code to a challenge is useless when the challenge
+is caller-supplied, and a `SameSite=Lax` cookie rides a top-level GET, so a
+malicious app could mint itself a code in one request.  Leg 1 now issues a
+single-use server-side `state` (`migrations/0007`) and the hand-off requires a
+tap.  Residual risk is the private-use URI scheme itself — **App Links /
+Universal Links is the next piece of native auth work**, blocked on a release
+signing fingerprint and an entitlement change.
+
 **BLOCKER FOR NATIVE SHIPS:** Swift and Kotlin are compile-unverified — that
 session had no Xcode and no Android SDK.  Run `xcodegen generate`, both
 `xcodebuild` and `./gradlew` builds, and a real-device sign-in before shipping

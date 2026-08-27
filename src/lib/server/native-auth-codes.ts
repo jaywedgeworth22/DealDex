@@ -12,6 +12,12 @@ import { challengeFor, constantTimeEquals } from "./native-auth-pkce";
 /** Short enough that a leaked code is stale before it is useful. */
 const CODE_TTL_MS = 2 * 60 * 1000;
 
+/**
+ * How long a started sign-in may take. Generous, because it spans the whole
+ * OAuth round trip including the provider's own consent screen.
+ */
+const PENDING_TTL_MS = 10 * 60 * 1000;
+
 export type NativeSession = { token: string; email: string };
 
 export {
@@ -20,6 +26,38 @@ export {
   isValidVerifier,
   newCode,
 } from "./native-auth-pkce";
+
+/**
+ * Remember a challenge against a server-issued `state` at the start of a flow.
+ *
+ * This is what makes the challenge trustworthy at the return leg. Without it the
+ * `done=1` handler accepted any caller-supplied challenge and would mint a code
+ * for it using the ambient session cookie — see `migrations/0007`.
+ */
+export async function storePendingAuth(state: string, challenge: string): Promise<void> {
+  const sql = await getSql();
+  await sweepPending(sql);
+  await sql`
+    insert into native_auth_pending (state, challenge, expires_at)
+    values (${state}, ${challenge}, now() + ${`${PENDING_TTL_MS} milliseconds`}::interval)
+  `;
+}
+
+/**
+ * Consume a `state` and return the challenge it was issued with. Single use, so
+ * a state cannot be replayed to mint a second code.
+ */
+export async function takePendingAuth(state: string): Promise<string | null> {
+  const sql = await getSql();
+  const rows = await sql<{ challenge: string; expired: boolean }>`
+    delete from native_auth_pending
+    where state = ${state}
+    returning challenge, (expires_at <= now()) as expired
+  `;
+  const row = rows[0];
+  if (!row || row.expired) return null;
+  return row.challenge;
+}
 
 export async function storeCode(
   code: string,
@@ -53,4 +91,8 @@ export async function redeemCode(code: string, verifier: string): Promise<Native
 
 async function sweep(sql: Awaited<ReturnType<typeof getSql>>): Promise<void> {
   await sql`delete from native_auth_codes where expires_at <= now()`;
+}
+
+async function sweepPending(sql: Awaited<ReturnType<typeof getSql>>): Promise<void> {
+  await sql`delete from native_auth_pending where expires_at <= now()`;
 }

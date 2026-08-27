@@ -10,6 +10,19 @@ function read(rel) {
   return readFileSync(join(ROOT, rel), "utf8");
 }
 
+/**
+ * Source with comments removed.
+ *
+ * Needed because these files deliberately DESCRIBE the attacks they defend
+ * against, and a doc comment quoting `?done=1&challenge=` would otherwise trip
+ * an assertion that the code never builds such a URL.
+ */
+function readCode(rel) {
+  return read(rel)
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^\s*\/\/.*$/gm, "");
+}
+
 test("native scan payload maps adjustedMarket to adjusted for the iPhone parser", () => {
   const src = read("src/lib/native/scan-payload.ts");
   assert.match(src, /export function nativeScanRows/);
@@ -45,8 +58,8 @@ test("the native scan endpoint refuses desk keys, because /privacy promises it",
 
 test("native sign-in hands over a single-use code, never a session token", () => {
   const oauth = read("src/routes/api/native/oauth.ts");
-  // The redirect must carry `code`, and must NOT carry the session token.
-  assert.match(oauth, /nativeRedirect\(\{ code \}\)/);
+  // The hand-off must carry `code`, and must NOT carry the session token.
+  assert.match(oauth, /handoffPage\(code, email\)/);
   assert.doesNotMatch(oauth, /nativeRedirect\(\{ token/);
   assert.match(oauth, /isValidChallenge/);
 
@@ -64,6 +77,36 @@ test("native sign-in hands over a single-use code, never a session token", () =>
   assert.match(kotlin, /appendQueryParameter\("challenge"/);
   assert.match(kotlin, /api\/native\/exchange/);
   assert.doesNotMatch(kotlin, /getQueryParameter\("token"\)/);
+});
+
+test("the return leg trusts a server-issued state, never a caller's challenge", () => {
+  // Without this, a malicious app could open
+  //   /api/native/oauth?done=1&challenge=<its own>
+  // as a top-level navigation, ride the SameSite=Lax session cookie, catch
+  // dealdex://auth?code=… on its own intent filter, and redeem the code with the
+  // verifier it picked. PKCE would have bought nothing.
+  const oauth = readCode("src/routes/api/native/oauth.ts");
+  const doneLeg = oauth.slice(oauth.indexOf('get("done")'), oauth.indexOf("const providerId"));
+  assert.doesNotMatch(
+    doneLeg,
+    /searchParams\.get\("challenge"\)/,
+    "the done=1 leg must never read a challenge from the query string",
+  );
+  assert.match(doneLeg, /takePendingAuth\(state\)/);
+  assert.match(doneLeg, /sign_in_expired/);
+
+  // Leg 1 must mint and persist the state, and send only the state onward.
+  assert.match(oauth, /storePendingAuth\(state, challenge\)/);
+  assert.match(oauth, /done=1&state=\$\{encodeURIComponent\(state\)\}/);
+  assert.doesNotMatch(oauth, /done=1&challenge=/);
+});
+
+test("the hand-off needs a tap, so a flow the user did not start cannot finish silently", () => {
+  const oauth = read("src/routes/api/native/oauth.ts");
+  assert.match(oauth, /function handoffPage/);
+  assert.match(oauth, /text\/html/);
+  assert.match(oauth, /escapeHtml\(target\)/);
+  assert.match(oauth, /If you did not start this sign-in/);
 });
 
 test("credentials are kept in the platform keystore, not a plain prefs file", () => {

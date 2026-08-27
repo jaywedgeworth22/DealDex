@@ -61,6 +61,22 @@ what this branch closes.
   Custom schemes are not exclusive on Android.  Now PKCE-style: the redirect
   carries a single-use code, and `/api/native/exchange` requires a verifier that
   never leaves the device (`migrations/0006`).
+- **The first version of that fix did not work**, and an adversarial review of
+  this branch caught it.  Binding the code to a PKCE challenge is useless if the
+  challenge itself is caller-supplied: the `done=1` leg read `challenge` off the
+  query string and validated only its shape, and because the session cookie is
+  `SameSite=Lax` it rides along on a top-level GET navigation.  A malicious app
+  could open `…/oauth?done=1&challenge=<its own>` directly, catch
+  `dealdex://auth?code=…` on the intent filter it registered, and redeem the
+  code with the verifier it picked.  Full account takeover, PKCE contributing
+  nothing.  Leg 1 now mints a server-issued single-use `state`, stores it
+  against the challenge (`migrations/0007`), and sends only the state through
+  the OAuth round trip; leg 2 looks the challenge up by state.  Verified against
+  PGLite: forged state refused, replayed state refused, expired state refused,
+  and a wrong verifier still refused on a genuinely intercepted code.
+- The hand-off is no longer an automatic `302` into `dealdex://`.  It is a page
+  naming the account with a single **Open DealDex** button, so a flow the user
+  never started cannot complete silently in the background.
 - Credentials moved to EncryptedSharedPreferences (Android) and the Keychain
   (iOS), with one-time migrations.  `allowBackup` is false and backup rules
   exclude the credential file.
@@ -106,6 +122,10 @@ the redirect, keystore usage, and the absence of the camera screen.
 This session had neither Xcode nor the Android SDK, so the Swift and Kotlin
 changes are **compile-unverified**.  Before shipping either app:
 
+0. Re-run a real sign-in on **both** platforms after the `state` change.  The
+   server contract changed again (leg 1 now persists a row before redirecting),
+   though the client-visible contract — send `challenge`, receive `code` — did
+   not, so no client edit was needed.
 1. `cd native/ios && xcodegen generate` — `CameraScannerView.swift` was deleted
    and its four `project.pbxproj` entries were removed by hand.  Regenerating
    should produce the same result; confirm it does.
@@ -121,10 +141,26 @@ changes are **compile-unverified**.  Before shipping either app:
 
 Deliberately deferred, with reasons:
 
+- **Claimed HTTPS redirects (the real fix for the scheme problem).**  Sign-in
+  still returns on a private-use URI scheme, which RFC 8252 §8.1 says any app
+  may claim.  The `state` binding closes the trivial one-request attack and the
+  tap-through blocks a silent background completion, but an app can still start
+  its own flow, and if the browser already holds a live provider session the
+  round trip finishes without a provider prompt.  The proper fix is Android App
+  Links (`autoVerify` + `/.well-known/assetlinks.json`) and iOS Universal Links
+  (`apple-app-site-association` + an Associated Domains entitlement).  Both were
+  out of reach here: App Links needs the release signing certificate
+  fingerprint, and there is no release keystore yet; Universal Links needs an
+  entitlement change, and `native/ios/CLAUDE.md` forbids hand-editing
+  entitlements.  **This should be the next piece of work on native auth.**
+  iOS is materially better off in the meantime —
+  `ASWebAuthenticationSession` delivers the callback to the session that opened
+  it rather than through the system URL handler, so the interception variant
+  does not apply there.
 - **Custom Tabs on Android.**  Sign-in still opens the default browser via
-  `ACTION_VIEW`.  PKCE already makes an intercepted redirect useless, so this is
-  a polish item rather than a hole.  Adding `androidx.browser` was not worth the
-  unverifiable build risk in the same change.
+  `ACTION_VIEW`.  Adding `androidx.browser` was not worth the unverifiable build
+  risk in the same change, and it does not close the issue above; App Links
+  does.
 - **`public/DealDex.apk`.**  Still a committed 17 MB binary that grows `.git`
   on every refresh.  It should move to a GitHub Release asset, but this session
   could not build a replacement, and deleting it would break the documented
