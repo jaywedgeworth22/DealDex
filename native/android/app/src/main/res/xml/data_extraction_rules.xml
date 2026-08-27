@@ -6,15 +6,14 @@
   transfer.  The credential store must never leave the device: the master key is
   hardware-backed and does not travel, so a restored copy would be undecryptable
   anyway — and an unrestorable file that still contains a session token is worse
-  than no file.
+  than no file.  There is no plaintext fallback file to exclude: if the keystore
+  is unavailable, Prefs keeps credentials in memory only.
 -->
 <data-extraction-rules>
     <cloud-backup>
         <exclude domain="sharedpref" path="dealdex.secure.xml" />
-        <exclude domain="sharedpref" path="dealdex.secure.fallback.xml" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="sharedpref" path="dealdex.secure.xml" />
-        <exclude domain="sharedpref" path="dealdex.secure.fallback.xml" />
     </device-transfer>
 </data-extraction-rules>

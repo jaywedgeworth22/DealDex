@@ -133,8 +133,42 @@ I *meant* rather than what the code did.
 - **Free-shipping detection was not position-bounded**, so a neighbouring
   result's "Free delivery" zeroed this listing's own quoted postage.
 
+And on the native side, where nothing here can compile the code:
+
+- **The PKCE verifier could be 32 zero bytes.**  `newVerifier()` discarded the
+  `OSStatus` from `SecRandomCopyBytes`; on failure the buffer stayed zeroed, so
+  every device would have produced the same predictable verifier — the one value
+  the whole handoff depends on staying secret.  Uses CryptoKit's
+  `SymmetricKey(size:)` now, which has no status to ignore.
+- **The iOS Keychain migration deleted the plist copy unverified** and latched
+  regardless, so a failed Keychain write silently destroyed the session token
+  and all three paid desk keys with no retry.
+- **R8 plus my own fallback would have shipped a plaintext credential store.**
+  Enabling R8 in the same change that adds Tink strips its reflectively
+  registered key managers, `EncryptedSharedPreferences.create` throws, and the
+  fallback wrote the token and keys to a plain `MODE_PRIVATE` file — silently,
+  in the release build only, while `/privacy` said otherwise.  Tink keep rules
+  added, and the fallback is now IN MEMORY: a broken keystore costs the session,
+  not the secret.
+- **`POST_NOTIFICATIONS` was never requested on a fresh install.**  Moving the
+  prompt to the alert switch's rising edge missed that the default rule ships
+  enabled, so the switch renders already ON and the handler never fires.  Every
+  alert was silently dropped on Android 13+.  The Alerts screen asks on arrival.
+- **Rotation spent the single-use code twice.**  `onCreate` re-handled the
+  launching intent, which was harmless when it carried a token and is not when
+  it carries a one-time code — a good session got overwritten with "Sign-in
+  expired".  The intent is consumed once.
+- **`contains("damaged")` matched "UNDAMAGED"** on both clients, applying the
+  0.2× haircut to a clean card.  (The web parser was already word-bounded.)
+- AGP 8.5.2 predates `compileSdk 35`; bumped to 8.6.1, which the pinned Gradle
+  8.7 supports.
+
 One reported finding was **refuted**: `MIN_MATCH_SCORE = 40` does not reject
 good matches — an exact name plus an exact set scores 78–96.
+
+The lesson worth keeping: every one of these passed the tests that shipped with
+the original fix, because those tests were written to describe what the change
+was *meant* to do.  The reviewers read the code instead.
 
 ### Build and release
 

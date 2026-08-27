@@ -120,6 +120,42 @@ test("credentials are kept in the platform keystore, not a plain prefs file", ()
   assert.match(store, /kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly/);
 });
 
+test("a keystore failure loses the session, it does not write secrets in the clear", () => {
+  // R8 strips Tink's reflectively-registered key managers unless kept, so
+  // `EncryptedSharedPreferences.create` can throw in the RELEASE build only.
+  // Falling back to a MODE_PRIVATE file there would have put the session token
+  // and all three paid desk keys on disk in plaintext, silently, in exactly the
+  // build that ships.
+  const prefs = readCode("native/android/app/src/main/java/me/grok/dealdex/data/Prefs.kt");
+  assert.match(prefs, /getOrElse \{ MemoryStore\(\) \}/);
+  assert.doesNotMatch(
+    prefs,
+    /getSharedPreferences\("dealdex\.secure/,
+    "the fallback must not be a file",
+  );
+
+  const keep = read("native/android/app/proguard-rules.pro");
+  assert.match(keep, /com\.google\.crypto\.tink/);
+  assert.match(keep, /shaded\.protobuf/);
+});
+
+test("the sign-in redirect is consumed once, so rotation cannot spend the code twice", () => {
+  const main = readCode("native/android/app/src/main/java/me/grok/dealdex/MainActivity.kt");
+  assert.match(main, /intent\.data = null/);
+});
+
+test("notification permission is asked for when alerts are on, not at cold start", () => {
+  const main = readCode("native/android/app/src/main/java/me/grok/dealdex/MainActivity.kt");
+  // Not in onCreate any more...
+  const onCreate = main.slice(main.indexOf("override fun onCreate"), main.indexOf("override fun onResume"));
+  assert.doesNotMatch(onCreate, /askNotify\.launch/);
+  // ...but the default rule ships enabled, so the switch's rising edge is not
+  // enough on a fresh install. The Alerts screen asks on arrival.
+  const alerts = readCode("native/android/app/src/main/java/me/grok/dealdex/ui/AlertsScreen.kt");
+  assert.match(alerts, /LaunchedEffect\(rule\.enabled\)/);
+  assert.match(alerts, /requestNotificationPermission\(\)/);
+});
+
 test("the iOS card scanner is gone until it actually uses the camera", () => {
   // It reported "Charizard 4/102" after a 1.2s timer with no AVCaptureSession.
   const scanView = read("native/ios/DealDex/ScanView.swift");

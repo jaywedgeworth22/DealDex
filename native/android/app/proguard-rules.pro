@@ -1,12 +1,28 @@
 # R8 keep rules for the release build.
 #
-# OkHttp, Tink (EncryptedSharedPreferences) and Compose all ship consumer rules
-# in their AARs, so this file only covers what is ours.
+# R8 is enabled here for the first time, in the same change that adds
+# androidx.security:security-crypto.  That combination needs care: Tink (which
+# backs EncryptedSharedPreferences) registers its key managers REFLECTIVELY over
+# shaded protobuf types, and R8 in full mode strips them.  The failure mode is
+# nasty rather than loud — `EncryptedSharedPreferences.create` throws, Prefs
+# falls back, and the credential store degrades silently.  Prefs now falls back
+# to memory rather than a plaintext file (see Prefs.kt), but the right answer is
+# to not strip Tink in the first place.
 
-# Models are read reflectively out of org.json in Market.kt / AccountApi.kt.
+# --- Tink / EncryptedSharedPreferences ---
+-keep class com.google.crypto.tink.** { *; }
+-keep class com.google.crypto.tink.shaded.protobuf.** { *; }
+-keepclassmembers class * extends com.google.crypto.tink.shaded.protobuf.GeneratedMessageLite {
+  <fields>;
+}
+-dontwarn com.google.crypto.tink.**
+-dontwarn com.google.api.client.http.**
+-dontwarn org.joda.time.**
+-dontwarn javax.annotation.**
+
+# --- Ours: models are read reflectively out of org.json in Market/AccountApi ---
 -keep class me.grok.dealdex.data.** { *; }
 
-# org.json is part of the platform; nothing to keep. Keep line numbers so a
-# Play Console stack trace is still readable after obfuscation.
+# Keep line numbers so a Play Console stack trace is still readable.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile

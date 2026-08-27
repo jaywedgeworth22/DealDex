@@ -178,9 +178,21 @@ class MainActivity : ComponentActivity() {
         handleAuth(intent)
     }
 
+    /**
+     * Consume the sign-in redirect exactly once.
+     *
+     * The redirect used to carry the token itself, so re-parsing it on every
+     * activity recreation was harmless.  It now carries a SINGLE-USE code, and
+     * the launching intent survives rotation — so a re-handle would spend an
+     * already-redeemed code and overwrite a good session with "Sign-in
+     * expired".  Clearing `data` makes the second pass a no-op.
+     */
     private fun handleAuth(intent: Intent?) {
         val data = intent?.data ?: return
-        if (data.scheme == "dealdex") vm.completeOAuth(data)
+        if (data.scheme != "dealdex") return
+        intent.data = null
+        setIntent(intent)
+        vm.completeOAuth(data)
     }
 
     private fun checkPlayUpdate() {
