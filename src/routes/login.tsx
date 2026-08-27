@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SOCIAL_PROVIDERS, authEnabled, signIn, type SocialProviderId } from "@/lib/auth/client";
+import { safeInternalPath } from "@/lib/auth/safe-redirect";
 import { Button } from "@/components/ui/button";
 import { DealDexWordmark } from "@/components/app-mark";
 import { APP_SUBTITLE } from "@/lib/copy";
@@ -9,9 +10,10 @@ type LoginSearch = {
 };
 
 export const Route = createFileRoute("/login")({
-  validateSearch: (search: Record<string, unknown>): LoginSearch => ({
-    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): LoginSearch => {
+    if (typeof search.redirect !== "string") return {};
+    return { redirect: safeInternalPath(search.redirect, "/settings") };
+  },
   component: Login,
 });
 
@@ -54,7 +56,7 @@ function ProviderIcon({ id }: { id: SocialProviderId }) {
 
 function Login() {
   const search = Route.useSearch();
-  const callbackURL = search.redirect || "/settings";
+  const callbackURL = search.redirect ?? "/settings";
 
   return (
     <main className="grid min-h-dvh place-items-center bg-bg px-4 text-fg">
