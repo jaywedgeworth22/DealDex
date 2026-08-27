@@ -184,12 +184,69 @@ test("notification permission is asked for when alerts are on, not at cold start
   assert.match(alerts, /requestNotificationPermission\(\)/);
 });
 
-test("the iOS card scanner is gone until it actually uses the camera", () => {
-  // It reported "Charizard 4/102" after a 1.2s timer with no AVCaptureSession.
+test("the iOS card scanner reads the camera instead of faking a result", () => {
+  // What this replaced: CameraScannerView showed a viewfinder-shaped rectangle
+  // with nothing behind it, then `simulateScan()` set "Charizard" / "4/102"
+  // after a 1.2s timer no matter what the phone was pointed at.
+  //
+  // These are source assertions, not a camera test.  They can prove the fake is
+  // gone and that a real capture path is wired up; only a run on a physical
+  // iPhone proves it recognises a card, and the Simulator cannot do it at all
+  // (DataScannerViewController.isSupported is false there).
   const scanView = read("native/ios/DealDex/ScanView.swift");
-  assert.doesNotMatch(scanView, /CameraScannerView/);
   const pbx = read("native/ios/DealDex.xcodeproj/project.pbxproj");
+
+  // The fake is gone from the source and from the target.
+  assert.doesNotMatch(scanView, /CameraScannerView/);
   assert.doesNotMatch(pbx, /CameraScannerView/);
+  assert.doesNotMatch(scanView, /simulateScan/);
+
+  // A real capture path: VisionKit live text on the camera feed.
+  assert.match(scanView, /^import VisionKit$/m);
+  assert.match(scanView, /^import AVFoundation$/m);
+  assert.match(scanView, /DataScannerViewController\(\s*\n?\s*recognizedDataTypes: \[\.text\(\)\]/);
+  assert.match(scanView, /try controller\.startScanning\(\)/);
+  assert.match(scanView, /controller\.stopScanning\(\)/);
+  assert.match(scanView, /DataScannerViewControllerDelegate/);
+
+  // Permission is asked for, and refusal is stated rather than swallowed.
+  assert.match(scanView, /AVCaptureDevice\.authorizationStatus\(for: \.video\)/);
+  assert.match(scanView, /await AVCaptureDevice\.requestAccess\(for: \.video\)/);
+  assert.match(scanView, /DealDex has no camera access/);
+  // The Simulator and pre-A12 devices are told the truth, not shown a dead view.
+  assert.match(scanView, /!DataScannerViewController\.isSupported/);
+  assert.match(scanView, /does not run in the Simulator/);
+
+  // No fabricated result: the query is nil unless a name was actually read, and
+  // nothing reaches the scan box until the user taps.
+  assert.match(scanView, /guard let name = cardName\(in: lines\) else \{ return nil \}/);
+  assert.match(scanView, /No card name read yet/);
+  assert.match(scanView, /\.disabled\(suggestion == nil\)/);
+  assert.match(scanView, /onQuery\(suggestion\)/);
+  // The only place a scan query is written from the camera is the sheet callback.
+  const writes = scanView.match(/desk\.query = /g) ?? [];
+  assert.equal(writes.length, 1, `desk.query written ${writes.length} times`);
+
+  // No hardcoded card anywhere in the reader.
+  assert.doesNotMatch(readCode("native/ios/DealDex/ScanView.swift"), /Charizard/i);
+});
+
+test("the iOS camera scanner has a usage string, in the plist and in the generator", () => {
+  // Reading the camera without NSCameraUsageDescription is a hard crash on
+  // first use.  project.yml is the generator input, so a key added only to
+  // Info.plist disappears the next time someone runs `xcodegen generate`.
+  const plist = read("native/ios/DealDex/Info.plist");
+  const yml = read("native/ios/project.yml");
+  assert.match(plist, /<key>NSCameraUsageDescription<\/key>/);
+  assert.match(yml, /NSCameraUsageDescription:/);
+
+  const copy = plist.match(
+    /<key>NSCameraUsageDescription<\/key>\s*<string>([\s\S]*?)<\/string>/,
+  )?.[1];
+  assert.ok(copy && copy.length > 40, "the usage string has to say what the camera is for");
+  assert.ok(yml.includes(copy), "project.yml and Info.plist must carry the same string");
+  // /privacy says the image never leaves the phone; the prompt has to agree.
+  assert.match(copy, /stays on your iPhone/);
 });
 
 test("Android scans on the device first and sends no keys to the website", () => {

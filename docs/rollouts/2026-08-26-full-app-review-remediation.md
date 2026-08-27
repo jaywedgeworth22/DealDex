@@ -25,7 +25,7 @@ what this branch closes.
 |---|---|---|---|
 | "They do not send those keys to DealDex servers" | `/privacy`, README, `/settings` | both clients POSTed all three paid desk keys to `/api/native/scan` on every scan, as the **primary** path | on-device is now primary, the site fallback sends no keys, and the endpoint **refuses** a `keys` payload so it cannot regress |
 | website keys "stay on this device" | `/settings` | a web scan runs server-side, so saved keys are sent with each request | disclosed explicitly, and the two surfaces are now described separately |
-| "Card & Slab Scanner" | iOS `ScanView` | `simulateScan()` set `"Charizard"` / `"4/102"` after 1.2 s; no `AVCaptureSession`, no `NSCameraUsageDescription` | screen removed |
+| "Card & Slab Scanner" | iOS `ScanView` | `simulateScan()` set `"Charizard"` / `"4/102"` after 1.2 s; no `AVCaptureSession`, no `NSCameraUsageDescription` | screen removed, then **replaced with a real VisionKit scanner** — see `2026-08-27-ios-card-scanner.md` |
 | "Email, SMS, and Pushover use the destinations you add" | `/alerts` | the server recorded email and SMS as `ok: true` without attempting a send | both disabled in the UI, reported honestly by the server, failures surfaced to the user |
 | "iOS 16+" | `/install` | `IPHONEOS_DEPLOYMENT_TARGET` is 17.0 | corrected |
 
@@ -220,7 +220,8 @@ helpers.  Two of them caught bugs while being written.
 The native guard tests were rewritten: they used to pin a comment string
 (`"Scan never requires sign-in"`).  They now pin the properties that matter —
 on-device-first ordering, no `keys` in the site payload, `code` not `token` in
-the redirect, keystore usage, and the absence of the camera screen.
+the redirect, keystore usage, and — since 08-27 — that the camera screen is a
+real one.
 
 ## NOT verified in this session — needs a Mac and an Android SDK
 
@@ -233,7 +234,9 @@ changes are **compile-unverified**.  Before shipping either app:
    not, so no client edit was needed.
 1. `cd native/ios && xcodegen generate` — `CameraScannerView.swift` was deleted
    and its four `project.pbxproj` entries were removed by hand.  Regenerating
-   should produce the same result; confirm it does.
+   should produce the same result; confirm it does.  The replacement scanner
+   deliberately lives inside `ScanView.swift` so it needs no new entry; split it
+   into its own file once you are regenerating anyway.
 2. `xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
    -destination 'generic/platform=iOS Simulator' build`
 3. `cd native/android && ./gradlew :app:assembleDebug` and `:app:assembleRelease`
@@ -241,8 +244,10 @@ changes are **compile-unverified**.  Before shipping either app:
    dependency.
 4. Exercise sign-in on a real device on both platforms.  The handoff contract
    changed on both ends at once; a mismatch shows up only at runtime.
-5. Screenshot the iOS Scan tab: the camera button is gone and the search field
-   now spans the row.
+5. Screenshot the iOS Scan tab: the camera button is back beside the search
+   field, and it now opens a real camera.  The scanner itself needs a **physical
+   iPhone** — `DataScannerViewController` does not run in the Simulator.  Full
+   checklist in `2026-08-27-ios-card-scanner.md`.
 
 Deliberately deferred, with reasons:
 
@@ -277,7 +282,7 @@ Deliberately deferred, with reasons:
 ## Verification run here
 
 `npx tsc --noEmit` clean · `npx eslint .` 0 errors, 8 pre-existing warnings ·
-`npm test` 155/155 · `npm run build` green · `npm ci` succeeds against the
+`npm test` 155/155 (187/187 after the 08-27 scanner) · `npm run build` green · `npm ci` succeeds against the
 refreshed lockfile · homepage rendered at 1440×1250 and 390×900 with no console
 errors.
 
