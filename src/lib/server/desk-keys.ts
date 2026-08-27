@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getSql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
 import type { DeskKeys } from "@/lib/settings/keys";
+import { decryptSecret, encryptSecret } from "./secret-box";
 
 function clean(input: unknown): DeskKeys {
   if (!input || typeof input !== "object") return {};
@@ -25,7 +26,11 @@ export const getAccountKeys = createServerFn({ method: "GET" })
     }>`select justtcg, pricecharting, pokemontcg from desk_keys where user_id = ${context.userId}`;
     const row = rows[0];
     if (!row) return {} as DeskKeys;
-    return clean(row);
+    return clean({
+      justtcg: decryptSecret(row.justtcg),
+      pricecharting: decryptSecret(row.pricecharting),
+      pokemontcg: decryptSecret(row.pokemontcg),
+    });
   });
 
 export const saveAccountKeys = createServerFn({ method: "POST" })
@@ -35,7 +40,13 @@ export const saveAccountKeys = createServerFn({ method: "POST" })
     const sql = await getSql();
     await sql`
       insert into desk_keys (user_id, justtcg, pricecharting, pokemontcg, updated_at)
-      values (${context.userId}, ${data.justtcg ?? ""}, ${data.pricecharting ?? ""}, ${data.pokemontcg ?? ""}, now())
+      values (
+        ${context.userId},
+        ${encryptSecret(data.justtcg ?? "")},
+        ${encryptSecret(data.pricecharting ?? "")},
+        ${encryptSecret(data.pokemontcg ?? "")},
+        now()
+      )
       on conflict (user_id) do update set
         justtcg = excluded.justtcg,
         pricecharting = excluded.pricecharting,

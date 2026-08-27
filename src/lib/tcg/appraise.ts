@@ -60,10 +60,14 @@ const PSA10_BY_BUCKET = {
 export function gradeMultiplier(card: TcgCard | null, grade: Grade): number {
   if (grade === "raw") return 1;
   const base = GRADE_MULT[grade] ?? 1;
-  if (!card || !grade.includes("10") || grade.includes("9.5")) return base;
-  const bucket = gradeBucket(card);
-  if (grade.includes("10")) return PSA10_BY_BUCKET[bucket];
-  return base;
+  // Only gem-mint (10) grades get the set-aware bucket — that is what
+  // PSA10_BY_BUCKET actually measures. 9 and 9.5 slabs keep their flat value.
+  if (!card || !/\b10$/.test(grade)) return base;
+  // Scale by each 10-grade's own relationship to PSA 10 rather than collapsing
+  // BGS 10 / CGC 10 / ACE 10 onto the PSA 10 number, which is what the previous
+  // `return PSA10_BY_BUCKET[bucket]` did — it threw away GRADE_MULT entirely
+  // whenever a card object happened to be present.
+  return PSA10_BY_BUCKET[gradeBucket(card)] * (base / GRADE_MULT["PSA 10"]);
 }
 
 export function finishLabel(key: string) {
@@ -105,7 +109,7 @@ export function pickFinish(card: TcgCard, hint: string | null): FinishPrices | n
       return { f, s };
     })
     .sort((a, b) => b.s - a.s);
-  return scored[0] && scored[0].s > 0 ? scored[0].f : pool[0] ?? null;
+  return scored[0] && scored[0].s > 0 ? scored[0].f : (pool[0] ?? null);
 }
 
 export function verdictFromSpread(spread: number | null): Verdict {
@@ -137,7 +141,9 @@ export function isRepackOrProxy(title: string): { suspicious: boolean; reason?: 
   if (/\b(proxy|custom\s*card|replica|fake|fan\s*made|orica)\b/i.test(t)) {
     return { suspicious: true, reason: "Likely proxy or replica card." };
   }
-  if (/\b(mystery\s*(?:pack|box|bundle|lot)|repack|god\s*pack|chance\s*at|chase\s*card\?)\b/i.test(t)) {
+  if (
+    /\b(mystery\s*(?:pack|box|bundle|lot)|repack|god\s*pack|chance\s*at|chase\s*card\?)\b/i.test(t)
+  ) {
     return { suspicious: true, reason: "Mystery pack or repack lot." };
   }
   if (/\b(digital|tcgl|tcg\s*live|code\s*card|code\s*only|online\s*code)\b/i.test(t)) {
@@ -196,13 +202,17 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
   const netMarginRate = allIn > 0 && flipProfit != null ? flipProfit / allIn : null;
   const mult = conditionMult * gradeMult;
   const rawLow = finish?.low ?? (rawMarket != null ? rawMarket * 0.85 : null);
-  const rawHigh = finish?.mid ?? finish?.high ?? (rawMarket != null ? rawMarket * 1.15 : null);
+  // `high` is the top of the range; preferring `mid` understated it whenever a
+  // mid existed, which is almost always.
+  const rawHigh = finish?.high ?? finish?.mid ?? (rawMarket != null ? rawMarket * 1.15 : null);
   const rangeLow = rawLow == null ? null : rawLow * mult;
   const rangeHigh = rawHigh == null ? null : rawHigh * mult;
 
   const repackCheck = isRepackOrProxy(listing.title);
   const grading =
-    listing.grade === "raw" ? calculateGradingArbitrage(card, rawMarket, allIn, listing.condition) : null;
+    listing.grade === "raw"
+      ? calculateGradingArbitrage(card, rawMarket, allIn, listing.condition)
+      : null;
 
   return {
     market: rawMarket,
@@ -219,15 +229,13 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
     netMarginRate,
     finish,
     verifiedMarket: adjustedMarket,
-    rangeLow:
-      rangeLow != null && rangeHigh != null ? Math.min(rangeLow, rangeHigh) : rangeLow,
-    rangeHigh:
-      rangeLow != null && rangeHigh != null ? Math.max(rangeLow, rangeHigh) : rangeHigh,
+    rangeLow: rangeLow != null && rangeHigh != null ? Math.min(rangeLow, rangeHigh) : rangeLow,
+    rangeHigh: rangeLow != null && rangeHigh != null ? Math.max(rangeLow, rangeHigh) : rangeHigh,
     confidence: rawMarket == null ? "low" : "medium",
     sourcesUsed: rawMarket == null ? 0 : 1,
     conflict: false,
     verifyNote: repackCheck.suspicious
-      ? repackCheck.reason ?? "Flagged listing"
+      ? (repackCheck.reason ?? "Flagged listing")
       : rawMarket == null
         ? "No desk market on this printing."
         : "Single-desk start — cross-check still running.",
@@ -237,7 +245,6 @@ export function appraise(card: TcgCard, listing: ListingInput): Appraisal {
     repackReason: repackCheck.reason ?? null,
   };
 }
-
 
 export function tcgplayerUrl(card: TcgCard, finish: FinishPrices | null) {
   if (finish?.productId) return `https://www.tcgplayer.com/product/${finish.productId}`;
@@ -253,8 +260,6 @@ export function ebaySoldUrl(card: TcgCard, grade: Grade) {
 }
 
 export function mercariSearchUrl(card: TcgCard, grade: Grade) {
-  const q = encodeURIComponent(
-    `${card.name} ${card.setName}${grade === "raw" ? "" : ` ${grade}`}`,
-  );
+  const q = encodeURIComponent(`${card.name} ${card.setName}${grade === "raw" ? "" : ` ${grade}`}`);
   return `https://www.mercari.com/search/?keyword=${q}`;
 }

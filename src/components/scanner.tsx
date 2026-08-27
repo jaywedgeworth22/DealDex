@@ -33,6 +33,23 @@ type ConditionFilter = "any" | "raw" | "graded";
 type SpreadFilter = "any" | "10" | "20" | "40";
 type FinishFilter = "any" | "holo" | "reverse" | "promo";
 
+/** A listing the desks say is under the book. */
+function isDeal(row: ScoredListing) {
+  return row.appraisal?.verdict === "steal" || row.appraisal?.verdict === "good";
+}
+
+/** A deal that more than one desk agrees on, with no conflict. */
+function isVerifiedDeal(row: ScoredListing) {
+  const a = row.appraisal;
+  return (
+    !!a &&
+    (a.verdict === "steal" || a.verdict === "good") &&
+    !a.conflict &&
+    a.confidence !== "low" &&
+    a.sourcesUsed >= 2
+  );
+}
+
 function verdictVariant(v: Verdict) {
   if (v === "steal" || v === "good") return "good" as const;
   if (v === "fair") return "fair" as const;
@@ -114,26 +131,25 @@ export function Scanner() {
     if (!rows) return [];
     return rows.filter((row) => {
       if (hideRepacks && row.appraisal?.isSuspiciousRepack) return false;
-      if (view === "deals") {
-        return row.appraisal?.verdict === "steal" || row.appraisal?.verdict === "good";
-      }
-      if (view === "verified") {
-        const a = row.appraisal;
-        return (
-          !!a &&
-          (a.verdict === "steal" || a.verdict === "good") &&
-          !a.conflict &&
-          a.confidence !== "low" &&
-          a.sourcesUsed >= 2
-        );
-      }
+      // Quick View narrows the set; it does NOT replace the dropdowns. These
+      // two branches used to `return` here, so picking "Deals" silently threw
+      // away Max Ask, Condition, Min Discount and Finish while they still
+      // showed their selected values.
+      if (view === "deals" && !isDeal(row)) return false;
+      if (view === "verified" && !isVerifiedDeal(row)) return false;
       if (verdict !== "any" && row.appraisal?.verdict !== verdict) return false;
-      if (priceCap !== "any" && (row.listing.price == null || row.listing.price > Number(priceCap))) {
+      if (
+        priceCap !== "any" &&
+        (row.listing.price == null || row.listing.price > Number(priceCap))
+      ) {
         return false;
       }
       if (condition === "raw" && row.parsed.grade !== "raw") return false;
       if (condition === "graded" && row.parsed.grade === "raw") return false;
-      if (spreadMin !== "any" && (row.appraisal?.spread == null || row.appraisal.spread < Number(spreadMin) / 100)) {
+      if (
+        spreadMin !== "any" &&
+        (row.appraisal?.spread == null || row.appraisal.spread < Number(spreadMin) / 100)
+      ) {
         return false;
       }
       if (finish !== "any") {
@@ -144,21 +160,11 @@ export function Scanner() {
     });
   }, [rows, view, verdict, priceCap, condition, spreadMin, finish, hideRepacks]);
 
-
-  const dealCount =
-    rows?.filter((r) => r.appraisal?.verdict === "steal" || r.appraisal?.verdict === "good").length ??
-    0;
-  const verifiedCount =
-    rows?.filter(
-      (r) =>
-        r.appraisal &&
-        (r.appraisal.verdict === "steal" || r.appraisal.verdict === "good") &&
-        !r.appraisal.conflict &&
-        r.appraisal.confidence !== "low" &&
-        r.appraisal.sourcesUsed >= 2,
-    ).length ?? 0;
+  const dealCount = rows?.filter(isDeal).length ?? 0;
+  const verifiedCount = rows?.filter(isVerifiedDeal).length ?? 0;
   const ebayCount = rows?.filter((r) => r.listing.marketplace === "ebay").length ?? meta.ebay;
-  const mercariCount = rows?.filter((r) => r.listing.marketplace === "mercari").length ?? meta.mercari;
+  const mercariCount =
+    rows?.filter((r) => r.listing.marketplace === "mercari").length ?? meta.mercari;
 
   return (
     <section className="min-w-0 space-y-4">
@@ -221,7 +227,7 @@ export function Scanner() {
                 }}
                 className={cn(
                   "absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-muted hover:text-fg px-2 py-1 rounded-md bg-elevated transition-colors",
-                  loading && "cursor-not-allowed opacity-50 pointer-events-none"
+                  loading && "cursor-not-allowed opacity-50 pointer-events-none",
                 )}
               >
                 Clear
@@ -234,9 +240,7 @@ export function Scanner() {
             disabled={loading}
             className={cn(
               "inline-flex h-14 min-w-[170px] shrink-0 items-center justify-center gap-2.5 rounded-xl px-6 text-base font-bold tracking-wide bg-scan text-scan-fg transition-all shadow-md active:scale-[0.98] select-none cursor-pointer",
-              loading
-                ? "cursor-not-allowed opacity-80"
-                : "hover:opacity-90 hover:shadow-lg",
+              loading ? "cursor-not-allowed opacity-80" : "hover:opacity-90 hover:shadow-lg",
             )}
           >
             {loading ? (
@@ -258,14 +262,14 @@ export function Scanner() {
               <span className="relative inline-flex size-2.5 rounded-full bg-deal-good"></span>
             </span>
             <span className="font-medium">
-              Scanning live {sources.map((s) => (s === "ebay" ? "eBay" : "Mercari")).join(" & ")} Buy It Now listings & scoring spreads...
+              Scanning live {sources.map((s) => (s === "ebay" ? "eBay" : "Mercari")).join(" & ")}{" "}
+              Buy It Now listings & scoring spreads...
             </span>
           </div>
         )}
 
         {/* Filters Grid */}
         <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6 items-end pt-1">
-
           <FilterSelect
             label="Verdict"
             value={verdict}
@@ -368,7 +372,6 @@ export function Scanner() {
         )}
       </div>
 
-
       {loading && !rows && (
         <div className="grid gap-3 md:grid-cols-2">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -379,9 +382,7 @@ export function Scanner() {
 
       {rows && (
         <>
-          {meta.notes.length > 0 && (
-            <p className="text-xs text-subtle">{meta.notes.join(" ")}</p>
-          )}
+          {meta.notes.length > 0 && <p className="text-xs text-subtle">{meta.notes.join(" ")}</p>}
           {!visible.length && (
             <div className="rounded-xl bg-surface p-6 text-sm text-muted shadow-[var(--shadow-border)]">
               {sources.length === 1 && sources[0] === "mercari"
@@ -423,7 +424,9 @@ function FilterSelect<T extends string>({
 }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-0.5 block text-center text-xs uppercase tracking-[0.12em] text-subtle">{label}</span>
+      <span className="mb-0.5 block text-center text-xs uppercase tracking-[0.12em] text-subtle">
+        {label}
+      </span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
@@ -442,7 +445,12 @@ function FilterSelect<T extends string>({
 function ScanRow({ row }: { row: ScoredListing }) {
   const { listing, card, appraisal } = row;
   const copy = appraisal ? verdictCopy(appraisal.verdict) : null;
-  const thumb = listing.image || cardImageUrl(card?.image ?? null, "low");
+  // Marketplace thumbnails 404 often enough that we need a real fallback: the
+  // card art first, then the marketplace mark. Without onError a dead URL just
+  // painted the browser's broken-image glyph and the placeholder never ran.
+  const [thumbFailed, setThumbFailed] = useState(false);
+  const cardArt = cardImageUrl(card?.image ?? null, "low");
+  const thumb = thumbFailed ? cardArt : (listing.image ?? cardArt);
   const ask = listing.price != null ? listing.price + listing.shipping : listing.price;
   const memory = peekListing(listing.marketplace, listing.id);
   const listed = formatAge(listing.listedAt ?? memory?.listedAt);
@@ -460,6 +468,9 @@ function ScanRow({ row }: { row: ScoredListing }) {
         <img
           src={thumb}
           alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setThumbFailed(true)}
           className="h-[88px] w-16 shrink-0 rounded-sm bg-elevated object-cover"
         />
       ) : (
@@ -470,20 +481,27 @@ function ScanRow({ row }: { row: ScoredListing }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <MarketplaceLogo marketplace={listing.marketplace === "ebay" ? "ebay" : "mercari"} />
-          {copy && appraisal && <Badge variant={verdictVariant(appraisal.verdict)}>{copy.label}</Badge>}
+          {copy && appraisal && (
+            <Badge variant={verdictVariant(appraisal.verdict)}>{copy.label}</Badge>
+          )}
           {appraisal?.isSuspiciousRepack && (
             <Badge variant="bad" title={appraisal.repackReason ?? undefined}>
               Repack / Proxy
             </Badge>
           )}
           {appraisal?.grading?.worthGrading && (
-            <Badge variant="good" title={`PSA 10 Net Profit est: $${Math.round(appraisal.grading.psa10NetProfit ?? 0)}`}>
+            <Badge
+              variant="good"
+              title={`PSA 10 Net Profit est: $${Math.round(appraisal.grading.psa10NetProfit ?? 0)}`}
+            >
               Slab Upside
             </Badge>
           )}
           {confidence && (
             <Badge
-              variant={appraisal?.conflict ? "bad" : appraisal?.confidence === "high" ? "good" : "fair"}
+              variant={
+                appraisal?.conflict ? "bad" : appraisal?.confidence === "high" ? "good" : "fair"
+              }
               title={appraisal?.conflictDetail ?? appraisal?.verifyNote ?? undefined}
             >
               {confidence}
@@ -506,13 +524,21 @@ function ScanRow({ row }: { row: ScoredListing }) {
           <p className="mt-1 text-xs text-deal-bad">{appraisal.conflictDetail}</p>
         )}
         {appraisal ? (
-          <PriceRangeBar
-            compact
-            ask={ask ?? appraisal.allIn}
-            book={appraisal.adjustedMarket}
-            low={appraisal.rangeLow}
-            high={appraisal.rangeHigh}
-          />
+          <>
+            <PriceRangeBar
+              compact
+              ask={ask ?? appraisal.allIn}
+              book={appraisal.adjustedMarket}
+              low={appraisal.rangeLow}
+              high={appraisal.rangeHigh}
+            />
+            {listing.shippingEstimated && listing.shipping > 0 && (
+              <p className="mt-0.5 text-xs text-subtle">
+                Ask includes {formatUsd(listing.shipping)} assumed shipping — this listing did not
+                quote one.
+              </p>
+            )}
+          </>
         ) : (
           <p className="mt-2 font-mono text-sm tabular-nums">
             {formatUsd(listing.price)}
@@ -537,7 +563,9 @@ function ScanRow({ row }: { row: ScoredListing }) {
                   appraisal.spread != null
                     ? `${appraisal.spread >= 0 ? "-" : "+"}${Math.abs(Math.round(appraisal.spread * 100))}%`
                     : "";
-                const cName = card ? `${card.name} (${card.setName} #${card.localId})` : listing.title;
+                const cName = card
+                  ? `${card.name} (${card.setName} #${card.localId})`
+                  : listing.title;
                 const text = `🔥 DealDex: ${cName} · Ask: ${formatUsd(ask ?? appraisal.allIn)} · Book: ${formatUsd(appraisal.adjustedMarket)} (${spreadPct}) · Net Flip: ${formatUsd(appraisal.flipProfit)} · ${listing.url}`;
                 void navigator.clipboard.writeText(text);
                 toast("Deal link copied to clipboard!");

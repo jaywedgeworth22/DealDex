@@ -12,9 +12,23 @@ export type CachedScan = {
   at: number;
 };
 
-export function scanCacheKey(q: string, sources: ScanSource[]) {
-  return `${q.trim().toLowerCase()}::${[...sources].sort().join(",")}`;
+/**
+ * Cache key.
+ *
+ * `paidDesks` is part of the key because results computed with ONE user's paid
+ * desk keys were previously served to every other caller for the freshness
+ * window — so a subscriber's PriceCharting and JustTCG data leaked into guests'
+ * scans, and a guest's thinner book could just as easily be served back to the
+ * subscriber who paid for the better one.
+ */
+export function scanCacheKey(q: string, sources: ScanSource[], paidDesks = false) {
+  return `${q.trim().toLowerCase()}::${[...sources].sort().join(",")}::${paidDesks ? "paid" : "free"}`;
 }
+
+/** Rows older than this are swept on write. */
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+/** Hard ceiling on stored rows, so a hostile query stream cannot fill the table. */
+const MAX_CACHE_ROWS = 500;
 
 function parseJson<T>(raw: unknown, fallback: T): T {
   if (typeof raw !== "string") return fallback;
@@ -25,21 +39,31 @@ function parseJson<T>(raw: unknown, fallback: T): T {
   }
 }
 
+/**
+ * `migrations/0004_scan_cache.sql` owns this table. This used to issue a
+ * `create table if not exists` before EVERY read and write, which duplicated the
+ * migration and added a round trip to every scan.
+ */
 async function ensureTable() {
-  const sql = await getSql();
-  await sql.query(`
-    create table if not exists scan_cache (
-      cache_key text primary key,
-      q text not null,
-      sources text not null,
-      at timestamptz not null default now(),
-      ebay int not null default 0,
-      mercari int not null default 0,
-      notes text not null default '[]',
-      rows text not null default '[]'
+  return getSql();
+}
+
+/**
+ * Drop expired rows and cap the table.
+ *
+ * `/api/native/scan` is unauthenticated and the key includes a 160-character
+ * query, so without this an attacker could mint unbounded rows — each holding up
+ * to 48 serialised listings with full card objects — and never have any of them
+ * removed. Runs on write, which is the only path that grows the table.
+ */
+async function sweep(sql: Awaited<ReturnType<typeof getSql>>) {
+  await sql`delete from scan_cache where at < now() - ${`${CACHE_TTL_MS} milliseconds`}::interval`;
+  await sql`
+    delete from scan_cache
+    where cache_key in (
+      select cache_key from scan_cache order by at desc offset ${MAX_CACHE_ROWS}
     )
-  `);
-  return sql;
+  `;
 }
 
 export async function readScanCache(key: string): Promise<CachedScan | null> {
@@ -58,7 +82,13 @@ export async function readScanCache(key: string): Promise<CachedScan | null> {
     const notes = parseJson<string[]>(hit.notes, []);
     const at = new Date(hit.at).getTime();
     if (!Number.isFinite(at) || !listed.length) return null;
-    return { ebay: Number(hit.ebay) || 0, mercari: Number(hit.mercari) || 0, notes, rows: listed, at };
+    return {
+      ebay: Number(hit.ebay) || 0,
+      mercari: Number(hit.mercari) || 0,
+      notes,
+      rows: listed,
+      at,
+    };
   } catch {
     return null;
   }
@@ -75,6 +105,7 @@ export async function writeScanCache(
     const src = [...sources].sort().join(",");
     const listed = JSON.stringify(payload.rows.slice(0, MAX_ROWS));
     const notes = JSON.stringify(payload.notes);
+    await sweep(sql);
     await sql`
       insert into scan_cache (cache_key, q, sources, at, ebay, mercari, notes, rows)
       values (${key}, ${q}, ${src}, now(), ${payload.ebay}, ${payload.mercari}, ${notes}, ${listed})

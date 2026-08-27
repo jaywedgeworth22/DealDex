@@ -17,6 +17,14 @@ function marketOf(card: TcgCard): number | null {
   return card.finishes.find((f) => f.market != null)?.market ?? null;
 }
 
+/**
+ * Minimum match evidence before we are willing to name a card and price
+ * against it. Roughly: a collector-number hit, or a real name plus a real set.
+ * Below this we return null and the row renders as "No card match yet", which
+ * is the honest answer — a confident wrong card is worse than no card.
+ */
+const MIN_MATCH_SCORE = 40;
+
 function pickScanCard(
   cards: TcgCard[],
   listing: LiveListing,
@@ -52,22 +60,35 @@ function pickScanCard(
 
   const priced = pool.filter((c) => marketOf(c) != null);
   const use = priced.length ? priced : pool;
-  const strong = use.filter((c) => (c.matchScore ?? 0) >= 40);
-  const candidates = strong.length ? strong : use;
 
-  if (listing.price == null) {
-    return strong[0] ?? candidates[0] ?? null;
+  // Rank on match EVIDENCE only.
+  //
+  // This used to break ties on `Math.abs(marketOf(card) - allIn)` — whichever
+  // card's market price sat closest to the listing's own ask. That let the ask
+  // decide which card the listing was, and then scored the ask against that
+  // card: a circular rule that pushed every row toward "fair" and hid exactly
+  // the underpriced listings the product exists to find.
+  const ranked = [...use].sort((a, b) => {
+    const byScore = (b.matchScore ?? 0) - (a.matchScore ?? 0);
+    if (byScore !== 0) return byScore;
+    // Stable, price-independent tie-break so a scan is reproducible.
+    return a.id.localeCompare(b.id);
+  });
+
+  const best = ranked[0];
+  if (!best || (best.matchScore ?? 0) < MIN_MATCH_SCORE) return null;
+
+  // A tie at the top between two DIFFERENT cards is not a confident match
+  // either — we would just be picking one at random.
+  const runnerUp = ranked[1];
+  if (
+    runnerUp &&
+    (runnerUp.matchScore ?? 0) === (best.matchScore ?? 0) &&
+    runnerUp.name.toLowerCase() !== best.name.toLowerCase()
+  ) {
+    return null;
   }
-  if (candidates.length > 1) {
-    const allIn = listing.price + listing.shipping;
-    return [...candidates].sort((a, b) => {
-      const ad = Math.abs((marketOf(a) ?? 0) - allIn);
-      const bd = Math.abs((marketOf(b) ?? 0) - allIn);
-      if (ad !== bd) return ad - bd;
-      return (b.matchScore ?? 0) - (a.matchScore ?? 0);
-    })[0]!;
-  }
-  return candidates[0] ?? null;
+  return best;
 }
 
 async function matchCached(
@@ -130,7 +151,10 @@ export async function scanAndScore(
     parsed.marketplace = listing.marketplace;
     if (listing.price != null) parsed.price = listing.price;
     parsed.shipping = listing.shipping;
-    if (hint) parsed.nameQuery = hint;
+    // The search term is a FALLBACK, not an override. Replacing every row's
+    // parsed name with the query's first three tokens meant a targeted scan
+    // matched every listing against the same name regardless of its own title.
+    if (hint && !parsed.nameQuery.trim()) parsed.nameQuery = hint;
     const cards = await matchCached(parsed, cache);
     const card = pickScanCard(cards, listing, parsed);
     let appraisal = null;
@@ -150,6 +174,10 @@ export async function scanAndScore(
     return { listing, parsed, card, appraisal } satisfies ScoredListing;
   });
 
+  // Cross-desk verification is expensive, so only the strongest candidates get
+  // it. Sort BEFORE slicing — the previous code took the first five qualifying
+  // rows in arrival order, so the rows that ended up at the top of the results
+  // were routinely the unverified ones.
   const toConfirm = scored
     .filter(
       (row) =>
@@ -157,6 +185,7 @@ export async function scanAndScore(
         row.appraisal &&
         (row.appraisal.verdict === "steal" || row.appraisal.verdict === "good"),
     )
+    .sort((a, b) => (b.appraisal?.spread ?? -99) - (a.appraisal?.spread ?? -99))
     .slice(0, 5);
   const keyedCache = new Map<string, Awaited<ReturnType<typeof fetchKeyedQuotes>>>();
   await mapPool(toConfirm, 3, async (row) => {

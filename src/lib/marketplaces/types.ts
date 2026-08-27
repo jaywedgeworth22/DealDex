@@ -9,6 +9,12 @@ export type LiveListing = {
   url: string;
   price: number | null;
   shipping: number;
+  /**
+   * True when `shipping` is our assumed default rather than a figure the
+   * marketplace actually printed. The UI discloses it so an all-in built on a
+   * guess is never presented as a quoted total.
+   */
+  shippingEstimated?: boolean;
   image: string | null;
   /** ISO time the marketplace said it was listed, when we can parse one. */
   listedAt?: string | null;

@@ -1,5 +1,13 @@
 import { fetchBraveHtml, parseBraveListings } from "./brave";
-import { BROWSER_HEADERS, SKIP_LISTING, decodeHtml, parseListedAt, parseMoney, titleMatchesQuery } from "./html";
+import {
+  ASSUMED_SHIPPING,
+  BROWSER_HEADERS,
+  SKIP_LISTING,
+  decodeHtml,
+  parseListedAt,
+  parseMoney,
+  titleMatchesQuery,
+} from "./html";
 import { fetchJina, parseJinaMercari } from "./jina";
 import type { LiveListing } from "./types";
 
@@ -57,9 +65,12 @@ export function parseDdgMercari(html: string, query = ""): LiveListing[] {
       marketplace: "mercari",
       title,
       url: `https://www.mercari.com/us/item/${ids[i]}/`,
-      price: parseMoney((snippet.match(/\$([0-9,]+\.?\d*)/) ?? title.match(/\$([0-9,]+\.?\d*)/))?.[1]),
-      shipping: 4.49,
-      image: `https://u-mercari-images.mercdn.net/photos/${ids[i]}_1.jpg`,
+      price: parseMoney(
+        (snippet.match(/\$([0-9,]+\.?\d*)/) ?? title.match(/\$([0-9,]+\.?\d*)/))?.[1],
+      ),
+      shipping: ASSUMED_SHIPPING.mercari,
+      shippingEstimated: true,
+      image: null,
       listedAt: parseListedAt(snippet),
     });
   }

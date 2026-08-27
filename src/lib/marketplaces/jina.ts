@@ -1,9 +1,33 @@
 import type { LiveListing } from "./types";
-import { SKIP_LISTING, decodeHtml, parseListedAt, parseMoney, titleMatchesQuery } from "./html";
+import {
+  ASSUMED_SHIPPING,
+  SKIP_LISTING,
+  decodeHtml,
+  parseListedAt,
+  parseMoney,
+  parseShipping,
+  titleMatchesQuery,
+} from "./html";
 
 const JINA = "https://r.jina.ai/";
 const mem = new Map<string, { at: number; text: string }>();
 const TTL = 12 * 60 * 1000;
+/**
+ * Bounded LRU. Each entry is a whole search page's markdown (tens of KB), and a
+ * warm serverless instance would otherwise keep one per distinct search it has
+ * ever served, for the life of the process.
+ */
+const MEM_MAX = 40;
+
+function remember(url: string, text: string) {
+  mem.delete(url);
+  mem.set(url, { at: Date.now(), text });
+  while (mem.size > MEM_MAX) {
+    const oldest = mem.keys().next().value;
+    if (oldest === undefined) break;
+    mem.delete(oldest);
+  }
+}
 
 export async function fetchJina(targetUrl: string): Promise<string> {
   const hit = mem.get(targetUrl);
@@ -16,7 +40,7 @@ export async function fetchJina(targetUrl: string): Promise<string> {
   });
   if (!res.ok) return hit?.text ?? "";
   const text = await res.text();
-  if (text.length > 2000) mem.set(targetUrl, { at: Date.now(), text });
+  if (text.length > 2000) remember(targetUrl, text);
   return text;
 }
 
@@ -50,15 +74,15 @@ export function parseJinaEbay(md: string, query: string): LiveListing[] {
     const price = firstPrice(chunk);
     if (price == null) continue;
     const img = chunk.match(/(https:\/\/i\.ebayimg\.com\/images\/g\/[^)\s]+)/)?.[1] ?? null;
-    const free = /Free (?:delivery|shipping)/i.test(chunk);
-    const shipAmt = parseMoney(chunk.match(/\$([0-9,]+\.\d{2}) (?:delivery|shipping)/)?.[1]);
+    const ship = parseShipping(chunk, "ebay");
     out.push({
       id,
       marketplace: "ebay",
       title,
       url: `https://www.ebay.com/itm/${id}`,
       price,
-      shipping: free ? 0 : (shipAmt ?? 4.47),
+      shipping: ship.amount,
+      shippingEstimated: ship.estimated,
       image: img,
       listedAt: parseListedAt(chunk),
     });
@@ -70,8 +94,7 @@ export function parseJinaEbay(md: string, query: string): LiveListing[] {
 export function parseJinaMercari(md: string, query: string): LiveListing[] {
   const out: LiveListing[] = [];
   const seen = new Set<string>();
-  const re =
-    /\[([\s\S]{8,500}?)\]\(https:\/\/www\.mercari\.com\/us\/item\/(m\d+)\/?[^)]*\)/g;
+  const re = /\[([\s\S]{8,500}?)\]\(https:\/\/www\.mercari\.com\/us\/item\/(m\d+)\/?[^)]*\)/g;
   for (const m of md.matchAll(re)) {
     const id = m[2]!;
     if (seen.has(id)) continue;
@@ -92,8 +115,9 @@ export function parseJinaMercari(md: string, query: string): LiveListing[] {
       title,
       url: `https://www.mercari.com/us/item/${id}/`,
       price,
-      shipping: 4.49,
-      image: img || `https://u-mercari-images.mercdn.net/photos/${id}_1.jpg`,
+      shipping: ASSUMED_SHIPPING.mercari,
+      shippingEstimated: true,
+      image: img,
       listedAt: parseListedAt(text),
     });
     if (out.length >= 16) break;

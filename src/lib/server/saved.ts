@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getSql } from "@/lib/db";
+import { randomUUID } from "node:crypto";
 import { authMiddleware } from "@/lib/auth/middleware";
+import { CONDITIONS, GRADES, MARKETPLACES, VERDICTS } from "@/lib/tcg/types";
 
 export type SavedRow = {
   id: string;
@@ -86,9 +88,48 @@ export const listSaved = createServerFn({ method: "GET" })
     return rows.map(mapRow);
   });
 
+/** Bound every field. The previous validator was `(input) => input`. */
+function text(v: unknown, max: number): string {
+  return typeof v === "string" ? v.trim().slice(0, max) : "";
+}
+
+function money(v: unknown): number | null {
+  const n = typeof v === "number" ? v : Number(v);
+  return Number.isFinite(n) ? Math.max(-1e9, Math.min(1e9, n)) : null;
+}
+
+function oneOf<T extends string>(v: unknown, allowed: readonly T[], fallback: T): T {
+  return allowed.includes(v as T) ? (v as T) : fallback;
+}
+
 export const saveAppraisal = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: Omit<SavedRow, "createdAt">) => input)
+  .validator((input: Omit<SavedRow, "createdAt">) => {
+    const raw = (input ?? {}) as Record<string, unknown>;
+    const url = text(raw.listingUrl, 500);
+    return {
+      // The client mints this id and keeps the same one in local storage, so
+      // the two stay removable together. It is safe as a key only because
+      // migration 0005 scopes the primary key to (user_id, id) — before that a
+      // chosen id could collide with another user's row.
+      id: text(raw.id, 80) || randomUUID(),
+      marketplace: oneOf(raw.marketplace, MARKETPLACES, "other"),
+      listingTitle: text(raw.listingTitle, 240),
+      listingUrl: /^https?:\/\//i.test(url) ? url : null,
+      listingPrice: money(raw.listingPrice) ?? 0,
+      shipping: money(raw.shipping) ?? 0,
+      condition: oneOf(raw.condition, CONDITIONS, "NM"),
+      grade: oneOf(raw.grade, GRADES, "raw"),
+      finish: text(raw.finish, 60) || null,
+      cardId: text(raw.cardId, 80),
+      cardName: text(raw.cardName, 120),
+      setName: text(raw.setName, 120),
+      marketPrice: money(raw.marketPrice),
+      allIn: money(raw.allIn),
+      spread: money(raw.spread),
+      verdict: oneOf(raw.verdict, VERDICTS, "fair"),
+    } satisfies Omit<SavedRow, "createdAt">;
+  })
   .handler(async ({ context, data }) => {
     const sql = await getSql();
     await sql`
@@ -102,13 +143,23 @@ export const saveAppraisal = createServerFn({ method: "POST" })
         ${data.grade}, ${data.finish}, ${data.cardId}, ${data.cardName}, ${data.setName},
         ${data.marketPrice}, ${data.allIn}, ${data.spread}, ${data.verdict}
       )
+      on conflict (user_id, id) do update set
+        listing_price = excluded.listing_price,
+        shipping = excluded.shipping,
+        condition = excluded.condition,
+        grade = excluded.grade,
+        finish = excluded.finish,
+        market_price = excluded.market_price,
+        all_in = excluded.all_in,
+        spread = excluded.spread,
+        verdict = excluded.verdict
     `;
     return { ok: true as const };
   });
 
 export const deleteSaved = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: { id: string }) => ({ id: String(input.id ?? "") }))
+  .validator((input: { id: string }) => ({ id: String(input?.id ?? "").slice(0, 80) }))
   .handler(async ({ context, data }) => {
     const sql = await getSql();
     await sql`delete from appraisals where id = ${data.id} and user_id = ${context.userId}`;

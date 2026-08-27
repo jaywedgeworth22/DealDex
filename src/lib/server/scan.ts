@@ -4,6 +4,7 @@ import { scanAndScore } from "@/lib/marketplaces/scan";
 import type { ScanSource } from "@/lib/marketplaces/types";
 import type { DeskKeys } from "@/lib/settings/keys";
 import { readScanCache, SCAN_FRESH_MS, scanCacheKey, writeScanCache } from "./scan-cache";
+import { RateLimitedError, rateLimit, serverFnClientKey } from "./rate-limit";
 
 function cleanKeys(input: unknown): DeskKeys {
   if (!input || typeof input !== "object") return {};
@@ -23,8 +24,15 @@ export const scanMarketplaces = createServerFn({ method: "POST" })
     keys: cleanKeys(input.keys),
   }))
   .handler(async ({ data }) => {
+    // One scan fans out to eight third-party services and writes a database
+    // row, so it is not free to serve. See rate-limit.ts on why this is a
+    // per-instance mitigation, not a global quota.
+    const limit = rateLimit(serverFnClientKey("scan"), 20, 60_000);
+    if (!limit.ok) throw new RateLimitedError(limit.retryAfterMs);
+
     const query = data.q.trim() || ALL_POKEMON_QUERY;
-    const key = scanCacheKey(query, data.sources);
+    const paidDesks = Boolean(data.keys.justtcg || data.keys.pricecharting || data.keys.pokemontcg);
+    const key = scanCacheKey(query, data.sources, paidDesks);
     const cached = await readScanCache(key);
     if (cached && Date.now() - cached.at < SCAN_FRESH_MS) {
       return {

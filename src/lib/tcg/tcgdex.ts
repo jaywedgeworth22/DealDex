@@ -6,6 +6,11 @@ const BASE = "https://api.tcgdex.net/v2/en";
 type CacheEntry<T> = { at: number; value: T };
 const cache = new Map<string, CacheEntry<unknown>>();
 const TTL = 8 * 60 * 1000;
+/**
+ * Bounded LRU. Entries only expired lazily on read before this, so a key that
+ * was fetched once and never asked for again was never freed.
+ */
+const CACHE_MAX = 400;
 
 function getCached<T>(key: string): T | null {
   const hit = cache.get(key);
@@ -18,7 +23,13 @@ function getCached<T>(key: string): T | null {
 }
 
 function setCached<T>(key: string, value: T) {
+  cache.delete(key);
   cache.set(key, { at: Date.now(), value });
+  while (cache.size > CACHE_MAX) {
+    const oldest = cache.keys().next().value;
+    if (oldest === undefined) break;
+    cache.delete(oldest);
+  }
 }
 
 async function tcgFetch<T>(path: string): Promise<T> {
@@ -88,11 +99,7 @@ function extractFinishes(raw: Record<string, unknown> | undefined): FinishPrices
   for (const [key, value] of Object.entries(raw)) {
     if (!value || typeof value !== "object" || Array.isArray(value)) continue;
     const block = value as TcgdexPriceBlock;
-    if (
-      block.marketPrice == null &&
-      block.midPrice == null &&
-      block.lowPrice == null
-    ) {
+    if (block.marketPrice == null && block.midPrice == null && block.lowPrice == null) {
       continue;
     }
     finishes.push({
@@ -137,7 +144,10 @@ export function normalizeCard(raw: TcgdexCard): TcgCard {
   };
 }
 
-export async function searchCardIndex(name: string, localId?: string | null): Promise<TcgdexListCard[]> {
+export async function searchCardIndex(
+  name: string,
+  localId?: string | null,
+): Promise<TcgdexListCard[]> {
   const params = new URLSearchParams();
   params.set("name", name);
   params.set("pagination:itemsPerPage", "24");

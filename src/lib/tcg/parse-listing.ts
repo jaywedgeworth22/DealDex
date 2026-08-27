@@ -1,3 +1,4 @@
+import { ASSUMED_SHIPPING } from "@/lib/marketplaces/html";
 import type { Condition, Grade, Marketplace, ParsedListing } from "./types";
 
 const STOP = new Set([
@@ -154,12 +155,46 @@ function detectMarketplace(text: string): Marketplace {
   return "other";
 }
 
+/**
+ * A bare `HP` in a Pokémon listing title is almost always the hit-point stat,
+ * not Heavily Played — `Charizard 120 HP` is a NM card, and reading it as HP
+ * applied a 0.35x haircut to a large share of every scan. So an abbreviation
+ * only counts when it is a standalone token that is NOT adjacent to digits,
+ * unless it appears in an unambiguous condition context.
+ */
+function conditionCodeAt(text: string, code: string): boolean {
+  // `(LP)`, `[MP]`, `NM/LP`, `Cond: HP`, `Condition - MP` are never stat lines.
+  const explicit = new RegExp(
+    `(?:\\(|\\[|/|\\bcond(?:ition)?\\b\\s*[:\\-]?\\s*)\\s*${code}\\s*(?:\\)|\\]|/|$|[^a-z0-9])`,
+    "i",
+  );
+  if (explicit.test(text)) return true;
+
+  const re = new RegExp(`(^|[^a-z0-9])${code}([^a-z0-9]|$)`, "gi");
+  for (const m of text.matchAll(re)) {
+    if (m.index == null) continue;
+    const before = text.slice(Math.max(0, m.index - 12), m.index + m[1]!.length);
+    const after = text.slice(m.index + m[0].length - (m[2]?.length ?? 0));
+    if (/\d\s*\W?\s*$/.test(before)) continue; // "120 HP"
+    if (/^\W?\s*\d/.test(after)) continue; // "HP 120"
+    return true;
+  }
+  return false;
+}
+
 function detectCondition(text: string): Condition {
   const t = text.toLowerCase();
-  if (/\b(dmg|damaged|poor)\b/.test(t)) return "DMG";
-  if (/\b(hp|heavily played|heavy play)\b/.test(t)) return "HP";
-  if (/\b(mp|moderately played|moderate play)\b/.test(t)) return "MP";
-  if (/\b(lp|lightly played|light play|excellent)\b/.test(t)) return "LP";
+  // Spelled-out grades are unambiguous and always win.
+  if (/\b(damaged|poor condition)\b/.test(t)) return "DMG";
+  if (/\b(heavily played|heavy play)\b/.test(t)) return "HP";
+  if (/\b(moderately played|moderate play)\b/.test(t)) return "MP";
+  if (/\b(lightly played|light play)\b/.test(t)) return "LP";
+  if (/\b(near mint|mint condition|nm\/m)\b/.test(t)) return "NM";
+
+  if (conditionCodeAt(t, "dmg")) return "DMG";
+  if (conditionCodeAt(t, "hp")) return "HP";
+  if (conditionCodeAt(t, "mp")) return "MP";
+  if (conditionCodeAt(t, "lp")) return "LP";
   return "NM";
 }
 
@@ -190,7 +225,9 @@ function detectFinish(text: string): string | null {
 }
 
 function extractPrice(text: string): number | null {
-  const matches = [...text.matchAll(/(?:USD|US\$|\$)\s*([0-9]{1,5}(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)/gi)];
+  const matches = [
+    ...text.matchAll(/(?:USD|US\$|\$)\s*([0-9]{1,5}(?:,[0-9]{3})*(?:\.[0-9]{1,2})?)/gi),
+  ];
   if (matches.length) {
     const last = matches[matches.length - 1];
     const n = Number((last?.[1] ?? "").replace(/,/g, ""));
@@ -240,7 +277,10 @@ function slugTitleFromUrl(url: string): string | null {
       }
     }
     if (last.includes("-") && !/^m?\d+$/i.test(last)) {
-      return last.replace(/-/g, " ").replace(/\d{8,}/g, "").trim();
+      return last
+        .replace(/-/g, " ")
+        .replace(/\d{8,}/g, "")
+        .trim();
     }
   } catch {
     /* ignore */
@@ -257,7 +297,9 @@ function nameQueryFromTitle(title: string): string {
     .replace(/[^a-zA-Z0-9'\s-]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  const tokens = cleaned.split(" ").filter((t) => t && !STOP.has(t.toLowerCase()) && !/^\d+$/.test(t));
+  const tokens = cleaned
+    .split(" ")
+    .filter((t) => t && !STOP.has(t.toLowerCase()) && !/^\d+$/.test(t));
   if (!tokens.length) {
     const fallback = cleaned.split(" ").slice(0, 3).join(" ");
     return fallback || "charizard";
@@ -270,7 +312,10 @@ export function parseListingBlob(raw: string): ParsedListing {
   const marketplace = detectMarketplace(raw);
   const price = extractPrice(raw);
   const titleFromUrl = url ? slugTitleFromUrl(url) : null;
-  const withoutUrl = raw.replace(/https?:\/\/\S+/gi, " ").replace(/\s+/g, " ").trim();
+  const withoutUrl = raw
+    .replace(/https?:\/\/\S+/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   const title =
     withoutUrl
       .replace(/(?:USD|US\$|\$)\s*[0-9]{1,5}(?:,[0-9]{3})*(?:\.[0-9]{1,2})?/gi, " ")
@@ -284,7 +329,12 @@ export function parseListingBlob(raw: string): ParsedListing {
     url,
     marketplace,
     price,
-    shipping: marketplace === "ebay" ? 4.5 : marketplace === "mercari" ? 4.49 : 0,
+    shipping:
+      marketplace === "ebay"
+        ? ASSUMED_SHIPPING.ebay
+        : marketplace === "mercari"
+          ? ASSUMED_SHIPPING.mercari
+          : 0,
     condition: detectCondition(raw),
     grade: detectGrade(raw),
     finishHint: detectFinish(raw),
