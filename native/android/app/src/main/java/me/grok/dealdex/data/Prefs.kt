@@ -34,7 +34,7 @@ class Prefs(ctx: Context) {
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
-        ) as SharedPreferences
+        )
     }.getOrElse {
         // A device with a broken keystore must still be usable. Falling back to
         // the plain file is worse than encrypted, but it is the same as the

@@ -8,29 +8,10 @@ enum AccountApi {
         NativeAuth.normalized(raw)
     }
 
-    static func signIn(origin: String, email: String, password: String, signup: Bool) async throws -> Session {
-        var req = URLRequest(url: URL(string: "\(origin)/api/native/session")!)
-        req.httpMethod = "POST"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue("DealDex/1.0 (ios)", forHTTPHeaderField: "User-Agent")
-        req.httpBody = try JSONSerialization.data(withJSONObject: [
-            "email": email,
-            "password": password,
-            "name": email.split(separator: "@").first.map(String.init) ?? "Collector",
-            "action": signup ? "signup" : "signin",
-        ])
-        let (data, res) = try await URLSession.shared.data(for: req)
-        let code = (res as? HTTPURLResponse)?.statusCode ?? 0
-        let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
-        if code >= 400 {
-            throw NSError(domain: "DealDex", code: code, userInfo: [NSLocalizedDescriptionKey: json["error"] as? String ?? "Sign-in failed"])
-        }
-        guard let token = json["token"] as? String, !token.isEmpty else {
-            throw NSError(domain: "DealDex", code: 0, userInfo: [NSLocalizedDescriptionKey: "No session token — check the website origin."])
-        }
-        let user = json["user"] as? [String: Any]
-        return Session(token: token, email: (user?["email"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? email)
-    }
+    // `signIn(email:password:)` used to live here.  It POSTed credentials to
+    // /api/native/session, which the server has answered with 410 Gone since
+    // email/password sign-in was removed.  Nothing called it.  Sign-in goes
+    // through NativeAuth (Google/Apple/X + PKCE code exchange).
 
     static func pullKeys(origin: String, token: String) async throws -> Keys {
         var req = URLRequest(url: URL(string: "\(origin)/api/native/keys")!)

@@ -20,7 +20,7 @@ enum SecureStore {
     private static let service = "net.dealdex.credentials"
 
     static func read(_ key: String) -> String {
-        var query: [String: Any] = [
+        let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: key,
@@ -28,10 +28,7 @@ enum SecureStore {
             kSecMatchLimit as String: kSecMatchLimitOne,
         ]
         var out: CFTypeRef?
-        let status = withUnsafeMutablePointer(to: &out) {
-            SecItemCopyMatching(query as CFDictionary, $0)
-        }
-        query.removeAll()
+        let status = SecItemCopyMatching(query as CFDictionary, &out)
         guard status == errSecSuccess, let data = out as? Data else { return "" }
         return String(data: data, encoding: .utf8) ?? ""
     }

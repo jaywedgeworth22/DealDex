@@ -38,21 +38,10 @@ object AccountApi {
         }
     }
 
-    fun signIn(origin: String, email: String, password: String, signup: Boolean): Session {
-        val payload = JSONObject()
-            .put("email", email)
-            .put("password", password)
-            .put("name", email.substringBefore("@"))
-            .put("action", if (signup) "signup" else "signin")
-            .toString()
-        val (code, raw) = post("$origin/api/native/session", payload)
-        val o = JSONObject(raw.ifBlank { "{}" })
-        if (code >= 400) throw RuntimeException(o.optString("error", "Sign-in failed ($code)"))
-        val token = o.optString("token")
-        if (token.isBlank()) throw RuntimeException("No session token — check the website origin.")
-        val em = o.optJSONObject("user")?.optString("email").orEmpty().ifBlank { email }
-        return Session(token, em)
-    }
+    // `signIn(email, password)` used to live here.  It POSTed credentials to
+    // /api/native/session, which the server has answered with 410 Gone since
+    // email/password sign-in was removed.  Nothing called it.  Sign-in goes
+    // through NativeAuth (Google/Apple/X + PKCE code exchange).
 
     fun pullKeys(origin: String, token: String): Keys {
         val (code, raw) = get("$origin/api/native/keys", token)
