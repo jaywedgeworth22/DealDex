@@ -65,7 +65,7 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
 
   const ship = read("scripts/ios-fleet/ship-testflight.sh");
   assert.match(ship, /MARKETING_VERSION\s+= 1\.0\.<seq>/);
-  assert.match(ship, /CURRENT_PROJECT_VERSION = 1\.0\.<seq>/);
+  assert.match(ship, /CURRENT_PROJECT_VERSION = <UTC YYYYMMDDHHMM>/);
   assert.match(
     ship,
     /<socratic\|congress\|usage\|usage-local\|dealdex>/,
