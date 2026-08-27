@@ -1,5 +1,5 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { getSql } from "@/lib/db";
+import { challengeFor, constantTimeEquals } from "./native-auth-pkce";
 
 /**
  * Single-use codes for the native sign-in handoff (server-only).
@@ -14,26 +14,12 @@ const CODE_TTL_MS = 2 * 60 * 1000;
 
 export type NativeSession = { token: string; email: string };
 
-/** base64url, so it survives a URL round trip without escaping. */
-export function newCode(): string {
-  return randomBytes(32).toString("base64url");
-}
-
-export function challengeFor(verifier: string): string {
-  return createHash("sha256").update(verifier).digest("base64url");
-}
-
-/** Shape check only — the value is opaque to us. */
-export function isValidChallenge(value: string | null | undefined): value is string {
-  return typeof value === "string" && /^[A-Za-z0-9_-]{20,128}$/.test(value);
-}
-
-function constantTimeEquals(a: string, b: string): boolean {
-  const left = Buffer.from(a);
-  const right = Buffer.from(b);
-  if (left.length !== right.length) return false;
-  return timingSafeEqual(left, right);
-}
+export {
+  challengeFor,
+  isValidChallenge,
+  isValidVerifier,
+  newCode,
+} from "./native-auth-pkce";
 
 export async function storeCode(
   code: string,
