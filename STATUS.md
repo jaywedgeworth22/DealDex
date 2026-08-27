@@ -1,5 +1,40 @@
 # Current Handoff
 
+## 2026-08-26 CLAUDE — Full-app review remediation
+
+Owner asked for a full evaluation of the website, backend, iOS app and Android
+app, then for every finding to be fixed.  Branch
+`claude/full-app-evaluation-893vtd`, based on `2440dc9`.
+
+**The pattern behind almost every P0:** something was written down before it was
+built and the writing was never revisited.  `/privacy` said the phone apps never
+send desk keys to a DealDex server; both clients POSTed all three on every scan,
+as the primary path.  iOS shipped a "Card & Slab Scanner" that reported
+"Charizard 4/102" 1.2s after opening, with no `AVCaptureSession` in the target.
+The Alerts page offered Email and SMS; the server recorded both as delivered
+without attempting a send.
+
+Fixed: on-device scanning is now primary and `/api/native/scan` **refuses** a
+`keys` payload so the promise cannot regress; the website's server-side scan is
+disclosed separately.  Native sign-in is PKCE — the `dealdex://` redirect
+carries a single-use code, not a live session token any installed app could
+claim.  Credentials moved to EncryptedSharedPreferences / Keychain,
+`allowBackup=false`.  `desk_keys` encrypted at rest.  The valuation engine's
+circular matcher, unreachable grade basis, within-desk "Desks Differ", and the
+HP-stat-as-condition bug are all fixed on all three clients.  Android is on
+targetSdk 35 with R8 and a signing config.  `npm ci` works again, so CI runs the
+same install command `vercel.json` does.
+
+`npm test` went from 97 source-grep guards to 155 including 51 that exercise
+real prices — two of which caught bugs while being written.
+
+**BLOCKER FOR NATIVE SHIPS:** Swift and Kotlin are compile-unverified — that
+session had no Xcode and no Android SDK.  Run `xcodegen generate`, both
+`xcodebuild` and `./gradlew` builds, and a real-device sign-in before shipping
+either app.  `CameraScannerView.swift`'s four `project.pbxproj` entries were
+removed by hand; confirm a regenerate matches.  Full list in
+`docs/rollouts/2026-08-26-full-app-review-remediation.md`.
+
 ## 2026-08-25 ANTIGRAVITY — Configure Google/Apple/X OAuth & Polish Web Scan UI
 
 - **OAuth Authentication Configuration**:
