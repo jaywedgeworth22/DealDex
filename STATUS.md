@@ -1,5 +1,34 @@
 # Current Handoff
 
+## 2026-08-27 CLAUDE — Landed and shipped: PR #203
+
+Merged as `121ea10` (squash).  The push fired `ios-ship.yml` run #212 on
+GitHub-hosted macOS, which compiled the Swift for the first time:
+**`** ARCHIVE SUCCEEDED **`**.  `1.0.59 (202608272038)` is on TestFlight for
+`net.dealdex`, build `f00d54b5-9552-41c5-b9d4-f414d2e8c30b`,
+`internal=IN_BETA_TESTING`.
+
+So the branch-long "Swift is compile-unverified" blocker is **closed for iOS**.
+Swift autolinking pulled in VisionKit and AVFoundation with no `project.yml`
+`dependencies:` entry — leave that file alone.
+
+**Kotlin is still compile-unverified.**  There is no Android ship workflow, so
+nothing has ever built `native/android` from this work.  Run
+`./gradlew :app:assembleDebug :app:assembleRelease` on a machine with the SDK:
+R8 is newly enabled, AGP was bumped, and `androidx.security:security-crypto` is
+a new dependency.
+
+**The scanner itself is still unproven.**  A green archive says it compiles, not
+that it reads a card, and `DataScannerViewController` does not run in the
+Simulator.  Nobody has yet pointed a real iPhone at a card.  Four-step device
+check in `docs/rollouts/2026-08-27-ios-card-scanner.md`.
+
+Two non-blocking loose ends from the ship: `project.yml` / `project.pbxproj`
+still record `1.0.2 (202608230250)` while `1.0.59` shipped (they agree with each
+other, so syncing needs `xcodegen generate` on a Mac), and release notes were a
+DRY RENDER only — `IOS_TF_RELEASE_NOTES=1` is unset, so testers see the build
+with no notes.
+
 ## 2026-08-27 CLAUDE — A real iOS card scanner
 
 Owner asked whether the iOS app was updated and whether it has a real card
