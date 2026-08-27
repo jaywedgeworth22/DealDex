@@ -3,19 +3,46 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Release signing comes from the environment, never the repo. Set
+// DEALDEX_KEYSTORE / DEALDEX_KEYSTORE_PASSWORD / DEALDEX_KEY_ALIAS /
+// DEALDEX_KEY_PASSWORD in CI. Absent, `assembleRelease` still builds and is
+// simply unsigned, which is what happened before this existed.
+val keystorePath: String? = System.getenv("DEALDEX_KEYSTORE")
+    ?: (project.findProperty("dealdex.keystore") as String?)
+
 android {
     namespace = "me.grok.dealdex"
-    compileSdk = 34
+    // Google Play has required API 35 for new and updated submissions since
+    // 31 Aug 2025. At 34 the Play Console rejects the upload before review.
+    compileSdk = 35
     defaultConfig {
         applicationId = "me.grok.dealdex"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.0.2"
+        targetSdk = 35
+        versionCode = 3
+        versionName = "1.0.3"
+    }
+    signingConfigs {
+        if (keystorePath != null) {
+            create("release") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("DEALDEX_KEYSTORE_PASSWORD")
+                    ?: (project.findProperty("dealdex.keystorePassword") as String?)
+                keyAlias = System.getenv("DEALDEX_KEY_ALIAS")
+                    ?: (project.findProperty("dealdex.keyAlias") as String?)
+                keyPassword = System.getenv("DEALDEX_KEY_PASSWORD")
+                    ?: (project.findProperty("dealdex.keyPassword") as String?)
+            }
+        }
     }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 was off entirely, so the release APK shipped unshrunk and
+            // unobfuscated. Keep rules live in proguard-rules.pro.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            if (keystorePath != null) signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false
@@ -47,6 +74,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.core:core-ktx:1.13.1")
+    // Credentials (session token, PKCE verifier, desk API keys) belong in an
+    // encrypted store, not a plain SharedPreferences plist.
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("com.google.android.play:app-update:2.1.0")

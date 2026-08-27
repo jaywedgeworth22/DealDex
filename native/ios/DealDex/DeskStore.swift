@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 struct DeskKeys: Equatable {
     var justTcg = ""
@@ -7,22 +8,92 @@ struct DeskKeys: Equatable {
     var any: Bool { !justTcg.isEmpty || !priceCharting.isEmpty || !pokemonTcg.isEmpty }
 }
 
+/// Keychain-backed storage for the values that are actually secrets.
+///
+/// The session token and the three paid desk API keys used to sit in
+/// `UserDefaults`, which is a plist in the app container: readable from a device
+/// backup and from any process that can reach the container. They are
+/// credentials, so they belong in the Keychain with
+/// `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` — available to background
+/// scans after the first unlock, and never carried to another device.
+enum SecureStore {
+    private static let service = "net.dealdex.credentials"
+
+    static func read(_ key: String) -> String {
+        var query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        var out: CFTypeRef?
+        let status = withUnsafeMutablePointer(to: &out) {
+            SecItemCopyMatching(query as CFDictionary, $0)
+        }
+        query.removeAll()
+        guard status == errSecSuccess, let data = out as? Data else { return "" }
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+
+    static func write(_ key: String, _ value: String) {
+        let base: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: key,
+        ]
+        guard !value.isEmpty else {
+            SecItemDelete(base as CFDictionary)
+            return
+        }
+        let data = Data(value.utf8)
+        let attrs: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+        ]
+        let status = SecItemUpdate(base as CFDictionary, attrs as CFDictionary)
+        if status == errSecItemNotFound {
+            var insert = base
+            insert.merge(attrs) { current, _ in current }
+            SecItemAdd(insert as CFDictionary, nil)
+        }
+    }
+}
+
 enum DeskStore {
     private static let d = UserDefaults.standard
     static let defaultOrigin = NativeAuth.defaultOrigin
 
+    /// One-time move of credentials out of the plist and into the Keychain.
+    private static func migrateLegacyDefaults() {
+        guard !d.bool(forKey: "dealdex.securedV1") else { return }
+        for (defaultsKey, secureKey) in [
+            ("dealdex.token", "token"),
+            ("dealdex.justtcg", "justtcg"),
+            ("dealdex.pricecharting", "pricecharting"),
+            ("dealdex.pokemontcg", "pokemontcg"),
+        ] {
+            if let legacy = d.string(forKey: defaultsKey), !legacy.isEmpty {
+                SecureStore.write(secureKey, legacy)
+                d.removeObject(forKey: defaultsKey)
+            }
+        }
+        d.set(true, forKey: "dealdex.securedV1")
+    }
+
     static var keys: DeskKeys {
         get {
-            DeskKeys(
-                justTcg: d.string(forKey: "dealdex.justtcg") ?? "",
-                priceCharting: d.string(forKey: "dealdex.pricecharting") ?? "",
-                pokemonTcg: d.string(forKey: "dealdex.pokemontcg") ?? ""
+            migrateLegacyDefaults()
+            return DeskKeys(
+                justTcg: SecureStore.read("justtcg"),
+                priceCharting: SecureStore.read("pricecharting"),
+                pokemonTcg: SecureStore.read("pokemontcg")
             )
         }
         set {
-            d.set(newValue.justTcg, forKey: "dealdex.justtcg")
-            d.set(newValue.priceCharting, forKey: "dealdex.pricecharting")
-            d.set(newValue.pokemonTcg, forKey: "dealdex.pokemontcg")
+            SecureStore.write("justtcg", newValue.justTcg)
+            SecureStore.write("pricecharting", newValue.priceCharting)
+            SecureStore.write("pokemontcg", newValue.pokemonTcg)
         }
     }
 
@@ -35,10 +106,14 @@ enum DeskStore {
     }
 
     static var token: String {
-        get { d.string(forKey: "dealdex.token") ?? "" }
-        set { d.set(newValue, forKey: "dealdex.token") }
+        get {
+            migrateLegacyDefaults()
+            return SecureStore.read("token")
+        }
+        set { SecureStore.write("token", newValue) }
     }
 
+    /// Not a secret — the signed-in address is shown in the UI.
     static var email: String {
         get { d.string(forKey: "dealdex.email") ?? "" }
         set { d.set(newValue, forKey: "dealdex.email") }

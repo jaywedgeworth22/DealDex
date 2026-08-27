@@ -25,47 +25,94 @@ object Appraise {
         return title.lowercase().contains(t)
     }
 
+    /**
+     * Kept in step with `detectGrade` in `src/lib/tcg/parse-listing.ts` so the
+     * phone and the website reach the same verdict on the same listing.  PSA 8,
+     * BGS 9.5, CGC 9.5 and ACE 10 used to fall through to "raw".
+     */
     fun detectGrade(text: String): String {
-        val t = text.lowercase()
-        return when {
-            t.contains("psa 10") || t.contains("psa10") -> "PSA 10"
-            t.contains("psa 9") -> "PSA 9"
-            t.contains("bgs 10") || t.contains("black label") -> "BGS 10"
-            t.contains("cgc 10") -> "CGC 10"
-            else -> "raw"
+        val t = text.uppercase().replace(Regex("\\s+"), " ")
+        val checks = listOf(
+            Regex("\\bPSA ?10\\b") to "PSA 10",
+            Regex("\\bPSA ?9\\b") to "PSA 9",
+            Regex("\\bPSA ?8\\b") to "PSA 8",
+            Regex("\\bBGS ?10\\b") to "BGS 10",
+            Regex("\\bBGS ?9\\.5\\b") to "BGS 9.5",
+            Regex("\\bCGC ?10\\b") to "CGC 10",
+            Regex("\\bCGC ?9\\.5\\b") to "CGC 9.5",
+            Regex("\\bACE ?10\\b") to "ACE 10",
+        )
+        for ((re, grade) in checks) if (re.containsMatchIn(t)) return grade
+        return "raw"
+    }
+
+    /**
+     * A standalone `HP` in a Pokemon listing title is the hit-point stat, not
+     * Heavily Played.  `"hp" in t` matched a large share of every scan and cut
+     * the book to 35%, so the app called real deals overpriced.  `"lp" in t`
+     * matched "Delphox"; `"mp" in t` matched "champion"; `"played" in t` even
+     * matched "lightly played" before the LP branch could see it.
+     */
+    fun hasConditionCode(text: String, code: String): Boolean {
+        // Bracketed, slash-joined or explicitly labelled: never a stat line.
+        if (Regex("([(\\[/]|cond(ition)?[ :-]*)\\s*$code\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)) {
+            return true
         }
+        val re = Regex("(^|[^a-z0-9])$code([^a-z0-9]|$)", RegexOption.IGNORE_CASE)
+        for (m in re.findAll(text)) {
+            val before = text.substring(0, m.range.first + m.groupValues[1].length)
+            val after = text.substring(minOf(m.range.last + 1, text.length))
+            if (Regex("\\d\\s*\\W?\\s*$").containsMatchIn(before)) continue
+            if (Regex("^\\W?\\s*\\d").containsMatchIn(after)) continue
+            return true
+        }
+        return false
     }
 
     fun detectCondition(text: String): Double {
         val t = text.lowercase()
-        return when {
-            "dmg" in t || "damaged" in t -> 0.2
-            "hp" in t || "heavily" in t -> 0.35
-            "mp" in t || "played" in t -> 0.55
-            "lp" in t || "lightly" in t -> 0.8
-            else -> 1.0
-        }
+        // Spelled out is unambiguous and wins.
+        if ("damaged" in t || "poor condition" in t) return 0.2
+        if ("heavily played" in t || "heavy play" in t) return 0.35
+        if ("moderately played" in t || "moderate play" in t) return 0.55
+        if ("lightly played" in t || "light play" in t) return 0.8
+        if ("near mint" in t || "mint condition" in t) return 1.0
+
+        if (hasConditionCode(t, "dmg")) return 0.2
+        if (hasConditionCode(t, "hp")) return 0.35
+        if (hasConditionCode(t, "mp")) return 0.55
+        if (hasConditionCode(t, "lp")) return 0.8
+        return 1.0
     }
+
+    /** Mirrors `GRADE_MULT` / `PSA10_BY_BUCKET` in `src/lib/tcg/appraise.ts`. */
+    private val gradeMultBase = mapOf(
+        "PSA 10" to 2.8, "PSA 9" to 1.35, "PSA 8" to 0.95,
+        "BGS 10" to 3.2, "BGS 9.5" to 1.8,
+        "CGC 10" to 2.4, "CGC 9.5" to 1.4,
+        "ACE 10" to 2.2,
+    )
 
     fun gradeMult(card: TcgCard?, grade: String): Double {
         if (grade == "raw") return 1.0
-        val set = "${card?.setId.orEmpty()} ${card?.setName.orEmpty()}".lowercase()
-        val vintage = Regex("base1|jungle|fossil|neo|wotc|base set").containsMatchIn(set)
-        val chase = Regex("illustration rare|special illustration|alt|hyper rare")
-            .containsMatchIn(card?.rarity.orEmpty().lowercase())
-        if (grade.contains("10") && !grade.contains("9.5")) {
-            return when {
-                vintage && card?.rarity.orEmpty().lowercase().contains("holo") -> 8.0
-                vintage -> 4.0
-                chase -> 2.1
-                else -> 1.25
-            }
+        val base = gradeMultBase[grade] ?: 1.0
+        if (card == null || !grade.endsWith("10")) return base
+        val set = "${card.setId} ${card.setName}".lowercase()
+        val rarity = card.rarity.orEmpty().lowercase()
+        // Same vintage set list as the web: base2/base3/base4/gym/team rocket
+        // were missing here, so those sets graded as modern.
+        val vintage = Regex("base1|base2|base3|base4|jungle|fossil|neo|gym|team rocket|wotc")
+            .containsMatchIn(set)
+        val chase = Regex("illustration rare|special illustration|alt art|hyper rare|secret")
+            .containsMatchIn(rarity)
+        val bucket = when {
+            vintage && rarity.contains("holo") -> 8.0
+            vintage -> 4.0
+            chase -> 2.1
+            else -> 1.25
         }
-        return when (grade) {
-            "PSA 9" -> 1.35
-            "BGS 9.5", "CGC 9.5" -> 1.5
-            else -> 1.0
-        }
+        // Keep each 10-grade's own ratio to PSA 10 instead of flattening them.
+        return bucket * (base / 2.8)
     }
 
     fun pickMarket(card: TcgCard): Double? =

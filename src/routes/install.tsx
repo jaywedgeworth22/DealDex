@@ -13,8 +13,9 @@ function InstallPage() {
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Native apps</p>
       <h1 className="mt-1 font-display text-4xl tracking-tight">Android and iPhone</h1>
       <Lead>
-        Two phone apps. They scan eBay and Mercari on the device, score each ask against the desks,
-        and keep working if this website is down.
+        Two phone apps.  They scan eBay and Mercari on the device, score each ask against the
+        desks, and keep working if this website is down.  Your paid desk keys stay on the phone —
+        they are never sent to a DealDex server.
       </Lead>
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[auto_1fr]">
@@ -52,7 +53,7 @@ function InstallPage() {
                 </a>
               </Button>
             </div>
-            <p className="mt-3 text-xs text-subtle">iOS 16+</p>
+            <p className="mt-3 text-xs text-subtle">iOS 17+</p>
           </article>
         </div>
       </div>

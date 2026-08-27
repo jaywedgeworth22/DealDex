@@ -109,8 +109,8 @@ function SettingsPage() {
       <h2 className="mt-10 font-display text-2xl tracking-tight">API desks</h2>
       <Lead>
         {user
-          ? "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device and copy to your DealDex account when you save."
-          : "Free desks run without a key. Paid desks stay off until you paste one. Keys stay on this device first — sign in only if you want them on another browser or phone."}
+          ? "Free desks run without a key.  Paid desks stay off until you paste one.  Keys are held in this browser, sent with each scan so the server can query those desks, and copied to your account (encrypted) when you save."
+          : "Free desks run without a key.  Paid desks stay off until you paste one.  Keys are held in this browser and sent with each scan so the server can query those desks — sign in only if you want them on another browser or phone."}
       </Lead>
       <p className="mt-3 text-sm text-muted">
         {n} extra desk{n === 1 ? "" : "s"} enabled — {user ? "SIGNED IN" : "GUEST"}
@@ -190,8 +190,10 @@ function SettingsPage() {
         <h2 className="font-display text-xl tracking-tight">Website vs phone apps</h2>
         <p className="mt-2 text-sm text-muted">
           Android and iPhone scan eBay, Mercari, TCGDex, and any paid desks you keyed — on the
-          device. They keep working if this site is down. Sign in on the phone only to copy keys
-          from your account; after that the keys live on the phone.
+          device, and they never send a key to a DealDex server.  This website is different: a
+          scan here runs on our server, so the keys saved in this browser are sent with each scan
+          request to query those desks.  Sign in on the phone only to copy keys from your
+          account; after that the keys live on the phone.
         </p>
       </aside>
     </Shell>

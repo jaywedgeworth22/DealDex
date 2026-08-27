@@ -10,24 +10,35 @@ function PrivacyPage() {
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Legal</p>
       <h1 className="mt-1 font-display text-4xl tracking-tight">Privacy</h1>
       <Lead>
-        DealDex keeps marketplace keys on your device.  Sign-in is optional and only backs up
-        those keys to your account.
+        The phone apps keep your desk keys on the device and scan from there.  The website scans
+        on our server, so it sends the keys you saved with each scan.  Sign-in is optional.
       </Lead>
 
       <div className="mt-8 max-w-2xl space-y-6 text-sm leading-relaxed text-muted">
         <section className="space-y-2">
           <h2 className="font-display text-xl tracking-tight text-fg">What stays on the phone</h2>
           <p>
-            API keys you paste in Settings (eBay, Mercari, JustTCG, PriceCharting, pokemontcg.io,
-            and other desks) live in on-device storage.  The apps scan marketplaces from the
-            device.  They do not send those keys to DealDex servers.
+            API keys you paste into the Android or iPhone app are stored in the device keystore
+            (Android EncryptedSharedPreferences, iOS Keychain).  Those apps scan eBay, Mercari and
+            your paid desks from the phone itself, and they never send a key to a DealDex server —
+            the scan endpoint refuses one.  If the phone cannot reach a marketplace it falls back
+            to this website's free-desk book, which uses no key of yours.
+          </p>
+          <p>
+            The <strong>website</strong> works differently and it is worth being clear about it.
+            Keys you paste at <code>/settings</code> are held in your browser, but a scan runs on
+            our server, so the keys you have saved are sent with each scan request in order to
+            query those desks.  They are used for that request and are not stored unless you
+            choose the account backup below.  If you would rather no key ever left your device,
+            use the phone apps.
           </p>
         </section>
         <section className="space-y-2">
           <h2 className="font-display text-xl tracking-tight text-fg">Optional account</h2>
           <p>
             If you sign in, DealDex stores your email and any keys you choose to back up so you
-            can restore them on another device.  You can use the apps without an account.
+            can restore them on another device.  Backed-up keys are encrypted at rest.  You can
+            use the apps without an account.
           </p>
         </section>
         <section className="space-y-2">

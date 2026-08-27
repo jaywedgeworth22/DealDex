@@ -31,11 +31,69 @@ test("native scan and oauth routes exist and are public (no session gate on scan
   assert.match(oauth, /"google"/);
 });
 
-test("Android scan talks to the website without requiring a token", () => {
+test("the native scan endpoint refuses desk keys, because /privacy promises it", () => {
+  const scan = read("src/routes/api/native/scan.ts");
+  // No key plumbing at all: no reader, no type, no pass-through to the scorer.
+  assert.doesNotMatch(scan, /cleanKeys/);
+  assert.doesNotMatch(scan, /DeskKeys/);
+  assert.doesNotMatch(scan, /body\.keys/);
+  assert.match(scan, /scanAndScore\(query, sources\)/);
+
+  const privacy = read("src/routes/privacy.tsx");
+  assert.match(privacy, /never send a key to a DealDex server/);
+});
+
+test("native sign-in hands over a single-use code, never a session token", () => {
+  const oauth = read("src/routes/api/native/oauth.ts");
+  // The redirect must carry `code`, and must NOT carry the session token.
+  assert.match(oauth, /nativeRedirect\(\{ code \}\)/);
+  assert.doesNotMatch(oauth, /nativeRedirect\(\{ token/);
+  assert.match(oauth, /isValidChallenge/);
+
+  const exchange = read("src/routes/api/native/exchange.ts");
+  assert.match(exchange, /createFileRoute\("\/api\/native\/exchange"\)/);
+  assert.match(exchange, /redeemCode/);
+
+  // Both clients must send a challenge and redeem with a verifier.
+  const swift = read("native/ios/DealDex/NativeAuth.swift");
+  assert.match(swift, /challenge=/);
+  assert.match(swift, /api\/native\/exchange/);
+  assert.doesNotMatch(swift, /dict\["token"\]/);
+
+  const kotlin = read("native/android/app/src/main/java/me/grok/dealdex/data/NativeAuth.kt");
+  assert.match(kotlin, /appendQueryParameter\("challenge"/);
+  assert.match(kotlin, /api\/native\/exchange/);
+  assert.doesNotMatch(kotlin, /getQueryParameter\("token"\)/);
+});
+
+test("credentials are kept in the platform keystore, not a plain prefs file", () => {
+  const prefs = read("native/android/app/src/main/java/me/grok/dealdex/data/Prefs.kt");
+  assert.match(prefs, /EncryptedSharedPreferences/);
+  const manifest = read("native/android/app/src/main/AndroidManifest.xml");
+  assert.match(manifest, /android:allowBackup="false"/);
+
+  const store = read("native/ios/DealDex/DeskStore.swift");
+  assert.match(store, /kSecClassGenericPassword/);
+  assert.match(store, /kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly/);
+});
+
+test("the iOS card scanner is gone until it actually uses the camera", () => {
+  // It reported "Charizard 4/102" after a 1.2s timer with no AVCaptureSession.
+  const scanView = read("native/ios/DealDex/ScanView.swift");
+  assert.doesNotMatch(scanView, /CameraScannerView/);
+  const pbx = read("native/ios/DealDex.xcodeproj/project.pbxproj");
+  assert.doesNotMatch(pbx, /CameraScannerView/);
+});
+
+test("Android scans on the device first and sends no keys to the website", () => {
   const market = read("native/android/app/src/main/java/me/grok/dealdex/data/Market.kt");
   assert.match(market, /\/api\/native\/scan/);
   assert.match(market, /scanViaSite/);
-  assert.match(market, /Scan never requires sign-in/);
+  // On-device is the primary path, which is what /privacy describes.
+  assert.match(market, /scanOnDevice\(query, keys, sources\)[\s\S]{0,400}scanViaSite\(site, query, sources\)/);
+  // The site payload carries no credential of any kind.
+  assert.doesNotMatch(market, /put\("keys"/);
+  assert.doesNotMatch(market, /"justtcg", keys\.justTcg/);
   const scan = read("native/android/app/src/main/java/me/grok/dealdex/ui/ScanScreen.kt");
   assert.match(scan, /Text\("SCAN"/);
   assert.match(scan, /Hide proxies/);
@@ -43,11 +101,13 @@ test("Android scan talks to the website without requiring a token", () => {
   assert.doesNotMatch(scan, /Text\("Scan"\)/);
 });
 
-test("iOS scan talks to the website without requiring a token", () => {
+test("iOS scans on the device first and sends no keys to the website", () => {
   const market = read("native/ios/DealDex/Market.swift");
   assert.match(market, /\/api\/native\/scan/);
   assert.match(market, /scanViaSite/);
-  assert.match(market, /Scan never requires sign-in/);
+  assert.match(market, /scanOnDevice\(query, keys: keys, sources: src\)[\s\S]{0,400}scanViaSite\(site, query, sources: src\)/);
+  assert.doesNotMatch(market, /"keys": \[/);
+  assert.doesNotMatch(market, /"justtcg": keys\.justTcg/);
   const settings = read("native/ios/DealDex/SettingsView.swift");
   assert.match(settings, /Sign in with Google/);
   assert.match(settings, /Sign in with Apple/);

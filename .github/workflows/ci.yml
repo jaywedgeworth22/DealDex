@@ -28,9 +28,11 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        # package-lock.json predates this fleet CI and is out of sync on npm 10
-        # (Node 22). Use install until a dedicated lockfile refresh lands.
-        run: npm install --no-audit --no-fund
+        # `npm ci` is what vercel.json runs, so CI has to prove that exact
+        # command works. The lockfile drifted out of sync on npm 10 (Node 22)
+        # and CI papered over it with `npm install`, which meant green CI no
+        # longer told us the production install would succeed.
+        run: npm ci --no-audit --no-fund
 
       - name: Lint
         run: npm run lint

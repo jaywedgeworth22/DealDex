@@ -29,33 +29,96 @@ enum Appraise {
         return title.lowercased().contains(t)
     }
 
+    /// Grades the desks price differently. Kept in step with `GRADES` and
+    /// `detectGrade` in `src/lib/tcg/parse-listing.ts` so the phone and the
+    /// website reach the same verdict on the same listing.
     static func detectGrade(_ text: String) -> String {
-        let t = text.lowercased()
-        if t.contains("psa 10") || t.contains("psa10") { return "PSA 10" }
-        if t.contains("bgs 10") { return "BGS 10" }
-        if t.contains("cgc 10") { return "CGC 10" }
-        if t.contains("psa 9") { return "PSA 9" }
+        let t = text.uppercased().replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+        let checks: [(String, String)] = [
+            (#"\bPSA ?10\b"#, "PSA 10"),
+            (#"\bPSA ?9\b"#, "PSA 9"),
+            (#"\bPSA ?8\b"#, "PSA 8"),
+            (#"\bBGS ?10\b"#, "BGS 10"),
+            (#"\bBGS ?9\.5\b"#, "BGS 9.5"),
+            (#"\bCGC ?10\b"#, "CGC 10"),
+            (#"\bCGC ?9\.5\b"#, "CGC 9.5"),
+            (#"\bACE ?10\b"#, "ACE 10"),
+        ]
+        for (pattern, grade) in checks where t.range(of: pattern, options: .regularExpression) != nil {
+            return grade
+        }
         return "raw"
+    }
+
+    /// A standalone `HP` in a Pokemon listing title is the hit-point stat, not
+    /// Heavily Played. `t.contains("hp")` matched a large share of every scan
+    /// and cut the book to 35%, so the app called real deals overpriced. It also
+    /// matched `lp` inside "Delphox" and `mp` inside "champion".
+    static func hasConditionCode(_ text: String, _ code: String) -> Bool {
+        // Bracketed, slash-joined or explicitly labelled: never a stat line.
+        let explicit = "(\\(|\\[|/|cond(ition)?[ :-]*)\\s*\(code)\\b"
+        if text.range(of: explicit, options: [.regularExpression, .caseInsensitive]) != nil { return true }
+        // Otherwise it must be a standalone token with no digit on either side.
+        let standalone = "(^|[^a-z0-9])\(code)([^a-z0-9]|$)"
+        let ns = text as NSString
+        guard let re = try? NSRegularExpression(pattern: standalone, options: [.caseInsensitive]) else { return false }
+        for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+            let before = ns.substring(to: m.range.location)
+            let after = ns.substring(from: min(m.range.location + m.range.length, ns.length))
+            if before.range(of: #"\d\s*\W?\s*$"#, options: .regularExpression) != nil { continue }
+            if after.range(of: #"^\W?\s*\d"#, options: .regularExpression) != nil { continue }
+            return true
+        }
+        return false
     }
 
     static func conditionMult(_ text: String) -> Double {
         let t = text.lowercased()
-        if t.contains("dmg") || t.contains("damaged") { return 0.2 }
-        if t.contains("hp") { return 0.35 }
-        if t.contains("mp") || t.contains("played") { return 0.55 }
-        if t.contains("lp") { return 0.8 }
+        // Spelled out is unambiguous and wins.
+        if t.contains("damaged") || t.contains("poor condition") { return 0.2 }
+        if t.contains("heavily played") || t.contains("heavy play") { return 0.35 }
+        if t.contains("moderately played") || t.contains("moderate play") { return 0.55 }
+        if t.contains("lightly played") || t.contains("light play") { return 0.8 }
+        if t.contains("near mint") || t.contains("mint condition") { return 1 }
+
+        if hasConditionCode(t, "dmg") { return 0.2 }
+        if hasConditionCode(t, "hp") { return 0.35 }
+        if hasConditionCode(t, "mp") { return 0.55 }
+        if hasConditionCode(t, "lp") { return 0.8 }
         return 1
     }
 
+    /// Mirrors `GRADE_MULT` / `PSA10_BY_BUCKET` in `src/lib/tcg/appraise.ts`.
+    /// The old version returned a flat 1.35 for every non-10 grade and ignored
+    /// the chase bucket entirely, so a PSA 8 and a BGS 9.5 priced identically.
+    static let gradeMultBase: [String: Double] = [
+        "PSA 10": 2.8, "PSA 9": 1.35, "PSA 8": 0.95,
+        "BGS 10": 3.2, "BGS 9.5": 1.8,
+        "CGC 10": 2.4, "CGC 9.5": 1.4,
+        "ACE 10": 2.2,
+    ]
+
     static func gradeMult(card: TcgCard?, grade: String) -> Double {
         if grade == "raw" { return 1 }
-        let set = "\(card?.setId ?? "") \(card?.setName ?? "")".lowercased()
-        let vintage = set.range(of: "base1|jungle|fossil|neo|wotc|base set", options: .regularExpression) != nil
-        if grade.contains("10") && !grade.contains("9.5") {
-            if vintage { return 4 }
-            return 1.25
-        }
-        return 1.35
+        let base = gradeMultBase[grade] ?? 1
+        guard let card, grade.hasSuffix("10") else { return base }
+        let set = "\(card.setId) \(card.setName)".lowercased()
+        let rarity = (card.rarity ?? "").lowercased()
+        let vintage = set.range(
+            of: "base1|base2|base3|base4|jungle|fossil|neo|gym|team rocket|wotc",
+            options: .regularExpression
+        ) != nil
+        let chase = rarity.range(
+            of: "illustration rare|special illustration|alt art|hyper rare|secret",
+            options: .regularExpression
+        ) != nil
+        let bucket: Double
+        if vintage && rarity.contains("holo") { bucket = 8 }
+        else if vintage { bucket = 4 }
+        else if chase { bucket = 2.1 }
+        else { bucket = 1.25 }
+        // Keep each 10-grade's own ratio to PSA 10 instead of flattening them.
+        return bucket * (base / 2.8)
     }
 
     static func nameQuery(_ title: String) -> String {

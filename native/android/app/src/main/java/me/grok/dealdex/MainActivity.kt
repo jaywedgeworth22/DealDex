@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
@@ -58,9 +59,11 @@ class MainActivity : ComponentActivity() {
     private var offeredPlayUpdateThisSession = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Android 15 (API 35) draws apps edge to edge whether or not they ask.
+        // Declaring it means Scaffold's insets are the ones that apply.
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         playUpdateManager = AppUpdateManagerFactory.create(this)
-        if (Build.VERSION.SDK_INT >= 33) askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
         handleAuth(intent)
         setContent {
             DealDexTheme {
@@ -158,6 +161,16 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         checkPlayUpdate()
+    }
+
+    /**
+     * Ask for notification permission the first time the user actually turns an
+     * alert on, not at cold start. Firing it from `onCreate` put the system
+     * dialog in front of someone who had not yet seen a single listing, which is
+     * the reliable way to collect a permanent denial.
+     */
+    fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= 33) askNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     override fun onNewIntent(intent: Intent) {

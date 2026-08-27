@@ -3,7 +3,6 @@ import SwiftUI
 struct ScanView: View {
     @EnvironmentObject var desk: DeskModel
     @Environment(\.horizontalSizeClass) private var sizeClass
-    @State private var showCameraScan: Bool = false
 
     private var twoUp: Bool { sizeClass == .regular }
     private var columns: [GridItem] {
@@ -27,16 +26,13 @@ struct ScanView: View {
                     .tracking(1.6)
                     .foregroundStyle(Color(red: 0.23, green: 0.22, blue: 0.20))
                     .padding(.leading, 8)
-                HStack(spacing: 8) {
-                    TextField("Card, set, or leave blank", text: $desk.query)
-                        .textFieldStyle(.roundedBorder)
-                    Button {
-                        showCameraScan = true
-                    } label: {
-                        Image(systemName: "camera")
-                    }
-                    .buttonStyle(.bordered)
-                }
+                // The camera button opened a "Card & Slab Scanner" that had no
+                // AVCaptureSession behind it: it waited 1.2s and reported
+                // "Charizard 4/102" no matter what the phone was pointed at.
+                // Removed until Vision text recognition is actually wired to a
+                // capture session.
+                TextField("Card, set, or leave blank", text: $desk.query)
+                    .textFieldStyle(.roundedBorder)
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
                     filterMenu("Verdict", selection: $desk.verdictFilter, options: [
                         ("any", "Any Verdict"),
@@ -154,12 +150,6 @@ struct ScanView: View {
             }
             .padding()
             .background(Color(red: 0.95, green: 0.94, blue: 0.90))
-            .sheet(isPresented: $showCameraScan) {
-                CameraScannerView { detectedQuery in
-                    desk.query = detectedQuery
-                    Task { await desk.scan(detectedQuery, notify: false) }
-                }
-            }
         }
     }
 

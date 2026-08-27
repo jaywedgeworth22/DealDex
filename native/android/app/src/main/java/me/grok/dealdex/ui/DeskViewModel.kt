@@ -166,27 +166,35 @@ class DeskViewModel(app: Application) : AndroidViewModel(app) {
 
     fun startOAuth(ctx: Context, provider: String) {
         val origin = _state.value.origin.ifBlank { NativeAuth.DEFAULT_ORIGIN }
-        NativeAuth.start(ctx, origin, provider)
+        NativeAuth.start(ctx, prefs, origin, provider)
     }
 
+    /**
+     * Finish sign-in. The redirect now carries a single-use CODE rather than the
+     * session token, so completing it means an HTTPS round trip — this cannot
+     * run on the main thread any more.
+     */
     fun completeOAuth(uri: Uri) {
-        try {
-            val session = NativeAuth.parse(uri)
-            val origin = NativeAuth.normalized(_state.value.origin)
-            prefs.origin = origin
-            prefs.token = session.token
-            prefs.email = session.email
-            _state.value = _state.value.copy(
-                accountBusy = false,
-                accountEmail = session.email.ifBlank { "Signed in" },
-                origin = origin,
-                accountNote = "Signed in. Keys still live on this phone. Pull or push to sync.",
-            )
-        } catch (e: Exception) {
-            _state.value = _state.value.copy(
-                accountBusy = false,
-                accountNote = (e.message ?: "Sign-in failed") + " Scan still works with saved keys.",
-            )
+        _state.value = _state.value.copy(accountBusy = true, accountNote = null)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val origin = NativeAuth.normalized(_state.value.origin)
+                val session = NativeAuth.complete(prefs, uri, origin)
+                prefs.origin = origin
+                prefs.token = session.token
+                prefs.email = session.email
+                _state.value = _state.value.copy(
+                    accountBusy = false,
+                    accountEmail = session.email.ifBlank { "Signed in" },
+                    origin = origin,
+                    accountNote = "Signed in. Keys still live on this phone. Pull or push to sync.",
+                )
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    accountBusy = false,
+                    accountNote = (e.message ?: "Sign-in failed") + " Scan still works with saved keys.",
+                )
+            }
         }
     }
 

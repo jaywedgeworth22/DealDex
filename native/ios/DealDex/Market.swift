@@ -12,6 +12,17 @@ enum Market {
         return URLSession(configuration: c)
     }()
 
+    /// Scan eBay and Mercari.
+    ///
+    /// ON-DEVICE FIRST, deliberately. `/privacy` says "the apps scan
+    /// marketplaces from the device" and "they do not send those keys to DealDex
+    /// servers" — but this used to call the website FIRST and POST all three
+    /// paid desk keys with every scan, so the published privacy policy described
+    /// something the app did not do.
+    ///
+    /// The website is now a fallback for when the phone cannot reach the
+    /// marketplaces itself, and it is never given a key. Paid desks
+    /// (`PaidDesks.blend`) only ever run here, against `DeskStore.keys`.
     static func scan(
         _ query: String,
         keys: DeskKeys = DeskKeys(),
@@ -21,15 +32,16 @@ enum Market {
         let site = NativeAuth.normalized(origin)
         let src = sources.isEmpty ? ["ebay", "mercari"] : sources
         do {
-            let rows = try await scanViaSite(site, query, keys: keys, sources: src)
+            let rows = try await scanOnDevice(query, keys: keys, sources: src)
             if !rows.isEmpty { return rows }
         } catch {
-            // Fall through to on-device scrape.  Scan never requires sign-in.
+            // Phone could not reach eBay/Mercari. Fall back to the website's
+            // free-desk book rather than showing nothing.
         }
-        return try await scanOnDevice(query, keys: keys, sources: src)
+        return try await scanViaSite(site, query, sources: src)
     }
 
-    private static func scanViaSite(_ origin: String, _ query: String, keys: DeskKeys, sources: [String]) async throws -> [ScoredListing] {
+    private static func scanViaSite(_ origin: String, _ query: String, sources: [String]) async throws -> [ScoredListing] {
         guard let url = URL(string: "\(origin)/api/native/scan") else {
             throw NSError(domain: "DealDex", code: 0, userInfo: [NSLocalizedDescriptionKey: "Website origin is not a valid URL."])
         }
@@ -37,14 +49,11 @@ enum Market {
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.setValue("DealDex/1.0 (ios)", forHTTPHeaderField: "User-Agent")
+        // No `keys` field. The endpoint refuses them and the privacy policy says
+        // they never leave the phone; both halves have to stay true.
         req.httpBody = try JSONSerialization.data(withJSONObject: [
             "q": query,
             "sources": sources,
-            "keys": [
-                "justtcg": keys.justTcg,
-                "pricecharting": keys.priceCharting,
-                "pokemontcg": keys.pokemonTcg,
-            ],
         ])
         let (data, res) = try await http.data(for: req)
         let code = (res as? HTTPURLResponse)?.statusCode ?? 0
@@ -141,12 +150,22 @@ enum Market {
         return scored.sorted { ($0.appraisal?.spread ?? -99) > ($1.appraisal?.spread ?? -99) }
     }
 
+    /// Pick the card a listing is actually for.
+    ///
+    /// This used to return whichever card's market price sat closest to the
+    /// listing's own ask — so the ask chose the card, and the card then decided
+    /// whether the ask was a deal. It also applied no name filter at all, so a
+    /// listing could be bound to a different Pokemon entirely.
     private static func pick(_ cards: [TcgCard], _ listing: LiveListing) -> TcgCard? {
         guard !cards.isEmpty else { return nil }
-        let ask = (listing.price ?? 0) + listing.shipping
-        return cards.min { a, b in
-            abs((a.finishes.first?.market ?? 0) - ask) < abs((b.finishes.first?.market ?? 0) - ask)
-        }
+        let name = Appraise.nameQuery(listing.title)
+        guard let head = Appraise.tokens(name).first else { return nil }
+        let named = cards.filter { $0.name.lowercased().contains(head) }
+        guard !named.isEmpty else { return nil }
+        let priced = named.filter { $0.finishes.contains(where: { $0.market != nil }) }
+        let pool = priced.isEmpty ? named : priced
+        // Deterministic and price-independent.
+        return pool.min { $0.id < $1.id }
     }
 
     static func searchCards(_ name: String) async throws -> [TcgCard] {

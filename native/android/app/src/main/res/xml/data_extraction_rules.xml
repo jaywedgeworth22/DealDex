@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Belt and braces alongside android:allowBackup="false".
+
+  On Android 12+ these rules govern both cloud backup and device-to-device
+  transfer.  The credential store must never leave the device: the master key is
+  hardware-backed and does not travel, so a restored copy would be undecryptable
+  anyway — and an unrestorable file that still contains a session token is worse
+  than no file.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="dealdex.secure.xml" />
+        <exclude domain="sharedpref" path="dealdex.secure.fallback.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="dealdex.secure.xml" />
+        <exclude domain="sharedpref" path="dealdex.secure.fallback.xml" />
+    </device-transfer>
+</data-extraction-rules>

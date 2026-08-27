@@ -227,7 +227,7 @@ function ScanPane({
                   </p>
                 )}
                 <p className="mt-1 font-mono text-xs">
-                  {formatUsd(row.listing.price)} ask
+                  {formatUsd((row.listing.price ?? 0) + row.listing.shipping)} ask
                   <span className="mx-1.5 text-subtle">·</span>
                   {formatUsd(row.appraisal?.adjustedMarket)} book
                   <span className={cn("ml-1.5", tone)}>{labelSpread(row.appraisal?.spread)}</span>
