@@ -1,0 +1,6 @@
+{
+  "name": "dealdex",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "postCreateCommand": "bash scripts/cloud-setup.sh",
+  "forwardPorts": [8080]
+}
