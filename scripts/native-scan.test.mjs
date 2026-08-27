@@ -45,15 +45,43 @@ test("native scan and oauth routes exist and are public (no session gate on scan
 });
 
 test("the native scan endpoint refuses desk keys, because /privacy promises it", () => {
-  const scan = read("src/routes/api/native/scan.ts");
-  // No key plumbing at all: no reader, no type, no pass-through to the scorer.
+  const scan = readCode("src/routes/api/native/scan.ts");
+  // No key plumbing: nothing reads a key, nothing passes one to the scorer.
   assert.doesNotMatch(scan, /cleanKeys/);
   assert.doesNotMatch(scan, /DeskKeys/);
-  assert.doesNotMatch(scan, /body\.keys/);
   assert.match(scan, /scanAndScore\(query, sources\)/);
 
+  // And "refuses" has to mean refuses. Silently ignoring a keys payload would
+  // make the published word untrue and let a regressed client keep POSTing
+  // credentials with nothing to notice.
+  assert.match(scan, /body\.keys != null/);
+  assert.match(scan, /status: 400/);
+
   const privacy = read("src/routes/privacy.tsx");
-  assert.match(privacy, /never send a key to a DealDex server/);
+  assert.match(privacy, /the scan endpoint refuses one outright/);
+});
+
+test("the phone apps' 'never sends a key' claim is qualified wherever it appears", () => {
+  // Both clients expose "Push Phone Keys to Account", which POSTs to
+  // /api/native/keys. An unqualified "never sends a key" is contradicted by a
+  // button in the app it describes.
+  for (const [file, re] of [
+    ["src/routes/privacy.tsx", /Scanning never sends a key/],
+    ["src/routes/settings.tsx", /A scan never sends a key/],
+    ["src/routes/install.tsx", /A scan never sends a paid desk key/],
+    ["README.md", /scanning never sends one/],
+  ]) {
+    assert.match(read(file), re, `${file} states the claim without qualifying it`);
+  }
+});
+
+test("/install does not describe one build while serving another", () => {
+  // public/DealDex.apk predates the privacy and security work and could not be
+  // rebuilt here. Handing it out silently under the new copy would be the exact
+  // failure this whole change set is about.
+  const install = read("src/routes/install.tsx");
+  assert.match(install, /These downloads are an older build/);
+  assert.match(install, /still sends your paid desk keys/);
 });
 
 test("native sign-in hands over a single-use code, never a session token", () => {

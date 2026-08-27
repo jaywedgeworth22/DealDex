@@ -448,9 +448,12 @@ function ScanRow({ row }: { row: ScoredListing }) {
   // Marketplace thumbnails 404 often enough that we need a real fallback: the
   // card art first, then the marketplace mark. Without onError a dead URL just
   // painted the browser's broken-image glyph and the placeholder never ran.
-  const [thumbFailed, setThumbFailed] = useState(false);
+  // Keyed on the URL, so a later scan that returns a working image recovers.
+  // A plain boolean latched for the component's lifetime, and rows are keyed by
+  // listing id, so one 404 pinned the row to the card art forever.
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const cardArt = cardImageUrl(card?.image ?? null, "low");
-  const thumb = thumbFailed ? cardArt : (listing.image ?? cardArt);
+  const thumb = listing.image && listing.image !== failedSrc ? listing.image : cardArt;
   const ask = listing.price != null ? listing.price + listing.shipping : listing.price;
   const memory = peekListing(listing.marketplace, listing.id);
   const listed = formatAge(listing.listedAt ?? memory?.listedAt);
@@ -470,7 +473,7 @@ function ScanRow({ row }: { row: ScoredListing }) {
           alt=""
           loading="lazy"
           decoding="async"
-          onError={() => setThumbFailed(true)}
+          onError={() => setFailedSrc(listing.image ?? null)}
           className="h-[88px] w-16 shrink-0 rounded-sm bg-elevated object-cover"
         />
       ) : (

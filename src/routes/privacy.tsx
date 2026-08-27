@@ -20,9 +20,11 @@ function PrivacyPage() {
           <p>
             API keys you paste into the Android or iPhone app are stored in the device keystore
             (Android EncryptedSharedPreferences, iOS Keychain).  Those apps scan eBay, Mercari and
-            your paid desks from the phone itself, and they never send a key to a DealDex server —
-            the scan endpoint refuses one.  If the phone cannot reach a marketplace it falls back
-            to this website's free-desk book, which uses no key of yours.
+            your paid desks from the phone itself.  <strong>Scanning never sends a key</strong> —
+            the scan endpoint refuses one outright.  The only time a key leaves the phone is if you
+            tap Push Phone Keys to Account yourself, which stores an encrypted copy so another
+            device can restore it.  If the phone cannot reach a marketplace it falls back to this
+            website's free-desk book, which uses no key of yours.
           </p>
           <p>
             The <strong>website</strong> works differently and it is worth being clear about it.

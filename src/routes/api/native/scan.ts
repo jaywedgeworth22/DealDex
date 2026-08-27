@@ -43,6 +43,21 @@ export const Route = createFileRoute("/api/native/scan")({
           );
         }
         const body = await json(request);
+
+        // /privacy, README and AGENTS.md all say this endpoint REFUSES a keys
+        // payload. Silently ignoring one would have made that word untrue and,
+        // worse, would have let a regressed client keep POSTing credentials with
+        // nothing to notice. A 400 is the loud signal.
+        if (body.keys != null) {
+          return Response.json(
+            {
+              error:
+                "This endpoint does not accept desk keys. Scan paid desks on the device instead.",
+            },
+            { status: 400 },
+          );
+        }
+
         const q = String(body.q ?? "").slice(0, 160);
         const sources = sourcesOf(body.sources);
         const query = q.trim() || ALL_POKEMON_QUERY;

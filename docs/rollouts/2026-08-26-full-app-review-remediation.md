@@ -163,8 +163,35 @@ And on the native side, where nothing here can compile the code:
 - AGP 8.5.2 predates `compileSdk 35`; bumped to 8.6.1, which the pinned Gradle
   8.7 supports.
 
+And the reviewer pointed specifically at claims-versus-code found the same class
+of problem in the fixes themselves:
+
+- **`/install` handed out a build that predates every fix.**  `public/DealDex.apk`
+  was committed in #190, so the binary on that page still sends desk keys to the
+  scan endpoint, keeps them unencrypted, and takes a session token on the URL
+  scheme — under a page that now promises otherwise.  It cannot be rebuilt here,
+  so the page says so, in a bordered panel, naming what differs.
+- **"never sends a key" was unqualified.**  Both clients expose *Push Phone Keys
+  to Account*, which POSTs to `/api/native/keys`.  Every surface now says a
+  *scan* never sends a key and names the one explicit action that does.
+- **The scan endpoint ignored a keys payload rather than refusing it**, while
+  three documents used the word "refuses".  It returns 400 now, so a regressed
+  client is loud instead of silent.
+- **The phone mock still advertised email/password sign-in**, which this same
+  change deleted from both apps.
+- **A rule set to Email or SMS matched, logged a hit, and said nothing.**  Rules
+  saved before those channels were disabled still carry them; the user now gets
+  told why nothing arrived.
+- The stated APK size was wrong, and the thumbnail fallback latched for the
+  row's lifetime so a listing whose image later worked never recovered.
+
 One reported finding was **refuted**: `MIN_MATCH_SCORE = 40` does not reject
 good matches — an exact name plus an exact set scores 78–96.
+
+A caveat on the review itself: its verify pass reads the working tree, which was
+moving while it ran, so a "refuted" verdict on an early finding may simply mean
+the fix had already landed.  Each finding above was re-checked by hand against
+the code rather than taken on the verdict.
 
 The lesson worth keeping: every one of these passed the tests that shipped with
 the original fix, because those tests were written to describe what the change

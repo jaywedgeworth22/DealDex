@@ -42,8 +42,19 @@ export async function dispatchHits(hits: AlertHit[], rules: AlertRule[]) {
     const perm = await ensureNativePermission();
     if (perm === "granted") nativeHits.forEach(showNativeHit);
   }
-  // Only channels the server can actually deliver. Email and SMS have no
-  // provider, so sending them would just collect failures the user cannot act on.
+  // Rules saved before Email and SMS were disabled can still carry those
+  // channels, and narrowing straight to Pushover made such a rule match, log a
+  // hit, and say nothing at all. Tell the user why nothing arrived.
+  const undeliverable = hits.filter(
+    (h) => !h.channels.includes("pushover") && h.channels.some((c) => c === "email" || c === "sms"),
+  );
+  if (undeliverable.length) {
+    const { toast } = await import("sonner");
+    toast(
+      `${undeliverable.length} alert${undeliverable.length === 1 ? "" : "s"} matched a rule set to Email or SMS. Those are not available yet — switch the rule to phone alerts or Pushover.`,
+    );
+  }
+
   const remote = hits.filter((h) => h.channels.includes("pushover"));
   if (!remote.length) return;
   try {

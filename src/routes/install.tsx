@@ -14,9 +14,26 @@ function InstallPage() {
       <h1 className="mt-1 font-display text-4xl tracking-tight">Android and iPhone</h1>
       <Lead>
         Two phone apps.  They scan eBay and Mercari on the device, score each ask against the
-        desks, and keep working if this website is down.  Your paid desk keys stay on the phone —
-        they are never sent to a DealDex server.
+        desks, and keep working if this website is down.  A scan never sends a paid desk key to a
+        DealDex server.
       </Lead>
+
+      {/*
+        This is the honest version of a page that would otherwise describe one
+        build and hand out another. The APK and source zip in `public/` were
+        committed before the privacy and security work landed, and could not be
+        rebuilt in the session that changed the source. Saying so beats letting
+        someone download a binary on the strength of a promise it does not keep.
+      */}
+      <aside className="mt-6 max-w-2xl rounded-xl border border-deal-bad/40 bg-surface p-4 text-sm shadow-[var(--shadow-border)]">
+        <h2 className="font-medium text-deal-bad">These downloads are an older build</h2>
+        <p className="mt-1 text-muted">
+          The files below were built before the current privacy and security changes.  That build
+          still sends your paid desk keys to the scan endpoint and keeps them in unencrypted device
+          storage, and its sign-in returns a session token on a URL scheme other apps can claim.
+          Build from source if you want the current behaviour — a refreshed APK is pending.
+        </p>
+      </aside>
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[auto_1fr]">
         <NativePhones />
@@ -35,9 +52,7 @@ function InstallPage() {
                 </a>
               </Button>
             </div>
-            <p className="mt-3 text-xs text-subtle">
-              Android 8+ · 16 MB · not a Play Store build
-            </p>
+            <p className="mt-3 text-xs text-subtle">Android 8+ · 17 MB · not a Play Store build</p>
           </article>
           <article className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
             <h2 className="font-display text-2xl tracking-tight">iPhone</h2>

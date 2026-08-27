@@ -190,7 +190,8 @@ function SettingsPage() {
         <h2 className="font-display text-xl tracking-tight">Website vs phone apps</h2>
         <p className="mt-2 text-sm text-muted">
           Android and iPhone scan eBay, Mercari, TCGDex, and any paid desks you keyed — on the
-          device, and they never send a key to a DealDex server.  This website is different: a
+          device.  A scan never sends a key; the only time one leaves the phone is if you tap
+          Push Phone Keys to Account yourself.  This website is different: a
           scan here runs on our server, so the keys saved in this browser are sent with each scan
           request to query those desks.  Sign in on the phone only to copy keys from your
           account; after that the keys live on the phone.
