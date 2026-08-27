@@ -62,20 +62,30 @@ enum DeskStore {
     static let defaultOrigin = NativeAuth.defaultOrigin
 
     /// One-time move of credentials out of the plist and into the Keychain.
+    ///
+    /// Reads each value back before deleting the plist copy, and only latches
+    /// the migration once every one verified.  Deleting on an unverified write
+    /// and latching anyway would have silently destroyed a user's session token
+    /// and paid desk keys on any device where the Keychain write failed, with
+    /// no retry on the next launch.
     private static func migrateLegacyDefaults() {
         guard !d.bool(forKey: "dealdex.securedV1") else { return }
+        var allMoved = true
         for (defaultsKey, secureKey) in [
             ("dealdex.token", "token"),
             ("dealdex.justtcg", "justtcg"),
             ("dealdex.pricecharting", "pricecharting"),
             ("dealdex.pokemontcg", "pokemontcg"),
         ] {
-            if let legacy = d.string(forKey: defaultsKey), !legacy.isEmpty {
-                SecureStore.write(secureKey, legacy)
+            guard let legacy = d.string(forKey: defaultsKey), !legacy.isEmpty else { continue }
+            SecureStore.write(secureKey, legacy)
+            if SecureStore.read(secureKey) == legacy {
                 d.removeObject(forKey: defaultsKey)
+            } else {
+                allMoved = false
             }
         }
-        d.set(true, forKey: "dealdex.securedV1")
+        if allMoved { d.set(true, forKey: "dealdex.securedV1") }
     }
 
     static var keys: DeskKeys {

@@ -3,7 +3,13 @@ import { ALL_POKEMON_QUERY } from "@/lib/marketplaces/html";
 import { scanAndScore } from "@/lib/marketplaces/scan";
 import type { ScanSource } from "@/lib/marketplaces/types";
 import type { DeskKeys } from "@/lib/settings/keys";
-import { readScanCache, SCAN_FRESH_MS, scanCacheKey, writeScanCache } from "./scan-cache";
+import {
+  isCacheable,
+  readScanCache,
+  SCAN_FRESH_MS,
+  scanCacheKey,
+  writeScanCache,
+} from "./scan-cache";
 import { RateLimitedError, rateLimit, serverFnClientKey } from "./rate-limit";
 
 function cleanKeys(input: unknown): DeskKeys {
@@ -31,9 +37,12 @@ export const scanMarketplaces = createServerFn({ method: "POST" })
     if (!limit.ok) throw new RateLimitedError(limit.retryAfterMs);
 
     const query = data.q.trim() || ALL_POKEMON_QUERY;
-    const paidDesks = Boolean(data.keys.justtcg || data.keys.pricecharting || data.keys.pokemontcg);
-    const key = scanCacheKey(query, data.sources, paidDesks);
-    const cached = await readScanCache(key);
+    const paidDesks = Boolean(
+      data.keys.justtcg || data.keys.pricecharting || data.keys.pokemontcg,
+    );
+    const shareable = isCacheable(paidDesks);
+    const key = scanCacheKey(query, data.sources);
+    const cached = shareable ? await readScanCache(key) : null;
     if (cached && Date.now() - cached.at < SCAN_FRESH_MS) {
       return {
         query,
@@ -46,7 +55,7 @@ export const scanMarketplaces = createServerFn({ method: "POST" })
     }
     try {
       const result = await scanAndScore(query, data.sources, data.keys);
-      if (result.rows.length) {
+      if (result.rows.length && shareable) {
         await writeScanCache(key, query, data.sources, {
           ebay: result.ebay,
           mercari: result.mercari,

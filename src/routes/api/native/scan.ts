@@ -53,7 +53,7 @@ export const Route = createFileRoute("/api/native/scan")({
         // them server-side means that promise cannot quietly regress the next
         // time someone edits a native client: the phones run their paid desks
         // on-device, and this endpoint only ever serves the free-desk book.
-        const cacheKey = scanCacheKey(query, sources, false);
+        const cacheKey = scanCacheKey(query, sources);
         const cached = await readScanCache(cacheKey);
         if (cached && Date.now() - cached.at < SCAN_FRESH_MS) {
           return Response.json({

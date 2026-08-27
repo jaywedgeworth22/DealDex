@@ -13,16 +13,27 @@ export type CachedScan = {
 };
 
 /**
- * Cache key.
- *
- * `paidDesks` is part of the key because results computed with ONE user's paid
- * desk keys were previously served to every other caller for the freshness
- * window — so a subscriber's PriceCharting and JustTCG data leaked into guests'
- * scans, and a guest's thinner book could just as easily be served back to the
- * subscriber who paid for the better one.
+ * Cache key. Free-desk scans only — see `isCacheable`.
  */
-export function scanCacheKey(q: string, sources: ScanSource[], paidDesks = false) {
-  return `${q.trim().toLowerCase()}::${[...sources].sort().join(",")}::${paidDesks ? "paid" : "free"}`;
+export function scanCacheKey(q: string, sources: ScanSource[]) {
+  return `${q.trim().toLowerCase()}::${[...sources].sort().join(",")}::free`;
+}
+
+/**
+ * Whether a scan may be shared through the cache at all.
+ *
+ * Results computed with ONE caller's paid desk keys were previously served to
+ * every other caller for the freshness window. Adding a `paid` flag to the key
+ * was not enough either: every subscriber then shared a single `paid` bucket
+ * regardless of WHICH desks produced it, so a JustTCG subscriber could be served
+ * a book built from someone else's PriceCharting token.
+ *
+ * There is no key that makes a cross-user cache of paid data correct, so a scan
+ * that used any paid desk is simply never cached. Paid callers pay a little
+ * latency; nobody sees anybody else's paid book.
+ */
+export function isCacheable(paidDesks: boolean): boolean {
+  return !paidDesks;
 }
 
 /** Rows older than this are swept on write. */

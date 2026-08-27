@@ -62,7 +62,7 @@ enum Appraise {
 
     static func hasConditionCode(_ text: String, _ code: String) -> Bool {
         // Bracketed, slash-joined or explicitly labelled: never a stat line.
-        let explicit = "(\\(|\\[|/|cond(ition)?[ :-]*)\\s*\(code)\\b"
+        let explicit = "(\\(|\\[|/|\\bcond(ition)?\\b[ :-]*)\\s*\(code)\\b"
         if text.range(of: explicit, options: [.regularExpression, .caseInsensitive]) != nil { return true }
         // Otherwise it must be a standalone token.
         let standalone = "(^|[^a-z0-9])\(code)([^a-z0-9]|$)"
@@ -83,12 +83,17 @@ enum Appraise {
 
     static func conditionMult(_ text: String) -> Double {
         let t = text.lowercased()
-        // Spelled out is unambiguous and wins.
-        if t.contains("damaged") || t.contains("poor condition") { return 0.2 }
-        if t.contains("heavily played") || t.contains("heavy play") { return 0.35 }
-        if t.contains("moderately played") || t.contains("moderate play") { return 0.55 }
-        if t.contains("lightly played") || t.contains("light play") { return 0.8 }
-        if t.contains("near mint") || t.contains("mint condition") { return 1 }
+        // Spelled out is unambiguous and wins — but word-bound it.  A bare
+        // `contains("damaged")` also matches "UNDAMAGED", which is a common
+        // seller word and would have applied the 0.2x haircut to a clean card.
+        func has(_ pattern: String) -> Bool {
+            t.range(of: "\\b\(pattern)\\b", options: [.regularExpression]) != nil
+        }
+        if has("damaged") || has("poor condition") { return 0.2 }
+        if has("heavily played") || has("heavy play") { return 0.35 }
+        if has("moderately played") || has("moderate play") { return 0.55 }
+        if has("lightly played") || has("light play") { return 0.8 }
+        if has("near mint") || has("mint condition") { return 1 }
 
         if hasConditionCode(t, "dmg") { return 0.2 }
         if hasConditionCode(t, "hp") { return 0.35 }

@@ -1,7 +1,6 @@
 import AuthenticationServices
 import CryptoKit
 import Foundation
-import Security
 import UIKit
 
 enum NativeAuthError: LocalizedError {
@@ -33,10 +32,13 @@ enum NativeAuth {
     private static var heldPresenter: NativeAuthPresenter?
 
     /// PKCE verifier: high-entropy, generated per attempt, never leaves the app.
+    ///
+    /// Uses CryptoKit's own CSPRNG rather than `SecRandomCopyBytes`, whose
+    /// OSStatus we were discarding — on failure the buffer stayed as 32 zero
+    /// bytes and every device would have produced the same, entirely
+    /// predictable verifier.  `SymmetricKey(size:)` cannot fail that way.
     private static func newVerifier() -> String {
-        var bytes = [UInt8](repeating: 0, count: 32)
-        _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-        return Data(bytes).base64URLEncoded()
+        SymmetricKey(size: .bits256).withUnsafeBytes { Data($0).base64URLEncoded() }
     }
 
     private static func challenge(for verifier: String) -> String {

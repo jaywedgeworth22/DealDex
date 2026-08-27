@@ -82,3 +82,11 @@ test("the HP guard still holds, and its cost is documented", () => {
   assert.equal(cond("eBay Gyarados 6/102 HP $30"), "NM");
   assert.equal(cond("eBay Gyarados 6/102 Heavily Played $30"), "HP");
 });
+
+test("an UNDAMAGED card is not read as damaged", () => {
+  // The web parser was already word-bounded, but both phone clients used a bare
+  // substring test, so "UNDAMAGED" — a common seller word — took the 0.2x DMG
+  // haircut. Pinned here so the web never drifts to match.
+  assert.equal(cond("eBay Charizard Base Set 4/102 UNDAMAGED $620"), "NM");
+  assert.equal(cond("eBay Charizard Base Set 4/102 damaged $620"), "DMG");
+});

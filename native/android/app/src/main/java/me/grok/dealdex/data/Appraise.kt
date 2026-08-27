@@ -63,7 +63,7 @@ object Appraise {
 
     fun hasConditionCode(text: String, code: String): Boolean {
         // Bracketed, slash-joined or explicitly labelled: never a stat line.
-        if (Regex("([(\\[/]|cond(ition)?[ :-]*)\\s*$code\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)) {
+        if (Regex("([(\\[/]|\\bcond(ition)?\\b[ :-]*)\\s*$code\\b", RegexOption.IGNORE_CASE).containsMatchIn(text)) {
             return true
         }
         val re = Regex("(^|[^a-z0-9])$code([^a-z0-9]|$)", RegexOption.IGNORE_CASE)
@@ -82,12 +82,15 @@ object Appraise {
 
     fun detectCondition(text: String): Double {
         val t = text.lowercase()
-        // Spelled out is unambiguous and wins.
-        if ("damaged" in t || "poor condition" in t) return 0.2
-        if ("heavily played" in t || "heavy play" in t) return 0.35
-        if ("moderately played" in t || "moderate play" in t) return 0.55
-        if ("lightly played" in t || "light play" in t) return 0.8
-        if ("near mint" in t || "mint condition" in t) return 1.0
+        // Spelled out is unambiguous and wins — but word-bound it.  A bare
+        // `"damaged" in t` also matches "UNDAMAGED", which is a common seller
+        // word and would have applied the 0.2x haircut to a clean card.
+        fun has(pattern: String) = Regex("\\b$pattern\\b").containsMatchIn(t)
+        if (has("damaged") || has("poor condition")) return 0.2
+        if (has("heavily played") || has("heavy play")) return 0.35
+        if (has("moderately played") || has("moderate play")) return 0.55
+        if (has("lightly played") || has("light play")) return 0.8
+        if (has("near mint") || has("mint condition")) return 1.0
 
         if (hasConditionCode(t, "dmg")) return 0.2
         if (hasConditionCode(t, "hp")) return 0.35
