@@ -96,28 +96,48 @@ above `MIN_MATCH_SCORE`.
 - `scripts/native-scan.test.mjs` — the guard test flipped from "the scanner is
   gone" to "the scanner is real".
 
-## NOT verified here — needs a physical iPhone
+## Shipped, and what the ship did and did not prove
 
-No Xcode in this session, so the Swift is **compile-unverified**, and
-`DataScannerViewController` does not run in the Simulator even once it builds.
-Before this ships:
+Merged as `121ea10` (PR #203, squash).  That push fired `ios-ship.yml` run #212
+on GitHub-hosted macOS, which is the first time real Xcode has seen this code.
 
-1. `cd native/ios && xcodegen generate`, then
-   `xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
-   -destination 'generic/platform=iOS Simulator' build`.
-2. Confirm `VisionKit` and `AVFoundation` link.  They should come in through
-   Swift autolinking; `project.yml` `dependencies:` was deliberately left alone
-   rather than adding entries that could not be regenerated into the `.pbxproj`
-   from this session.  If the link fails, add both there and regenerate.
-3. Run on a **real iPhone** — not the Simulator.  Point it at a card and check
-   that the lines under the viewfinder are the card's actual text, that the
-   button fills in the real name, and that pointing at a blank surface leaves
-   the button disabled rather than offering anything.
-4. Deny camera permission once and confirm the Settings copy appears rather than
-   a black view.
-5. `xcrun simctl io booted screenshot` for the Scan tab (the camera button is
-   back next to the search field); the scanner screen itself has to be captured
-   on the device.
+**Compile: PROVEN.**  `** ARCHIVE SUCCEEDED **` — `CardScannerView`,
+`CardTextReader`, `CardTextScanner` and the `VisionKit` / `AVFoundation`
+imports all build against the real SDK.  The open question this note was
+written under is closed.
+
+**Linking: PROVEN.**  Swift autolinking pulled in VisionKit and AVFoundation
+with no `dependencies:` entry in `project.yml`.  Leaving that file alone was
+the right call; do not add them.
+
+**Shipped:** `1.0.59 (202608272038)` for `net.dealdex`, `** EXPORT SUCCEEDED **`,
+build id `f00d54b5-9552-41c5-b9d4-f414d2e8c30b`, `internal=IN_BETA_TESTING` —
+internal testers can install it.
+
+**Still NOT proven — needs a physical iPhone.**  A green archive says the code
+compiles, not that the camera reads a card.  `DataScannerViewController` does
+not run in the Simulator at all, so nothing about the scanner's actual
+behaviour has been observed by anyone yet:
+
+1. Point it at a card.  The lines under the viewfinder must be that card's real
+   text, and the button must fill in the real name.
+2. Point it at a blank surface.  The button must stay disabled and read "No card
+   name read yet" — it must not offer anything.
+3. Deny camera permission once.  The Settings copy must appear, not a black view.
+4. Check the name heuristic against a card whose set name is set in larger type
+   than the Pokemon's name — the documented failure mode is that the set name
+   wins.
+
+Two loose ends from the ship, neither blocking:
+
+- The ship script resolved `1.0.59 (202608272038)`, while `project.yml` and
+  `project.pbxproj` both still record `1.0.2 (202608230250)`.  They agree with
+  each other, so this was left alone: updating the yml without running
+  `xcodegen generate` would break that agreement, and the ship script passes
+  both values on the `xcodebuild` line anyway.  Sync them on a Mac.
+- `version-manifest publish failed (non-fatal)`, and release notes were a DRY
+  RENDER only — `IOS_TF_RELEASE_NOTES=1` is not set, so testers see the build
+  with no notes attached.
 
 ## Test
 
