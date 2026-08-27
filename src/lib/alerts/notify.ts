@@ -42,12 +42,23 @@ export async function dispatchHits(hits: AlertHit[], rules: AlertRule[]) {
     const perm = await ensureNativePermission();
     if (perm === "granted") nativeHits.forEach(showNativeHit);
   }
-  const remote = hits.filter((h) =>
-    h.channels.some((c) => c === "email" || c === "sms" || c === "pushover"),
+  // Rules saved before Email and SMS were disabled can still carry those
+  // channels, and narrowing straight to Pushover made such a rule match, log a
+  // hit, and say nothing at all. Tell the user why nothing arrived.
+  const undeliverable = hits.filter(
+    (h) => !h.channels.includes("pushover") && h.channels.some((c) => c === "email" || c === "sms"),
   );
+  if (undeliverable.length) {
+    const { toast } = await import("sonner");
+    toast(
+      `${undeliverable.length} alert${undeliverable.length === 1 ? "" : "s"} matched a rule set to Email or SMS. Those are not available yet — switch the rule to phone alerts or Pushover.`,
+    );
+  }
+
+  const remote = hits.filter((h) => h.channels.includes("pushover"));
   if (!remote.length) return;
   try {
-    await dispatchRemoteAlerts({
+    const res = await dispatchRemoteAlerts({
       data: {
         hits: remote,
         rules: rules.map((r) => ({
@@ -60,6 +71,13 @@ export async function dispatchHits(hits: AlertHit[], rules: AlertRule[]) {
         })),
       },
     });
+    const failed = res.sent.filter((s) => !s.ok);
+    if (failed.length) {
+      // Say so. Silently dropping a delivery failure is how "alerts are on" and
+      // "alerts arrive" drifted apart in the first place.
+      const { toast } = await import("sonner");
+      toast(failed[0]!.reason ?? "An alert could not be delivered.");
+    }
   } catch {
     /* offline / preview — hits still logged locally */
   }

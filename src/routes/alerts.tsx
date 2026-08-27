@@ -10,8 +10,7 @@ import { defaultRule, type AlertRule } from "@/lib/alerts/types";
 import { loadHits, loadRules, saveRules } from "@/lib/alerts/store";
 import { ensureNativePermission } from "@/lib/alerts/notify";
 import { isIos, isStandalone } from "@/lib/pwa";
-import { useCurrentUser } from "@/lib/auth/use-current-user";
-import { formatUsd } from "@/lib/utils";
+import { cn, formatUsd } from "@/lib/utils";
 import { labelSpread } from "@/lib/tcg/vs-book";
 import { MarketplaceLogo, MarketplaceToggle } from "@/components/market-logo";
 import { verdictCopy } from "@/lib/tcg/appraise";
@@ -20,7 +19,6 @@ import { Lead } from "@/components/lead";
 export const Route = createFileRoute("/alerts")({ component: AlertsPage });
 
 function AlertsPage() {
-  const user = useCurrentUser();
   const [rules, setRules] = useState<AlertRule[]>(() => loadRules());
   const hits = useMemo(() => loadHits(), [rules]);
 
@@ -38,8 +36,9 @@ function AlertsPage() {
       <p className="text-xs uppercase tracking-[0.16em] text-subtle">Watchlist</p>
       <h1 className="mt-1 font-display text-4xl tracking-tight">Alerts</h1>
       <Lead>
-        Tell DealDex what a deal looks like. Native phone alerts fire on this device. Email, SMS,
-        and Pushover use the destinations you add.
+        Tell DealDex what a deal looks like. Native phone alerts fire on this device, and Pushover
+        goes to the destination you add. Email and SMS are not wired up yet — they are listed so you
+        can see what is coming, not so you can rely on them.
       </Lead>
 
       <div className="mt-6 flex flex-wrap gap-2">
@@ -72,7 +71,6 @@ function AlertsPage() {
           <RuleCard
             key={rule.id}
             rule={rule}
-            defaultEmail={user?.primaryEmail ?? ""}
             onChange={(patch) => update(rule.id, patch)}
             onRemove={() => persist(rules.filter((r) => r.id !== rule.id))}
           />
@@ -80,9 +78,7 @@ function AlertsPage() {
         <Button
           variant="secondary"
           onClick={() => {
-            const next = defaultRule();
-            if (user?.primaryEmail) next.email = user.primaryEmail;
-            persist([...rules, next]);
+            persist([...rules, defaultRule()]);
           }}
         >
           Add Alert
@@ -124,12 +120,10 @@ function AlertsPage() {
 
 function RuleCard({
   rule,
-  defaultEmail,
   onChange,
   onRemove,
 }: {
   rule: AlertRule;
-  defaultEmail: string;
   onChange: (patch: Partial<AlertRule>) => void;
   onRemove: () => void;
 }) {
@@ -152,7 +146,9 @@ function RuleCard({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm">
-          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">Keyword</span>
+          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">
+            Keyword
+          </span>
           <Input
             value={rule.keyword}
             placeholder="All Pokémon"
@@ -160,7 +156,9 @@ function RuleCard({
           />
         </label>
         <label className="text-sm">
-          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">Max ask</span>
+          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">
+            Max ask
+          </span>
           <Input
             type="number"
             value={rule.maxPrice ?? ""}
@@ -169,7 +167,9 @@ function RuleCard({
           />
         </label>
         <label className="text-sm">
-          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">Min spread %</span>
+          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">
+            Min spread %
+          </span>
           <Input
             type="number"
             value={rule.minSpread != null ? Math.round(rule.minSpread * 100) : ""}
@@ -180,7 +180,9 @@ function RuleCard({
           />
         </label>
         <label className="text-sm">
-          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">Condition</span>
+          <span className="mb-1 block text-xs uppercase tracking-[0.14em] text-subtle">
+            Condition
+          </span>
           <select
             value={rule.condition}
             onChange={(e) => onChange({ condition: e.target.value as AlertRule["condition"] })}
@@ -217,7 +219,9 @@ function RuleCard({
             selected={rule.marketplaces.includes(m)}
             onClick={() => {
               const has = rule.marketplaces.includes(m);
-              const next = has ? rule.marketplaces.filter((x) => x !== m) : [...rule.marketplaces, m];
+              const next = has
+                ? rule.marketplaces.filter((x) => x !== m)
+                : [...rule.marketplaces, m];
               if (next.length) onChange({ marketplaces: next });
             }}
           />
@@ -229,32 +233,26 @@ function RuleCard({
           checked={rule.channels.native}
           onChange={(native) => onChange({ channels: { ...rule.channels, native } })}
         />
+        {/*
+          Email and SMS have no provider behind them. They were previously
+          toggleable and the server recorded every one as delivered, so a user
+          could switch on SMS alerts and silently never receive any. Disabled
+          until a provider is wired up.
+        */}
         <Channel
           label="Email"
-          checked={rule.channels.email}
-          onChange={(email) => onChange({ channels: { ...rule.channels, email } })}
+          checked={false}
+          onChange={() => undefined}
+          disabled
+          note="Not available yet"
         />
-        {rule.channels.email && (
-          <Input
-            type="email"
-            placeholder={defaultEmail || "you@email.com"}
-            value={rule.email}
-            onChange={(e) => onChange({ email: e.target.value })}
-          />
-        )}
         <Channel
           label="SMS"
-          checked={rule.channels.sms}
-          onChange={(sms) => onChange({ channels: { ...rule.channels, sms } })}
+          checked={false}
+          onChange={() => undefined}
+          disabled
+          note="Not available yet"
         />
-        {rule.channels.sms && (
-          <Input
-            type="tel"
-            placeholder="+1 555 0100"
-            value={rule.phone}
-            onChange={(e) => onChange({ phone: e.target.value })}
-          />
-        )}
         <Channel
           label="Pushover"
           checked={rule.channels.pushover}
@@ -286,15 +284,30 @@ function Channel({
   label,
   checked,
   onChange,
+  disabled,
+  note,
 }: {
+  disabled?: boolean;
+  note?: string;
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="inline-flex h-11 items-center gap-2 text-sm">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+    <label
+      className={cn(
+        "inline-flex h-11 items-center gap-2 text-sm",
+        disabled ? "cursor-not-allowed text-subtle" : "cursor-pointer",
+      )}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.checked)}
+      />
       {label}
+      {note && <span className="text-xs text-subtle">({note})</span>}
     </label>
   );
 }

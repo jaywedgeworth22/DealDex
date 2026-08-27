@@ -1,5 +1,79 @@
 # Current Handoff
 
+## 2026-08-27 CLAUDE — A real iOS card scanner
+
+Owner asked whether the iOS app was updated and whether it has a real card
+scanner.  Both answers were no: PR #203 is still a draft, so `main` and
+TestFlight `1.0.2 (202608230250)` still carry the fake, and the 08-26 branch had
+only **deleted** it.  This adds the replacement.
+
+`CardScannerView` in `native/ios/DealDex/ScanView.swift` runs VisionKit
+`DataScannerViewController` live text recognition on the camera feed, on the
+device.  It cannot fake a result: `CardTextReader.query(from:)` returns `nil`
+unless a name was actually read, the button then reads "No card name read yet"
+and is disabled, and every recognised line is printed verbatim under the
+viewfinder so a misread is visible before the user taps.  Unsupported hardware,
+the Simulator, denied permission and `becameUnavailableWithError` each get their
+own plain-language screen.  `NSCameraUsageDescription` added to **both**
+`Info.plist` and `project.yml` — the plist alone would vanish on the next
+`xcodegen generate`, and its absence is a hard crash on first camera use.
+
+The scanner lives inside `ScanView.swift` deliberately: a new `.swift` file only
+joins the target after `xcodegen generate` runs on a Mac, and hand-editing
+`project.pbxproj` is forbidden.  Split it out when someone regenerates.
+
+`npm test` 187/187 · typecheck clean · lint 0 errors · build green.
+
+**STILL BLOCKED ON A MAC AND A PHONE:** the Swift is compile-unverified, and
+`DataScannerViewController` does not run in the Simulator at all — the scanner
+needs a physical iPhone before it can be called working.  Checklist in
+`docs/rollouts/2026-08-27-ios-card-scanner.md`.
+
+## 2026-08-26 CLAUDE — Full-app review remediation
+
+Owner asked for a full evaluation of the website, backend, iOS app and Android
+app, then for every finding to be fixed.  Branch
+`claude/full-app-evaluation-893vtd`, based on `2440dc9`.
+
+**The pattern behind almost every P0:** something was written down before it was
+built and the writing was never revisited.  `/privacy` said the phone apps never
+send desk keys to a DealDex server; both clients POSTed all three on every scan,
+as the primary path.  iOS shipped a "Card & Slab Scanner" that reported
+"Charizard 4/102" 1.2s after opening, with no `AVCaptureSession` in the target.
+The Alerts page offered Email and SMS; the server recorded both as delivered
+without attempting a send.
+
+Fixed: on-device scanning is now primary and `/api/native/scan` **refuses** a
+`keys` payload so the promise cannot regress; the website's server-side scan is
+disclosed separately.  Native sign-in is PKCE — the `dealdex://` redirect
+carries a single-use code, not a live session token any installed app could
+claim.  Credentials moved to EncryptedSharedPreferences / Keychain,
+`allowBackup=false`.  `desk_keys` encrypted at rest.  The valuation engine's
+circular matcher, unreachable grade basis, within-desk "Desks Differ", and the
+HP-stat-as-condition bug are all fixed on all three clients.  Android is on
+targetSdk 35 with R8 and a signing config.  `npm ci` works again, so CI runs the
+same install command `vercel.json` does.
+
+`npm test` went from 97 source-grep guards to 155 including 51 that exercise
+real prices — two of which caught bugs while being written.
+
+An adversarial review of this branch caught that the FIRST version of the PKCE
+fix did not work: binding the code to a challenge is useless when the challenge
+is caller-supplied, and a `SameSite=Lax` cookie rides a top-level GET, so a
+malicious app could mint itself a code in one request.  Leg 1 now issues a
+single-use server-side `state` (`migrations/0007`) and the hand-off requires a
+tap.  Residual risk is the private-use URI scheme itself — **App Links /
+Universal Links is the next piece of native auth work**, blocked on a release
+signing fingerprint and an entitlement change.
+
+**BLOCKER FOR NATIVE SHIPS:** Swift and Kotlin are compile-unverified — that
+session had no Xcode and no Android SDK.  Run `xcodegen generate`, both
+`xcodebuild` and `./gradlew` builds, and a real-device sign-in before shipping
+either app.  `CameraScannerView.swift`'s four `project.pbxproj` entries were
+removed by hand; confirm a regenerate matches.  Full list in
+`docs/rollouts/2026-08-26-full-app-review-remediation.md`, plus the scanner
+checklist in `docs/rollouts/2026-08-27-ios-card-scanner.md`.
+
 ## 2026-08-25 ANTIGRAVITY — Configure Google/Apple/X OAuth & Polish Web Scan UI
 
 - **OAuth Authentication Configuration**:

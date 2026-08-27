@@ -18,6 +18,7 @@ import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiNativeExchangeRouteImport } from './routes/api/native/exchange'
 import { Route as ApiNativeKeysRouteImport } from './routes/api/native/keys'
 import { Route as ApiNativeOauthRouteImport } from './routes/api/native/oauth'
 import { Route as ApiNativeScanRouteImport } from './routes/api/native/scan'
@@ -68,6 +69,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiNativeExchangeRoute = ApiNativeExchangeRouteImport.update({
+  id: '/api/native/exchange',
+  path: '/api/native/exchange',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNativeKeysRoute = ApiNativeKeysRouteImport.update({
   id: '/api/native/keys',
   path: '/api/native/keys',
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
   '/api/native/oauth': typeof ApiNativeOauthRoute
   '/api/native/scan': typeof ApiNativeScanRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
   '/api/native/oauth': typeof ApiNativeOauthRoute
   '/api/native/scan': typeof ApiNativeScanRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
   '/api/native/oauth': typeof ApiNativeOauthRoute
   '/api/native/scan': typeof ApiNativeScanRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/native/exchange'
     | '/api/native/keys'
     | '/api/native/oauth'
     | '/api/native/scan'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/native/exchange'
     | '/api/native/keys'
     | '/api/native/oauth'
     | '/api/native/scan'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/native/exchange'
     | '/api/native/keys'
     | '/api/native/oauth'
     | '/api/native/scan'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   CardCardIdRoute: typeof CardCardIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiNativeExchangeRoute: typeof ApiNativeExchangeRoute
   ApiNativeKeysRoute: typeof ApiNativeKeysRoute
   ApiNativeOauthRoute: typeof ApiNativeOauthRoute
   ApiNativeScanRoute: typeof ApiNativeScanRoute
@@ -264,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/native/exchange': {
+      id: '/api/native/exchange'
+      path: '/api/native/exchange'
+      fullPath: '/api/native/exchange'
+      preLoaderRoute: typeof ApiNativeExchangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/native/keys': {
       id: '/api/native/keys'
       path: '/api/native/keys'
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   CardCardIdRoute: CardCardIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiNativeExchangeRoute: ApiNativeExchangeRoute,
   ApiNativeKeysRoute: ApiNativeKeysRoute,
   ApiNativeOauthRoute: ApiNativeOauthRoute,
   ApiNativeScanRoute: ApiNativeScanRoute,

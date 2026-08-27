@@ -32,6 +32,19 @@ object Market {
 
     private fun enc(s: String) = URLEncoder.encode(s, "UTF-8")
 
+    /**
+     * Scan eBay and Mercari.
+     *
+     * ON-DEVICE FIRST, deliberately.  `/privacy` says "the apps scan
+     * marketplaces from the device" and "they do not send those keys to DealDex
+     * servers" — but this used to call the website FIRST and POST all three paid
+     * desk keys with every scan, so the published privacy policy described
+     * something the app did not do.
+     *
+     * The website is a fallback for when the phone cannot reach the marketplaces
+     * itself, and it is never given a key.  Paid desks ([PaidDesks.blend]) only
+     * ever run here on the device.
+     */
     fun scan(
         query: String,
         keys: DeskKeys = DeskKeys(),
@@ -40,25 +53,21 @@ object Market {
     ): List<ScoredListing> {
         val site = origin.trim().trimEnd('/').ifBlank { "https://dealdex.net" }
         try {
-            val rows = scanViaSite(site, query, keys, sources)
+            val rows = scanOnDevice(query, keys, sources)
             if (rows.isNotEmpty()) return rows
         } catch (_: Exception) {
-            // Fall through to on-device scrape.  Scan never requires sign-in.
+            // Phone could not reach eBay/Mercari.  Fall back to the website's
+            // free-desk book rather than showing nothing.
         }
-        return scanOnDevice(query, keys, sources)
+        return scanViaSite(site, query, sources)
     }
 
-    private fun scanViaSite(origin: String, query: String, keys: DeskKeys, sources: Collection<String>): List<ScoredListing> {
+    private fun scanViaSite(origin: String, query: String, sources: Collection<String>): List<ScoredListing> {
+        // No `keys` field.  The endpoint refuses them and the privacy policy
+        // says they never leave the phone; both halves have to stay true.
         val payload = JSONObject()
             .put("q", query)
             .put("sources", JSONArray(sources.toList()))
-            .put(
-                "keys",
-                JSONObject()
-                    .put("justtcg", keys.justTcg)
-                    .put("pricecharting", keys.priceCharting)
-                    .put("pokemontcg", keys.pokemonTcg),
-            )
             .toString()
         val req = Request.Builder()
             .url("$origin/api/native/scan")
@@ -158,17 +167,24 @@ object Market {
         }.sortedByDescending { it.appraisal?.spread ?: -99.0 }
     }
 
+    /**
+     * Pick the card a listing is actually for.
+     *
+     * This used to return whichever card's market price sat closest to the
+     * listing's own ask — so the ask chose the card, and the card then decided
+     * whether the ask was a deal.  Circular, and it hid the underpriced listings
+     * the app exists to find.  Now: name evidence, or nothing.
+     */
     private fun pickCard(cards: List<TcgCard>, listing: LiveListing): TcgCard? {
         if (cards.isEmpty()) return null
         val q0 = Appraise.significantTokens(Appraise.nameQuery(listing.title)).firstOrNull()
-        val pool = if (q0 != null) {
-            val named = cards.filter { it.name.lowercase().contains(q0) }
-            if (named.isNotEmpty()) named else cards
-        } else cards
-        val priced = pool.filter { it.finishes.any { f -> f.market != null } }
-        val use = priced.ifEmpty { pool }
-        val ask = (listing.price ?: 0.0) + listing.shipping
-        return use.minByOrNull { kotlin.math.abs((Appraise.pickMarket(it) ?: 0.0) - ask) }
+            ?: return null
+        val named = cards.filter { it.name.lowercase().contains(q0) }
+        if (named.isEmpty()) return null
+        val priced = named.filter { it.finishes.any { f -> f.market != null } }
+        val use = priced.ifEmpty { named }
+        // Deterministic and price-independent.
+        return use.minByOrNull { it.id }
     }
 
     fun searchCards(name: String): List<TcgCard> {

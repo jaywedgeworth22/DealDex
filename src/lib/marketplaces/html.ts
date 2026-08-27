@@ -3,21 +3,88 @@ const GENERIC = new Set(["pokemon", "pokémon", "tcg", "card", "cards", "holo", 
 export const SKIP_LISTING =
   /\b(lots?\b|\d+\s+cards\b|bulk|binder|choose your|pick your|you choose|you pick|select your|complete your|playset|wholesale|empty box|\betb\b|booster box|booster pack|code card|ptcgo|online code|2 card minimum|gold plates?|gold plated|gold metal|fan art|3d[- ]printed|proxy|custom\b|metal card|mystery|short sleeve|t-?shirt|hoodie|plush|apparel)\b/i;
 
+/**
+ * Named entities, as a table. The previous inline `.replace()` chain had itself
+ * been entity-decoded at some point, leaving five self-replacements (`&` -> `&`,
+ * `"` -> `"`, `<` -> `<`, `>` -> `>`, `'` -> `'`) that silently did nothing, so
+ * scraped titles rendered as `Charizard &amp; Venusaur`. A table cannot rot the
+ * same way, and `scripts/decode-html.test.mjs` pins the behaviour.
+ */
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: "&",
+  quot: '"',
+  apos: "'",
+  lt: "<",
+  gt: ">",
+  nbsp: " ",
+  eacute: "é",
+  Eacute: "É",
+  egrave: "è",
+  ndash: "–",
+  mdash: "—",
+  hellip: "…",
+  rsquo: "’",
+  lsquo: "‘",
+  ldquo: "“",
+  rdquo: "”",
+  deg: "°",
+  times: "×",
+};
+
 export function decodeHtml(s: string) {
-  return s
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&/g, "&")
-    .replace(/"/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&#x27;/g, "'")
-    .replace(/'/g, "'")
-    .replace(/</g, "<")
-    .replace(/>/g, ">")
-    .replace(/&eacute;/g, "é")
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
-    .replace(/\s+/g, " ")
-    .trim();
+  return (
+    s
+      // Tags first: otherwise `&lt;b&gt;` would decode into a real tag that the
+      // strip pass has already run past.
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) =>
+        String.fromCodePoint(Number.parseInt(hex, 16)),
+      )
+      .replace(/&#(\d+);/g, (_, dec: string) => String.fromCodePoint(Number(dec)))
+      .replace(/&([a-zA-Z]+);/g, (whole, name: string) => NAMED_ENTITIES[name] ?? whole)
+      .replace(/\s+/g, " ")
+      .trim()
+  );
+}
+
+/** Undisclosed shipping guess when a marketplace snippet does not carry one. */
+export const ASSUMED_SHIPPING: Record<"ebay" | "mercari", number> = {
+  ebay: 4.47,
+  mercari: 4.49,
+};
+
+export type ShippingRead = { amount: number; estimated: boolean };
+
+/**
+ * Read shipping out of a search-result snippet.
+ *
+ * The old pattern ran `\$X.XX (delivery|shipping)` across a 700-character chunk
+ * that routinely spilled into the NEXT listing, so a neighbour's asking price
+ * could become this listing's shipping and land straight in the all-in. We only
+ * look at the head of the chunk, require the price to sit immediately before the
+ * shipping word, and reject values too large to be postage on a single card.
+ */
+export function parseShipping(chunk: string, marketplace: "ebay" | "mercari"): ShippingRead {
+  const fallback = ASSUMED_SHIPPING[marketplace];
+  const window = chunk.slice(0, 300);
+
+  const free = window.match(/\bfree\s+(?:delivery|shipping|postage)\b/i);
+  const priced = window.match(
+    /\+?\s*\$([0-9]{1,3}(?:,[0-9]{3})*\.\d{2})\s{0,3}(?:for\s+)?(?:delivery|shipping|postage)\b/i,
+  );
+
+  // Whichever appears FIRST belongs to this listing. Testing for "free" across
+  // the whole window let a neighbouring result's "Free delivery" zero out this
+  // row's real, explicitly quoted postage.
+  const freeAt = free?.index ?? Infinity;
+  const pricedAt = priced?.index ?? Infinity;
+  if (freeAt === Infinity && pricedAt === Infinity) return { amount: fallback, estimated: true };
+  if (freeAt < pricedAt) return { amount: 0, estimated: false };
+
+  const n = parseMoney(priced?.[1]);
+  // Postage on a single card is not $80. Anything above that is a mis-read.
+  if (n != null && n <= 60) return { amount: n, estimated: false };
+  return { amount: fallback, estimated: true };
 }
 
 export const ALL_POKEMON_QUERY = "pokemon tcg";
@@ -71,16 +138,15 @@ export function parseListedAt(text: string): string | null {
   if (ago) {
     const n = Number(ago[1]);
     const unit = ago[2]!.toLowerCase();
-    const ms =
-      unit.startsWith("minute")
-        ? n * 60_000
-        : unit.startsWith("hour")
-          ? n * 3_600_000
-          : unit.startsWith("day")
-            ? n * 86_400_000
-            : unit.startsWith("week")
-              ? n * 604_800_000
-              : n * 2_592_000_000;
+    const ms = unit.startsWith("minute")
+      ? n * 60_000
+      : unit.startsWith("hour")
+        ? n * 3_600_000
+        : unit.startsWith("day")
+          ? n * 86_400_000
+          : unit.startsWith("week")
+            ? n * 604_800_000
+            : n * 2_592_000_000;
     return new Date(Date.now() - ms).toISOString();
   }
   const named = text.match(

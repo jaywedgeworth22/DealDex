@@ -17,29 +17,35 @@ function pct(value: number, start: number, span: number) {
 export function PriceRangeBar({ ask, book, low, high, compact }: Props) {
   const vs = describeVsBook(ask, book, low, high);
   const hasAsk = ask != null && Number.isFinite(ask);
-  const points = [low, high, book, ask].filter((n): n is number => n != null && Number.isFinite(n) && n >= 0);
+  const points = [low, high, book, ask].filter(
+    (n): n is number => n != null && Number.isFinite(n) && n >= 0,
+  );
   if (points.length < 2) {
-    return (
-      <p className={cn("text-xs text-subtle", compact && "mt-1")}>
-        {vs.headline}
-      </p>
-    );
+    return <p className={cn("text-xs text-subtle", compact && "mt-1")}>{vs.headline}</p>;
   }
 
-  const min = Math.min(...points);
-  const max = Math.max(...points);
-  const pad = Math.max((max - min) * 0.1, max * 0.04, 0.75);
-  const start = Math.max(0, min - pad);
-  const end = max + pad;
+  // The axis is the DESK RANGE, because that is what the two numbers printed at
+  // its ends say it is. The old domain was [min, max] across low/high/book/ask,
+  // so as soon as the ask fell outside the desk range — exactly the case worth
+  // reading — the printed endpoints stopped describing the bar's edges and the
+  // dot's position misled. An out-of-range ask is now pinned at the edge and
+  // drawn differently instead.
+  const bandLo = low ?? (book != null ? book * 0.92 : Math.min(...points));
+  const bandHi = high ?? (book != null ? book * 1.08 : Math.max(...points));
+  const lo = Math.min(bandLo, bandHi);
+  const hi = Math.max(bandLo, bandHi);
+  const pad = Math.max((hi - lo) * 0.12, hi * 0.04, 0.75);
+  const start = Math.max(0, lo - pad);
+  const end = hi + pad;
   const span = end - start;
-  const bandL = low != null ? pct(low, start, span) : book != null ? pct(book * 0.92, start, span) : 30;
-  const bandR = high != null ? pct(high, start, span) : book != null ? pct(book * 1.08, start, span) : 70;
+  const bandL = pct(lo, start, span);
+  const bandR = pct(hi, start, span);
   const left = Math.min(bandL, bandR);
   const width = Math.max(2, Math.abs(bandR - bandL));
   const askLeft = ask != null ? pct(ask, start, span) : null;
+  const askOutside = ask != null && (ask < start || ask > end);
   const bookLeft = book != null ? pct(book, start, span) : null;
-  const tone =
-    vs.tone === "good" ? "bg-deal-good" : vs.tone === "bad" ? "bg-deal-bad" : "bg-fg";
+  const tone = vs.tone === "good" ? "bg-deal-good" : vs.tone === "bad" ? "bg-deal-bad" : "bg-fg";
 
   return (
     <div className={cn("min-w-0", compact ? "mt-2 space-y-1.5" : "space-y-2")}>
@@ -77,9 +83,16 @@ export function PriceRangeBar({ ask, book, low, high, compact }: Props) {
             className={cn(
               "absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-[var(--shadow-border)]",
               tone,
+              // Pinned at the edge because the ask sits outside what the desks
+              // print. The ring says "further than the bar can show".
+              askOutside && "ring-2 ring-bg",
             )}
             style={{ left: `${askLeft}%` }}
-            title={`Ask ${formatUsd(ask)}`}
+            title={
+              askOutside
+                ? `Ask ${formatUsd(ask)} — outside the desk range`
+                : `Ask ${formatUsd(ask)}`
+            }
           />
         )}
       </div>
@@ -90,7 +103,11 @@ export function PriceRangeBar({ ask, book, low, high, compact }: Props) {
           {" · "}
           <span
             className={cn(
-              vs.tone === "good" ? "text-deal-good" : vs.tone === "bad" ? "text-deal-bad" : "text-fg",
+              vs.tone === "good"
+                ? "text-deal-good"
+                : vs.tone === "bad"
+                  ? "text-deal-bad"
+                  : "text-fg",
             )}
           >
             {vs.short}
@@ -105,7 +122,7 @@ export function PriceRangeBar({ ask, book, low, high, compact }: Props) {
       ) : !compact ? (
         <p className="text-xs text-subtle">
           {hasAsk
-            ? "Dot is this listing’s all-in ask. Shaded band is what the desks currently print. Tick is the middle of the book."
+            ? `Dot is this listing’s all-in ask${askOutside ? ", pinned at the edge because it falls outside the desk range" : ""}. Shaded band is what the desks currently print. Tick is the middle of the book.`
             : "Shaded band is the spread across TCGPlayer, Cardmarket, sold comps, and any keys you added. Tick is the middle."}
         </p>
       ) : null}

@@ -1,5 +1,13 @@
 import type { LiveListing, ScanSource } from "./types";
-import { BROWSER_HEADERS, SKIP_LISTING, decodeHtml, parseListedAt, parseMoney, titleMatchesQuery } from "./html";
+import {
+  BROWSER_HEADERS,
+  SKIP_LISTING,
+  decodeHtml,
+  parseListedAt,
+  parseMoney,
+  parseShipping,
+  titleMatchesQuery,
+} from "./html";
 
 const ID_RE: Record<ScanSource, RegExp> = {
   ebay: /ebay\.com\/itm\/(\d{12,14})/i,
@@ -52,10 +60,10 @@ export function parseBraveListings(
     const price = priceFrom(block);
     if (price != null && price >= 1_000_000) continue;
 
-    const braveImg = block.match(/src="(https:\/\/imgs\.search\.brave\.com\/[^"]+)"/)?.[1] ?? null;
-    const image =
-      braveImg ||
-      (marketplace === "mercari" ? `https://u-mercari-images.mercdn.net/photos/${id}_1.jpg` : null);
+    const image = block.match(/src="(https:\/\/imgs\.search\.brave\.com\/[^"]+)"/)?.[1] ?? null;
+    // A search-engine snippet rarely carries a real shipping line, so read it
+    // when present and fall back to the disclosed assumption otherwise.
+    const ship = parseShipping(block, marketplace);
 
     out.push({
       id,
@@ -63,7 +71,8 @@ export function parseBraveListings(
       title,
       url: listingUrl(marketplace, id),
       price,
-      shipping: marketplace === "ebay" ? 4.47 : 4.49,
+      shipping: ship.amount,
+      shippingEstimated: ship.estimated,
       image,
       listedAt: parseListedAt(block),
     });

@@ -1,6 +1,28 @@
 import type { ParsedListing, TcgCard } from "./types";
 import { fetchCard, searchCardIndex } from "./tcgdex";
 
+/**
+ * Set words so common across Pokemon products that matching one says nothing
+ * about which set a listing is from.
+ */
+const GENERIC_SET_TOKENS = new Set([
+  "series",
+  "promo",
+  "promos",
+  "collection",
+  "collections",
+  "gallery",
+  "trainer",
+  "deck",
+  "box",
+  "black",
+  "star",
+  "pokemon",
+  "pokémon",
+  "card",
+  "cards",
+]);
+
 function tokens(s: string) {
   return s
     .toLowerCase()
@@ -18,7 +40,11 @@ export function scoreMatch(
   const nameToks = tokens(card.name);
   const qToks = tokens(parsed.nameQuery);
   const titleToks = tokens(parsed.title);
-  const overlap = qToks.filter((t) => nameToks.includes(t) || titleToks.includes(t));
+  // Only count tokens that appear in THIS CARD's name. The old condition also
+  // accepted `titleToks.includes(t)` — but qToks are derived from the listing
+  // title, so that arm matched for every candidate equally and handed the same
+  // bonus to a completely unrelated card.
+  const overlap = qToks.filter((t) => nameToks.includes(t));
   if (overlap.length) {
     score += overlap.length * 8;
     reasons.push("Name overlap");
@@ -38,14 +64,24 @@ export function scoreMatch(
   if (parsed.setHint && card.setName) {
     const set = card.setName.toLowerCase();
     const hint = parsed.setHint.toLowerCase();
-    const exact = hint === "base set" ? set === "base set" : set === hint || (hint.length >= 8 && set.includes(hint));
+    const exact =
+      hint === "base set"
+        ? set === "base set"
+        : set === hint || (hint.length >= 8 && set.includes(hint));
     if (exact) {
       score += 22;
       reasons.push(card.setName);
     }
   } else if (card.setName) {
-    const setToks = tokens(card.setName);
-    if (setToks.some((t) => t.length > 3 && titleToks.includes(t))) {
+    // Fallback when the title carries no recognised set alias. One shared word
+    // is not evidence: "POP Series 4" used to score 12 against any listing whose
+    // title happened to contain "Series", which is how a Charmander promo got
+    // matched to a Pokemon Fan Club trainer card. Require either two distinctive
+    // tokens or one long one.
+    const hits = tokens(card.setName).filter(
+      (t) => t.length > 3 && !GENERIC_SET_TOKENS.has(t) && titleToks.includes(t),
+    );
+    if (hits.length >= 2 || (hits.length === 1 && hits[0]!.length >= 7)) {
       score += 12;
       reasons.push(card.setName);
     }

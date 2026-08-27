@@ -227,7 +227,7 @@ function ScanPane({
                   </p>
                 )}
                 <p className="mt-1 font-mono text-xs">
-                  {formatUsd(row.listing.price)} ask
+                  {formatUsd((row.listing.price ?? 0) + row.listing.shipping)} ask
                   <span className="mx-1.5 text-subtle">·</span>
                   {formatUsd(row.appraisal?.adjustedMarket)} book
                   <span className={cn("ml-1.5", tone)}>{labelSpread(row.appraisal?.spread)}</span>
@@ -248,18 +248,20 @@ function SettingsPane({ platform }: { platform: Platform }) {
       <h2 className="font-display text-xl tracking-tight">This Phone</h2>
       <p className="mt-1 text-xs text-muted">Sign in to back up keys. Keys stay on the device.</p>
       <div className={cn("mt-3 space-y-2 bg-surface p-3 text-xs shadow-[var(--shadow-border)]", box)}>
+        {/*
+          Email and password sign-in is gone from both apps — the endpoint it
+          used answers 410. A marketing mock that still shows it advertises a
+          screen the download does not have.
+        */}
         <p className="text-xs uppercase tracking-[0.12em] text-subtle">Account</p>
-        <p>
-          Email
-          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">you@email.com</span>
-        </p>
-        <p>
-          Password
-          <span className="mt-1 block rounded-sm bg-elevated px-2 py-1.5 text-muted">••••••••</span>
-        </p>
-        <span className="inline-flex h-8 items-center rounded-full bg-accent px-3 text-xs text-accent-fg">
-          Sign In
-        </span>
+        {["Continue with Google", "Continue with Apple", "Continue with X"].map((label) => (
+          <span
+            key={label}
+            className="block rounded-sm bg-elevated px-2 py-1.5 text-center text-muted"
+          >
+            {label}
+          </span>
+        ))}
       </div>
       <div className={cn("mt-3 space-y-2 bg-surface p-3 text-xs shadow-[var(--shadow-border)]", box)}>
         <p className="text-xs uppercase tracking-[0.12em] text-subtle">API Desks</p>

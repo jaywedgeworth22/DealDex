@@ -4,8 +4,11 @@ Pokémon listing desk.  User-facing subtitle: **Find the best-priced Pokémon ca
 listings**.  Scan live eBay and Mercari Buy It Now singles, then score
 the ask against TCGPlayer, Cardmarket, TCGCSV, eBay solds, and optional paid
 desks. Website name **DealDex**. Android and iPhone apps scan on the device;
-they do not wrap the website. API keys live on the phone; sign-in is optional
-for backup.
+they do not wrap the website. API keys live on the phone and must never reach a
+DealDex server — `/api/native/scan` refuses a `keys` payload and `/privacy` says
+so. The **website** scan runs server-side and does send the browser's saved
+keys; keep those two statements distinct in any copy you write. Sign-in is
+optional for backup, and backed-up keys are encrypted at rest.
 
 GitHub: `jaywedgeworth22/DealDex` (public). Integration tree:
 `/Users/jay/Code/DealDex`. Slack `repo:` name: **`DealDex`**. Acronym: **`DD`**.

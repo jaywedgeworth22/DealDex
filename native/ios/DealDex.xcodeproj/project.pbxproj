@@ -10,7 +10,6 @@
 		08D984D57317EDE9DDA948A8 /* MarketplaceMarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1D125C85BFF24812178C0 /* MarketplaceMarks.swift */; };
 		115F5E513207288F44040D12 /* Appraise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */; };
 		2F44994D49C88517486A33FF /* EvaluatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A1CF63DDE0119868E72E12 /* EvaluatorView.swift */; };
-		354B41BBDAB16AD517908F94 /* CameraScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2B6805C7A7F5F37A28C82D /* CameraScannerView.swift */; };
 		4528ED88A9A6DC8FD799755B /* CardDossierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8145DEE26D0AAA855D8E235F /* CardDossierView.swift */; };
 		4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6ED06FC5E7DA4B309E90F /* Models.swift */; };
 		68974D10BC0FEF2DC8A3A261 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */; };
@@ -50,7 +49,6 @@
 		8145DEE26D0AAA855D8E235F /* CardDossierView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDossierView.swift; sourceTree = "<group>"; };
 		97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		A95FBB7F23AF521CD5F892A5 /* SavedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedStore.swift; sourceTree = "<group>"; };
-		AC2B6805C7A7F5F37A28C82D /* CameraScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScannerView.swift; sourceTree = "<group>"; };
 		AE604E54D04D230B428A089D /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
 		BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
@@ -107,7 +105,6 @@
 				CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */,
 				E39A8CE869FC4AB1931CB1DF /* AppUpdatePrompt.swift */,
 				BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */,
-				AC2B6805C7A7F5F37A28C82D /* CameraScannerView.swift */,
 				8145DEE26D0AAA855D8E235F /* CardDossierView.swift */,
 				5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */,
 				E4102913782BABF7A13EFA78 /* DealDexBrand.swift */,
@@ -206,7 +203,6 @@
 				E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */,
 				E8B752A76C0F2F91BBF49151 /* AppUpdatePrompt.swift in Sources */,
 				115F5E513207288F44040D12 /* Appraise.swift in Sources */,
-				354B41BBDAB16AD517908F94 /* CameraScannerView.swift in Sources */,
 				4528ED88A9A6DC8FD799755B /* CardDossierView.swift in Sources */,
 				82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */,
 				738AFF1EAE0CCF70FB43D190 /* DealDexBrand.swift in Sources */,

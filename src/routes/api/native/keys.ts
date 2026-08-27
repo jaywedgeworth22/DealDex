@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getSql } from "@/lib/db";
 import { getSessionUser } from "@/lib/auth/verify.server";
+import { decryptSecret, encryptSecret } from "@/lib/server/secret-box";
 
 function bearer(request: Request): string | undefined {
   const h = request.headers.get("authorization") ?? "";
@@ -9,10 +10,15 @@ function bearer(request: Request): string | undefined {
 }
 
 function clean(input: unknown) {
-  if (!input || typeof input !== "object") return { justtcg: "", pricecharting: "", pokemontcg: "" };
+  if (!input || typeof input !== "object")
+    return { justtcg: "", pricecharting: "", pokemontcg: "" };
   const raw = input as Record<string, unknown>;
   const one = (k: string) => (typeof raw[k] === "string" ? raw[k].trim().slice(0, 200) : "");
-  return { justtcg: one("justtcg"), pricecharting: one("pricecharting"), pokemontcg: one("pokemontcg") };
+  return {
+    justtcg: one("justtcg"),
+    pricecharting: one("pricecharting"),
+    pokemontcg: one("pokemontcg"),
+  };
 }
 
 export const Route = createFileRoute("/api/native/keys")({
@@ -27,7 +33,18 @@ export const Route = createFileRoute("/api/native/keys")({
           pricecharting: string | null;
           pokemontcg: string | null;
         }>`select justtcg, pricecharting, pokemontcg from desk_keys where user_id = ${user.id}`;
-        return Response.json(clean(rows[0] ?? {}));
+        const row = rows[0];
+        return Response.json(
+          clean(
+            row
+              ? {
+                  justtcg: decryptSecret(row.justtcg),
+                  pricecharting: decryptSecret(row.pricecharting),
+                  pokemontcg: decryptSecret(row.pokemontcg),
+                }
+              : {},
+          ),
+        );
       },
       POST: async ({ request }) => {
         const user = await getSessionUser(bearer(request));
@@ -36,7 +53,13 @@ export const Route = createFileRoute("/api/native/keys")({
         const sql = await getSql();
         await sql`
           insert into desk_keys (user_id, justtcg, pricecharting, pokemontcg, updated_at)
-          values (${user.id}, ${data.justtcg}, ${data.pricecharting}, ${data.pokemontcg}, now())
+          values (
+            ${user.id},
+            ${encryptSecret(data.justtcg)},
+            ${encryptSecret(data.pricecharting)},
+            ${encryptSecret(data.pokemontcg)},
+            now()
+          )
           on conflict (user_id) do update set
             justtcg = excluded.justtcg,
             pricecharting = excluded.pricecharting,

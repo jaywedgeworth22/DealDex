@@ -6,6 +6,7 @@ import {
   isBroadQuery,
   parseListedAt,
   parseMoney,
+  parseShipping,
   titleMatchesQuery,
 } from "./html";
 import { fetchJina, parseJinaEbay } from "./jina";
@@ -66,8 +67,7 @@ export function parseEbayHtml(html: string, query = ""): LiveListing[] {
     if (price == null || price < 2.5 || price >= 1_000_000) continue;
 
     const img = chunk.match(/src=(https:\/\/i\.ebayimg\.com\/images\/g\/[^ "]+)/)?.[1] ?? null;
-    const free = /Free (?:delivery|shipping)/i.test(chunk);
-    const shipAmt = parseMoney(chunk.match(/\$([0-9,]+\.\d{2}) (?:delivery|shipping)/)?.[1]);
+    const ship = parseShipping(chunk, "ebay");
 
     out.push({
       id,
@@ -75,7 +75,8 @@ export function parseEbayHtml(html: string, query = ""): LiveListing[] {
       title,
       url: `https://www.ebay.com/itm/${id}`,
       price,
-      shipping: free ? 0 : (shipAmt ?? 4.47),
+      shipping: ship.amount,
+      shippingEstimated: ship.estimated,
       image: img,
       listedAt: parseListedAt(chunk),
     });
