@@ -1,5 +1,14 @@
 # Current Handoff
 
+## 2026-08-28 ANTIGRAVITY — Auth Fix, Fixed Origin & Polished Sign-In Buttons (PR #211)
+
+Full handoff: **`docs/rollouts/2026-08-28-auth-buttons-and-fixed-url.md`**
+
+- **Web OAuth & Datadog 503**: Resolved 503 fail-closed error on Vercel by injecting missing Datadog and OAuth API keys, and added `scripts/copy-pglite.mjs` to copy PGlite WASM binaries into Vercel serverless function libraries.  Live-verified on `https://dealdex.net`.
+- **iOS Origin Locked**: Removed the editable URL input field; locked origin to `https://dealdex.net` unmodifiable.  Migrated and cleared stale foreign preview session tokens.
+- **Polished Provider Sign-In Buttons**: Added custom vector Google (4-color Canvas), Apple, and X sign-in buttons matching Congress.Trade / Socratic.Trade aesthetic standards.  Verified in iOS Simulator with screenshot.
+- **Verification**: `npm test` (196/196 pass), `npm run typecheck`, `npm run build`, and `xcodebuild` all pass cleanly.
+
 ## 2026-08-28 CLAUDE — READ THIS FIRST: Android has never been compiled
 
 Full handoff: **`docs/rollouts/2026-08-28-handoff-android-build-and-open-items.md`**
