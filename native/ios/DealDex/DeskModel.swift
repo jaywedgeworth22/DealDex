@@ -22,7 +22,7 @@ final class DeskModel: ObservableObject {
     @Published var pokemonTcg = DeskStore.keys.pokemonTcg
     @Published var settingsNote: String?
 
-    @Published var origin = DeskStore.origin
+    var origin: String { DeskStore.defaultOrigin }
     @Published var loginEmail = DeskStore.email
     @Published var loginPassword = ""
     @Published var accountEmail = DeskStore.signedIn ? DeskStore.email : ""
@@ -113,17 +113,19 @@ final class DeskModel: ObservableObject {
         accountBusy = true
         accountNote = nil
         do {
-            let session = try await NativeAuth.signIn(origin: origin, provider: provider)
-            let site = NativeAuth.normalized(origin)
-            DeskStore.origin = site
+            let session = try await NativeAuth.signIn(origin: DeskStore.defaultOrigin, provider: provider)
             DeskStore.token = session.token
             DeskStore.email = session.email
-            self.origin = site
             let label = provider == "twitter" ? "X" : provider.capitalized
             accountEmail = session.email.isEmpty ? label : session.email
             accountNote = "Signed in with \(label).  Keys still live on this phone.  Pull or push to sync."
         } catch {
-            accountNote = error.localizedDescription + "  Scan still works without signing in."
+            let desc = error.localizedDescription
+            if desc.contains("cancelled") || desc.contains("canceled") {
+                accountNote = nil
+            } else {
+                accountNote = desc + "  Scan still works without signing in."
+            }
         }
         accountBusy = false
     }
