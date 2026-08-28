@@ -1,5 +1,28 @@
 # Current Handoff
 
+## 2026-08-28 CLAUDE — READ THIS FIRST: Android has never been compiled
+
+Full handoff: **`docs/rollouts/2026-08-28-handoff-android-build-and-open-items.md`**
+
+iOS is compiled and shipped (`1.0.59 (202608272038)`, TestFlight internal).
+Android is not.  There is no Android equivalent of `ios-ship.yml`, so 581 changed
+lines of Kotlin across 13 files have had no compiler look at them at all.
+
+On a machine with Android Studio, in order:
+
+1. `cd native/android && ANDROID_HOME=~/Library/Android/sdk ./gradlew :app:assembleDebug --no-daemon`
+2. `./gradlew :app:assembleRelease --no-daemon` — **R8 is newly enabled alongside
+   `androidx.security:security-crypto`**, and Tink registers its key managers
+   reflectively.  `app/proguard-rules.pro` guards this; the rules are unverified.
+3. Install the **release** APK, sign in, add a desk key, force-stop, reopen.  If
+   the session is gone, the keep rules failed — a green build does not prove
+   them, because R8 strips at runtime.
+
+Also open: the iOS scanner has never been pointed at a real card
+(`DataScannerViewController` does not run in the Simulator), and
+`public/DealDex.apk` still ships the pre-fix binary from #190.
+
+
 ## 2026-08-27 DEPLOYER — rebase DealDex #183 Datadog onto main
 
 Rebased `cursor/datadog-web-observability-4edf` onto current main.  Production fail-closes only without `DD_API_KEY`.  Missing RUM tokens leave RUM dark (#184).  Infisical is source of truth.  Vercel gets machine identity only.  No pasted `DD_*` on Vercel.  Extra-ship no.
