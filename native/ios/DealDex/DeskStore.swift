@@ -105,11 +105,7 @@ enum DeskStore {
     }
 
     static var origin: String {
-        get {
-            let raw = (d.string(forKey: "dealdex.origin") ?? "").trimmingCharacters(in: CharacterSet(charactersIn: "/ "))
-            return raw.isEmpty ? defaultOrigin : raw
-        }
-        set { d.set(NativeAuth.normalized(newValue), forKey: "dealdex.origin") }
+        defaultOrigin
     }
 
     static var token: String {
