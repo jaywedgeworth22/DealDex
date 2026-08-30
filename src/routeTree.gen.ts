@@ -14,6 +14,7 @@ import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
@@ -47,6 +48,11 @@ const LoginRoute = LoginRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SavedRoute = SavedRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/install': typeof InstallRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/install': typeof InstallRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/install': typeof InstallRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/install'
     | '/login'
     | '/privacy'
+    | '/privacy-policy'
     | '/saved'
     | '/settings'
     | '/card/$cardId'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/install'
     | '/login'
     | '/privacy'
+    | '/privacy-policy'
     | '/saved'
     | '/settings'
     | '/card/$cardId'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/install'
     | '/login'
     | '/privacy'
+    | '/privacy-policy'
     | '/saved'
     | '/settings'
     | '/card/$cardId'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   InstallRoute: typeof InstallRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
   CardCardIdRoute: typeof CardCardIdRoute
@@ -247,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/saved': {
@@ -321,6 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstallRoute: InstallRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
   CardCardIdRoute: CardCardIdRoute,
