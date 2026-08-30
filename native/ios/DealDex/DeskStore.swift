@@ -69,6 +69,14 @@ enum DeskStore {
     /// and paid desk keys on any device where the Keychain write failed, with
     /// no retry on the next launch.
     private static func migrateLegacyDefaults() {
+        if let customOrigin = d.string(forKey: "dealdex.origin"), !customOrigin.isEmpty {
+            let norm = NativeAuth.normalized(customOrigin)
+            if norm != defaultOrigin {
+                SecureStore.write("token", "")
+                d.removeObject(forKey: "dealdex.email")
+            }
+            d.removeObject(forKey: "dealdex.origin")
+        }
         guard !d.bool(forKey: "dealdex.securedV1") else { return }
         var allMoved = true
         for (defaultsKey, secureKey) in [
@@ -105,11 +113,7 @@ enum DeskStore {
     }
 
     static var origin: String {
-        get {
-            let raw = (d.string(forKey: "dealdex.origin") ?? "").trimmingCharacters(in: CharacterSet(charactersIn: "/ "))
-            return raw.isEmpty ? defaultOrigin : raw
-        }
-        set { d.set(NativeAuth.normalized(newValue), forKey: "dealdex.origin") }
+        defaultOrigin
     }
 
     static var token: String {

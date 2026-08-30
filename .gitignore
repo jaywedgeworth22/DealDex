@@ -39,3 +39,5 @@ public/dealdex-native-src.zip
 *.key
 
 AGENTS.project.md
+.vercel
+.idea
