@@ -20,3 +20,7 @@ Remove the Live Market Scanner heading, its explanatory sentence, and the Scan S
 - Playwright with installed Chrome at 320×800: eBay bounds `x=32, width=124`; Mercari bounds `x=164, width=124`; both share `y=393`.  The three removed strings have zero DOM matches, and `scrollWidth` does not exceed `clientWidth`.
 
 No native app changes, TestFlight upload, or manual production deployment were included.
+
+## Deployment
+
+PR #213 passed CI and Vercel checks, then squash-merged as `25ace11`.  The canonical production host updated automatically.  A second 320×800 Playwright pass against `https://dealdex.net` reproduced the local result: both controls are 124px wide on the same row, the removed copy has zero matches, and the page has no horizontal overflow.

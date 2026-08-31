@@ -1,12 +1,13 @@
 # Current Handoff
 
-## 2026-08-31 BF-FIXER — Mobile scanner source row
+## 2026-08-31 BF-FIXER — Mobile scanner source row deployed (PR #213)
 
 Full handoff: **`docs/rollouts/2026-08-31-mobile-scanner-source-row.md`**
 
 - Removed the redundant Live Market Scanner heading, explanatory sentence, and Scan Sources label.
 - Kept eBay and Mercari source toggles in one equal-width row down to a 320px viewport.  Large desktop wordmarks remain unchanged; compact wordmarks render only below the `sm` breakpoint.
 - Verified at 320×800 in headless Chrome: both toggles are 124px wide, requested copy has zero matches, and the document has no horizontal overflow.
+- Merged as `25ace11`.  Live-verified the same bounds and copy state on `https://dealdex.net` after production updated.
 
 ## 2026-08-28 ANTIGRAVITY — Auth Fix, Fixed Origin & Polished Sign-In Buttons (PR #211)
 
