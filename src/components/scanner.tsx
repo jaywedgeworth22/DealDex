@@ -169,33 +169,23 @@ export function Scanner() {
   return (
     <section className="min-w-0 space-y-4">
       <div className="rounded-2xl bg-surface p-4 shadow-[var(--shadow-border)] sm:p-5 space-y-4">
-        {/* Header & Source Toggles Row */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/20 pb-3.5">
-          <div>
-            <h2 className="text-xs uppercase tracking-[0.16em] font-semibold text-subtle">
-              Live Market Scanner
-            </h2>
-            <p className="text-xs text-muted mt-0.5">
-              Hunts Buy It Now singles and scores asks against real-time book values.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-muted mr-0.5">Scan Sources:</span>
-            <MarketplaceToggle
-              marketplace="ebay"
-              selected={sources.includes("ebay")}
-              onClick={() => toggle("ebay")}
-              count={ebayCount}
-              size="lg"
-            />
-            <MarketplaceToggle
-              marketplace="mercari"
-              selected={sources.includes("mercari")}
-              onClick={() => toggle("mercari")}
-              count={mercariCount}
-              size="lg"
-            />
-          </div>
+        <div className="grid grid-cols-2 gap-2">
+          <MarketplaceToggle
+            marketplace="ebay"
+            selected={sources.includes("ebay")}
+            onClick={() => toggle("ebay")}
+            count={ebayCount}
+            className="w-full min-w-0 max-sm:gap-1 max-sm:px-2"
+            size="lg"
+          />
+          <MarketplaceToggle
+            marketplace="mercari"
+            selected={sources.includes("mercari")}
+            onClick={() => toggle("mercari")}
+            count={mercariCount}
+            className="w-full min-w-0 max-sm:gap-1 max-sm:px-2"
+            size="lg"
+          />
         </div>
 
         {/* Search Input & Prominent SCAN Action */}
