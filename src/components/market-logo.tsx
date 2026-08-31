@@ -4,7 +4,10 @@ type Market = "ebay" | "mercari";
 type Tone = "color" | "white";
 type MarkSize = "sm" | "lg";
 
-const MARK: Record<MarkSize, { ebay: { w: number; h: number }; mercari: { w: number; h: number } }> = {
+const MARK: Record<
+  MarkSize,
+  { ebay: { w: number; h: number }; mercari: { w: number; h: number } }
+> = {
   sm: { ebay: { w: 35, h: 14 }, mercari: { w: 64, h: 14 } },
   lg: { ebay: { w: 52, h: 21 }, mercari: { w: 96, h: 21 } },
 };
@@ -169,20 +172,30 @@ export function MarketplaceToggle({
           )}
           aria-hidden="true"
         />
-        <MarketplaceLogo
-          marketplace={marketplace}
-          tone="color"
-          size={size}
-          className="shrink-0"
-        />
+        {large ? (
+          <>
+            <MarketplaceLogo
+              marketplace={marketplace}
+              tone="color"
+              size="sm"
+              className="shrink-0 sm:hidden"
+            />
+            <MarketplaceLogo
+              marketplace={marketplace}
+              tone="color"
+              size="lg"
+              className="hidden shrink-0 sm:inline-flex"
+            />
+          </>
+        ) : (
+          <MarketplaceLogo marketplace={marketplace} tone="color" size="sm" className="shrink-0" />
+        )}
       </div>
       {count != null && (
         <span
           className={cn(
             "rounded-md px-1.5 py-0.5 text-xs font-semibold tabular-nums",
-            selected
-              ? "bg-elevated text-fg"
-              : "bg-surface/60 text-muted",
+            selected ? "bg-elevated text-fg" : "bg-surface/60 text-muted",
           )}
         >
           {count}
@@ -191,4 +204,3 @@ export function MarketplaceToggle({
     </button>
   );
 }
-

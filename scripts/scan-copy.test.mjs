@@ -41,6 +41,18 @@ test("scan box has no suggested Pokémon chips and one marketplace toggle pair",
   assert.equal((scan.match(/MarketplaceToggle/g) || []).length, 3);
 });
 
+test("scan source toggles stay on one mobile row without redundant scanner copy", () => {
+  const scan = read("src/components/scanner.tsx");
+  assert.doesNotMatch(scan, /Live Market Scanner/);
+  assert.doesNotMatch(scan, /Hunts Buy It Now singles and scores asks/);
+  assert.doesNotMatch(scan, /Scan Sources:/);
+  assert.match(scan, /grid grid-cols-2 gap-2/);
+  assert.equal(
+    (scan.match(/className="w-full min-w-0 max-sm:gap-1 max-sm:px-2"/g) || []).length,
+    2,
+  );
+});
+
 test("OG card is logo-only and centers a large wordmark", () => {
   const og = read("scripts/og-dealdex.html");
   assert.match(og, /align-items:\s*center/);
