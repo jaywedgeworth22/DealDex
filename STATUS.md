@@ -4,6 +4,17 @@
 
 Public name is **DealDex.net**.  Public host is **https://dealdex.net** on Vercel.  iOS bundle is **`net.dealdex`** (team `CC8UTF7ATG`, ASC appleId `6802474288`).  Android package stays **`me.grok.dealdex`**.  Dated stanzas below that name another host or iOS bundle are archaeology.
 
+## 2026-09-01 GROK — Sentry fleet adoption (Feedback + Vercel DSN)
+
+Full handoff: **`docs/rollouts/2026-09-01-sentry-fleet-adoption.md`**
+
+- User Feedback widget on the web client.  Replay stays 100% error / 10% session, masked.
+- `VITE_SENTRY_DSN` baked into the existing Vercel `dealdex` project (production + preview).
+- iOS `SENTRY_DSN` is Info.plist only (hardcoded fallback already removed on main).
+- Android Sentry: iOS only until Android tracks ship.
+
+Branch `grok/sentry-fleet-adoption`.  Board `d3f01c60eb4f457c855af60b4c196706`.
+
 ## 2026-09-01 GROK — Living identity is DealDex.net / net.dealdex
 
 Owner: living copy must say DealDex.net and `net.dealdex`.  Other hosts and iOS bundles are abandoned.  Android Play package is still `me.grok.dealdex`.  Branch `grok/identity-net-dealdex`.  Board `053cdba5`.  Rollout: `docs/rollouts/2026-09-01-identity-net-dealdex.md`.

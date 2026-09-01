@@ -99,6 +99,7 @@ targets:
         AppUpdateAppleId: 6802474288
         LSApplicationCategoryType: public.app-category.shopping
         ITSAppUsesNonExemptEncryption: false
+        SENTRY_DSN: "https://f0aa93fc73895cfca027854c0735b97f@o4511650476326912.ingest.us.sentry.io/4511941875400704"
         LSRequiresIPhoneOS: true
         UILaunchScreen:
           UIColorName: LaunchBackground
