@@ -4,7 +4,7 @@ Android and iPhone apps.  They talk to eBay, Mercari, TCGDex, JustTCG, PriceChar
 
 Keys you paste in **Settings** live on the device.  If the website is down, scan still uses those keys.
 
-**Settings** also has optional sign-in.  Use the same email as the website only when you want to copy keys to or from your account.
+**Settings** also has optional sign-in.  Use the same Google, Apple, or X account as the website only when you want to copy keys to or from your account.
 
 Play is not shipping yet.  Android package is `me.grok.dealdex` (build from
 `native/android` on `main`; dealdex.net does not host an APK).  iOS is
@@ -52,7 +52,7 @@ xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
 
 Bundle id: `net.dealdex`.  Display name: DealDex.  Min iOS: 17.0.  Project format: Xcode 26.3.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
 
-TestFlight archive + upload is `.github/workflows/ios-ship.yml` on the owned Mac runner (app key `dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  Do not upload until the ASC app record exists.
+TestFlight archive + upload is `.github/workflows/ios-ship.yml` on GitHub-hosted `macos-latest` (app key `dealdex`, bundle `net.dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  ASC app DealDex SKU `dealdex`, appleId `6802474288`.
 
 AppIcon catalog is the DD on the ST tiled field.  Older preview variants
 live in `native/brand/icon-options/`.

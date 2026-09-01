@@ -1,5 +1,13 @@
 # Current Handoff
 
+## Identity (living)
+
+Public name is **DealDex.net**.  Public host is **https://dealdex.net** on Vercel.  iOS bundle is **`net.dealdex`** (team `CC8UTF7ATG`, ASC appleId `6802474288`).  Android package stays **`me.grok.dealdex`**.  Dated stanzas below that name another host or iOS bundle are archaeology.
+
+## 2026-09-01 GROK — Living identity is DealDex.net / net.dealdex
+
+Owner: living copy must say DealDex.net and `net.dealdex`.  Other hosts and iOS bundles are abandoned.  Android Play package is still `me.grok.dealdex`.  Branch `grok/identity-net-dealdex`.  Board `053cdba5`.  Rollout: `docs/rollouts/2026-09-01-identity-net-dealdex.md`.
+
 ## 2026-09-01 GROK — iOS pbxproj Sources membership for SentryTelemetry.swift
 
 Full handoff: **`docs/rollouts/2026-09-01-sentry-telemetry-pbxproj.md`**
@@ -61,8 +69,8 @@ On a machine with Android Studio, in order:
    them, because R8 strips at runtime.
 
 Also open: the iOS scanner has never been pointed at a real card
-(`DataScannerViewController` does not run in the Simulator), and
-`public/DealDex.apk` still ships the pre-fix binary from #190.
+(`DataScannerViewController` does not run in the Simulator).  The public
+APK was pulled in Wave 0 (PR #226).  dealdex.net does not host an APK.
 
 
 ## 2026-08-27 DEPLOYER — rebase DealDex #183 Datadog onto main
@@ -191,13 +199,12 @@ checklist in `docs/rollouts/2026-08-27-ios-card-scanner.md`.
 
 One in-repo pin at `scripts/ios-fleet/AppUpdatePrompt.swift`, copied
 byte-identical into `native/ios/DealDex/AppUpdatePrompt.swift`.  No
-Swift package.  `knownAppleIds` (stale `online.dealdex`) is gone from
-Swift.  Live bundle is `net.dealdex` appleId `6802474288` in
-`scripts/ios-fleet/apps.json` and Info.plist `AppUpdateAppleId`.
-Public manifest already has the same id on `net.dealdex` in
-`jaywedgeworth22/ios-app-versions` `versions.json` (not rewritten here;
-a one-app PUT would wipe siblings).  Did not treat `online.dealdex` as
-live.  Did not upload `me.grok.dealdex`.  testers.json untouched.  No
+Swift package.  `knownAppleIds` is gone from Swift.  Live bundle is
+`net.dealdex` appleId `6802474288` in `scripts/ios-fleet/apps.json` and
+Info.plist `AppUpdateAppleId`.  Public manifest already has the same id
+on `net.dealdex` in `jaywedgeworth22/ios-app-versions` `versions.json`
+(not rewritten here; a one-app PUT would wipe siblings).  Did not upload
+any other iOS bundle.  testers.json untouched.  No
 `--force-ship`.  No spend.  KEEPOUT DealDex #183 Datadog / Vercel keys.
 Branch `cursor/ios-app-update-prompt-pin-525d`.
 
@@ -291,7 +298,7 @@ Production on `dealdex.net` collects FCP/LCP/INP/CLS.  Branch
 
 ## 2026-08-22 ANTIGRAVITY — DealDex.net domain, net.dealdex bundle ID, iOS 17.0, and icon sync
 
-- **Domain & GitHub**: DealDex.net is the official canonical domain name (`dealdex.online` 301 redirects to `.net`).  Updated GitHub repo details (`homepageUrl: https://dealdex.net`) and all docs.
+- **Domain & GitHub**: DealDex.net is the official canonical domain name.  Updated GitHub repo details (`homepageUrl: https://dealdex.net`) and all docs.
 - **Icons & Brand**: Updated master brand assets from owner uploads.  iOS AppIcon uses the subtle tiled silver grid DD; website favicon, Android launcher mipmaps/adaptive icons, and PWA icon use the isolated transparent DD; 3D DealDex title wordmark updated across web, iOS, and Android.
 - **iOS Xcode & Bundle**: Switched bundle identifier to `net.dealdex` (`PRODUCT_BUNDLE_IDENTIFIER`, `bundleId`, `CFBundleIdentifier`).  Deployment target set to **iOS 17.0** (Xcode document format 26.3 / objectVersion 100).  Display name `DealDex`, team `CC8UTF7ATG`, category `public.app-category.shopping`.
 - **Native Builds**: iOS Simulator build (**BUILD SUCCEEDED**), Android debug APK built (**BUILD SUCCESSFUL**) and copied to `public/DealDex.apk`.
@@ -300,13 +307,11 @@ Production on `dealdex.net` collects FCP/LCP/INP/CLS.  Branch
 ## 2026-08-22 GROK — Public host dealdex.net
 
 Owner registered `dealdex.net` (Namecheap).  Canonical website host is
-`https://dealdex.net`.  iOS bundle stays `online.dealdex`.  Android stays
-`me.grok.dealdex`.  `dealdex.online` redirects to `.net` once both names are
-on the Vercel project.  Branch `grok/dealdex-net`.  Board `b16e5c74`.
+`https://dealdex.net`.  iOS bundle is `net.dealdex`.  Android stays
+`me.grok.dealdex`.  Branch `grok/dealdex-net`.  Board `b16e5c74`.
 
 Need owner: Vercel project Domains → add `dealdex.net` (and www).  Then
-Namecheap Advanced DNS for `dealdex.net` using the records Vercel prints
-(same screen as `dealdex.online`).
+Namecheap Advanced DNS for `dealdex.net` using the records Vercel prints.
 
 ## 2026-08-22 GROK — Scan box contrast + SCAN label
 
@@ -314,7 +319,7 @@ Portrait web layout kept.  Filter headings and select values are centered.
 LIVE MARKET SCAN is nudged 1ch right.  The brown button is SCAN at 2.5x
 with no radar icon.  Hide Proxies has no REPACKS label and no bubble
 border.  Muted/subtle/border tokens are darker for AA.  Phone Account
-Website already defaults to https://dealdex.online.  Native iOS ScanView
+Website already defaults to https://dealdex.net.  Native iOS ScanView
 matches the web filters and SCAN button.  Branch `grok/scan-row-contrast`.
 Board `952f57b3`.
 
@@ -332,7 +337,7 @@ Favicon is the isolated transparent DD.  Branch `grok/dd-appicon-tight`.
 
 ## 2026-08-22 GROK — Vercel Web Analytics
 
-Mount `@vercel/analytics` on the TanStack Start root (`@vercel/analytics/react`, not the Next.js import).  Service worker skips `/_vercel/` so insight beacons are not intercepted.  Privacy page discloses cookie-less page-view counting.  After merge, Vercel Production on `dealdex.online` collects visits.  Branch `grok/vercel-analytics`.
+Mount `@vercel/analytics` on the TanStack Start root (`@vercel/analytics/react`, not the Next.js import).  Service worker skips `/_vercel/` so insight beacons are not intercepted.  Privacy page discloses cookie-less page-view counting.  After merge, Vercel Production on `dealdex.net` collects visits.  Branch `grok/vercel-analytics`.
 
 ## 2026-08-21 ANTIGRAVITY — Cross-Platform Power Enhancements (#119)
 
@@ -388,7 +393,7 @@ handoff.  Workflow contract unchanged.  No TestFlight upload from this seat.
 Added `.github/workflows/ios-ship.yml` plus a scheduled-ship gate so cron
 cannot ship web-only commits.  Path filter is `native/ios/**`.  Fleet app
 key is `dealdex`.  Runner `[self-hosted, macOS, ARM64, xcode26]`.  Secrets
-stay on the Mac.  Bundle `online.dealdex` and team `CC8UTF7ATG` are
+stay on the Mac.  Bundle `net.dealdex` and team `CC8UTF7ATG` are
 unchanged.  Android package `me.grok.dealdex` is unchanged.  This seat
 does not upload to TestFlight.  Rebased onto current `main`.  PR #85.
 
@@ -407,10 +412,10 @@ iOS desk (same lane): display name DealDex, iOS 18.0, Xcode 26.3
 ## 2026-08-20 CURSOR — shipping docs + GitHub About
 
 Vercel is the current host, not a leftover.  Public host is
-**https://dealdex.online**.  GitHub About homepage is that URL, not
+**https://dealdex.net**.  GitHub About homepage is that URL, not
 `dealdex-psi.vercel.app`.  Repo is **public**.  Keep the site on Vercel.
 Do not migrate copy to Coolify.  Native: Android `me.grok.dealdex`, iOS
-`online.dealdex`, team `CC8UTF7ATG`.  Docs only.
+`net.dealdex`, team `CC8UTF7ATG`.  Docs only.
 
 ## 2026-08-20 CURSOR — Apache License 2.0 at repo root
 
@@ -433,13 +438,13 @@ Official title wordmark (red Deal + blue Dex, yellow badge) is the header,
 login, Settings "Wordmark" chip, `public/marks/dd.svg`, and OG card
 (merged PR #86).
 
-## 2026-08-18 CURSOR — iOS bundle ID `online.dealdex`
+## 2026-08-18 CURSOR — iOS bundle ID (abandoned; live is net.dealdex)
 
-Switched the iOS target from `me.grok.dealdex` to `online.dealdex`.  Team
-stays `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is documented
+That day's iOS target change is abandoned.  Live iOS bundle is `net.dealdex`.
+Team stays `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is documented
 only.  It is not a team id and must not appear in `DEVELOPMENT_TEAM`.
-No TestFlight / ASC upload (Jay has not created the ASC app DealDex,
-SKU `dealdex`).
+Internal TestFlight now exists (ASC app DealDex SKU `dealdex`, appleId
+`6802474288`).
 
 # Status
 
@@ -454,13 +459,13 @@ Updated: 2026-08-25 (CURSOR — pin AppUpdatePrompt.swift; Apple IDs off Swift)
 - **Grok Build** (`GROK-BUILD`) is a standing seat.  Prefix `grok-build/`.
 - Website is optional.  Stack is React 19, TanStack Start, Tailwind v4,
   Better Auth, Vite.  Not Next.js / Expo / React Native / Capacitor.
-- **Public host: https://dealdex.online on Vercel.**  Vercel is current,
-  not a leftover.  GitHub About homepage is `https://dealdex.online`.
+- **Public host: https://dealdex.net on Vercel.**  Vercel is current,
+  not a leftover.  GitHub About homepage is `https://dealdex.net`.
   Do not point About at `dealdex-psi.vercel.app`.  Do not migrate the
   site to Coolify.
 - GitHub `main` is the code.  Vercel Production builds it (team
-  `jaywedgeworth22s-projects`, project `dealdex`).  Checked 2026-08-20:
-  `https://dealdex.online` served the same hashed JS as the GitHub-linked
+  `jaywedgeworth22s-projects`, project `dealdex`).  Live check:
+  `https://dealdex.net` served the same hashed JS as the GitHub-linked
   alias `https://dealdex-git-main-jaywedgeworth22s-projects.vercel.app`.
   The older "stale Grok publish, not tracking `main`" gap is not visible
   in today's GET.  Both pages still load
@@ -468,16 +473,16 @@ Updated: 2026-08-25 (CURSOR — pin AppUpdatePrompt.swift; Apple IDs off Swift)
 - `https://dealdex.vercel.app` is a different Next.js product.  Do not
   use it.
 - Native Android debug APK builds with the Gradle 8.7 wrapper.  Package
-  remains `me.grok.dealdex`.  Launcher is the official DD.
+  remains `me.grok.dealdex`.  Launcher is the official DD.  dealdex.net
+  does not host an APK.
 - iOS XcodeGen spec (`native/ios/project.yml`) uses
   `PRODUCT_BUNDLE_IDENTIFIER=net.dealdex` and
   `DEVELOPMENT_TEAM=CC8UTF7ATG`.  Live ASC app is DealDex SKU `dealdex`
   appleId `6802474288`.  Resource `R2FAW69NPD` is the bundle App ID, not
-  a team id.  Do not treat `online.dealdex` as live.  Do not upload
-  `me.grok.dealdex`.  AppUpdatePrompt is pinned at
-  `scripts/ios-fleet/AppUpdatePrompt.swift` and copied into the iOS
-  target.  Apple IDs live in `apps.json` / `versions.json` / Info.plist
-  `AppUpdateAppleId`, not a Swift `knownAppleIds` map.
+  a team id.  Do not upload any other iOS bundle.  AppUpdatePrompt is
+  pinned at `scripts/ios-fleet/AppUpdatePrompt.swift` and copied into
+  the iOS target.  Apple IDs live in `apps.json` / `versions.json` /
+  Info.plist `AppUpdateAppleId`, not a Swift `knownAppleIds` map.
 - In-app / web title mark is the official DealDex wordmark (PR #86).
   Home-screen AppIcon / Android launcher / PWA 180 are the overlapping
   red + blue DD on the ST tiled field.  Tab favicon is the isolated DD
@@ -504,7 +509,7 @@ Updated: 2026-08-25 (CURSOR — pin AppUpdatePrompt.swift; Apple IDs off Swift)
 
 ## Next
 
-- Keep the public host on Vercel at `https://dealdex.online`.  Do not
+- Keep the public host on Vercel at `https://dealdex.net`.  Do not
   move copy to Coolify.
 - TestFlight ships stay on GitHub-hosted `macos-latest` via
   `scripts/ios-ship-testflight.sh` (fleet key `dealdex`, bundle

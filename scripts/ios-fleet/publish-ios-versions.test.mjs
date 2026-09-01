@@ -35,11 +35,6 @@ const FLEET = {
       appleId: 6799230729,
       build: "202608231806",
     },
-    "online.dealdex": {
-      displayName: "DealDex",
-      marketingVersion: "1.0.1",
-      appleId: 6802474288,
-    },
     "codes.autorotate": {
       displayName: "Autorotate",
       marketingVersion: "1.0.4",
