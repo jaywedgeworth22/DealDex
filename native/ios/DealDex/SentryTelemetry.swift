@@ -4,14 +4,19 @@ import Sentry
 /// Native Sentry crash reporting and telemetry for DealDex iOS.
 enum SentryTelemetry {
     static func start() {
-        let dsn = Bundle.main.object(forInfoDictionaryKey: "SENTRY_DSN") as? String
-            ?? "https://4511650513158144@o4511650476326912.ingest.us.sentry.io/4511650513158144"
-
+        let dsn = (Bundle.main.object(forInfoDictionaryKey: "SENTRY_DSN") as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        // Match web: stay dark when no DSN is configured.  A hardcoded ingest
+        // URL would phone home from every Simulator and CI archive.
         guard !dsn.isEmpty else { return }
 
         SentrySDK.start { options in
             options.dsn = dsn
+            #if DEBUG
+            options.environment = "development"
+            #else
             options.environment = "production"
+            #endif
             options.tracesSampleRate = 0.2
             options.enableAppHangTracking = true
             options.appHangTimeoutInterval = 2.0
