@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -75,13 +75,13 @@ test("the phone apps' 'never sends a key' claim is qualified wherever it appears
   }
 });
 
-test("/install does not describe one build while serving another", () => {
-  // public/DealDex.apk predates the privacy and security work and could not be
-  // rebuilt here. Handing it out silently under the new copy would be the exact
-  // failure this whole change set is about.
+test("/install does not hand out the pre-fix APK", () => {
   const install = read("src/routes/install.tsx");
-  assert.match(install, /These downloads are an older build/);
-  assert.match(install, /still sends your paid desk keys/);
+  assert.match(install, /No sideload build on this site right now/);
+  assert.doesNotMatch(install, /href="\/DealDex\.apk"/);
+  assert.doesNotMatch(install, /href="\/DealDex-source\.zip"/);
+  assert.equal(existsSync(join(ROOT, "public/DealDex.apk")), false);
+  assert.equal(existsSync(join(ROOT, "public/DealDex-source.zip")), false);
 });
 
 test("native sign-in hands over a single-use code, never a session token", () => {

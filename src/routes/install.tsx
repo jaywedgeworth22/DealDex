@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, FolderCode } from "lucide-react";
 import { NativePhones } from "@/components/native-phones";
 import { Shell } from "@/components/shell";
-import { Button } from "@/components/ui/button";
 import { Lead } from "@/components/lead";
 
 export const Route = createFileRoute("/install")({ component: InstallPage });
@@ -18,20 +16,13 @@ function InstallPage() {
         DealDex server.
       </Lead>
 
-      {/*
-        This is the honest version of a page that would otherwise describe one
-        build and hand out another. The APK and source zip in `public/` were
-        committed before the privacy and security work landed, and could not be
-        rebuilt in the session that changed the source. Saying so beats letting
-        someone download a binary on the strength of a promise it does not keep.
-      */}
       <aside className="mt-6 max-w-2xl rounded-xl border border-deal-bad/40 bg-surface p-4 text-sm shadow-[var(--shadow-border)]">
-        <h2 className="font-medium text-deal-bad">These downloads are an older build</h2>
+        <h2 className="font-medium text-deal-bad">No sideload build on this site right now</h2>
         <p className="mt-1 text-muted">
-          The files below were built before the current privacy and security changes.  That build
-          still sends your paid desk keys to the scan endpoint and keeps them in unencrypted device
-          storage, and its sign-in returns a session token on a URL scheme other apps can claim.
-          Build from source if you want the current behaviour — a refreshed APK is pending.
+          The public APK that used to live here was an older build.  It sent paid desk keys to the
+          scan endpoint, kept them in unencrypted storage, and returned a session token on a URL
+          scheme other apps can claim.  That file is gone.  A refreshed Android APK ships only after
+          a signed, device-tested release build.  Do not restore a download button until then.
         </p>
       </aside>
 
@@ -39,36 +30,20 @@ function InstallPage() {
         <NativePhones />
         <div className="min-w-0 space-y-4">
           <article className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
-            <h2 className="font-display text-2xl tracking-tight">Android APK</h2>
+            <h2 className="font-display text-2xl tracking-tight">Android</h2>
             <p className="mt-2 text-sm text-muted">
-              Allow installs from this browser, then open the file. First launch scans all
-              Pokémon listings.
+              Build from <code className="text-xs">native/android</code> on current <code className="text-xs">main</code>.
+              Package <code className="text-xs">me.grok.dealdex</code>.  There is no Play listing yet.
+              The camera scanner is iOS-only until Android ships one.
             </p>
-            <div className="mt-4">
-              <Button asChild>
-                <a href="/DealDex.apk" download="DealDex.apk">
-                  <Download />
-                  Download Android APK
-                </a>
-              </Button>
-            </div>
-            <p className="mt-3 text-xs text-subtle">Android 8+ · 17 MB · not a Play Store build</p>
           </article>
           <article className="rounded-xl bg-surface p-5 shadow-[var(--shadow-border)]">
             <h2 className="font-display text-2xl tracking-tight">iPhone</h2>
             <p className="mt-2 text-sm text-muted">
-              Download the source, open the iOS project on a Mac, pick your team, and run it
-              on a phone or simulator. Apple does not allow an unsigned download.
+              Internal TestFlight for bundle <code className="text-xs">net.dealdex</code>.  Apple does
+              not allow an unsigned download.  Open the iOS project on a Mac if you are not on the
+              tester list.
             </p>
-            <div className="mt-4">
-              <Button variant="secondary" asChild>
-                <a href="/DealDex-source.zip" download="DealDex-source.zip">
-                  <FolderCode />
-                  Download Android + iPhone source
-                </a>
-              </Button>
-            </div>
-            <p className="mt-3 text-xs text-subtle">iOS 17+</p>
           </article>
         </div>
       </div>

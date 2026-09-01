@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -9,6 +9,21 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 function read(rel) {
   return readFileSync(join(ROOT, rel), "utf8");
 }
+
+test("public/ does not ship a sideload APK", () => {
+  assert.equal(existsSync(join(ROOT, "public/DealDex.apk")), false);
+  assert.equal(existsSync(join(ROOT, "public/DealDex-source.zip")), false);
+});
+
+test("robots.txt and sitemap.xml exist and name dealdex.net", () => {
+  const robots = read("public/robots.txt");
+  assert.match(robots, /Sitemap: https:\/\/dealdex\.net\/sitemap\.xml/);
+  assert.match(read("public/sitemap.xml"), /https:\/\/dealdex\.net\//);
+});
+
+test("market logos do not inject extra document titles", () => {
+  assert.doesNotMatch(read("src/components/market-logo.tsx"), /<title>/);
+});
 
 test("canonical public host is dealdex.net, not dealdex.online", () => {
   assert.match(read("src/routes/__root.tsx"), /VITE_PUBLIC_HOSTNAME \|\| "dealdex\.net"/);
