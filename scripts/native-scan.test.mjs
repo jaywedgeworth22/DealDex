@@ -300,3 +300,10 @@ test("iOS scans on the device first and sends no keys to the website", () => {
   assert.doesNotMatch(scanView, /Text\("e"\)/);
   assert.doesNotMatch(scanView, /Text\("MERCARI"\)/);
 });
+
+test("iOS Sentry stays dark without a configured DSN", () => {
+  const sentry = read("native/ios/DealDex/SentryTelemetry.swift");
+  assert.doesNotMatch(sentry, /ingest\.us\.sentry\.io/);
+  assert.match(sentry, /SENTRY_DSN/);
+  assert.match(sentry, /guard !dsn.isEmpty else \{ return \}/);
+});
