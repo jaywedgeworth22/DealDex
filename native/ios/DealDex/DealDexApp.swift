@@ -2,6 +2,10 @@ import SwiftUI
 
 @main
 struct DealDexApp: App {
+    init() {
+        SentryTelemetry.start()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
