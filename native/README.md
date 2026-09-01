@@ -14,6 +14,10 @@ device-tested release build exists.
 
 ## Android
 
+Sentry on native is **iOS only until Android tracks ship.**  Do not add
+the Android Sentry SDK until Play / sideload crash reporting is a real
+track.  Web Replay + Feedback still cover the site.
+
 Build the debug APK locally (there is no sideload file on dealdex.net):
 
 ```
