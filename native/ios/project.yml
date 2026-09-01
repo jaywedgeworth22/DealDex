@@ -38,6 +38,12 @@ settings:
     INFOPLIST_KEY_CFBundleDisplayName: DealDex
     INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.shopping
     INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+
+packages:
+  Sentry:
+    url: https://github.com/getsentry/sentry-cocoa.git
+    from: "8.44.0"
+
 targets:
   DealDex:
     type: application
@@ -49,6 +55,8 @@ targets:
           - Info.plist
     dependencies:
       - sdk: AuthenticationServices.framework
+      - package: Sentry
+        product: Sentry
     settings:
       base:
         INFOPLIST_FILE: DealDex/Info.plist
