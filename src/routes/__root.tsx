@@ -11,6 +11,7 @@ import { listenForInstallPrompt, registerServiceWorker } from "@/lib/pwa";
 import { APP_SUBTITLE } from "@/lib/copy";
 import { getRumPublicConfig } from "@/lib/observability/rum-config";
 import { DatadogRum } from "@/lib/observability/rum";
+import { initSentry } from "@/lib/observability/sentry";
 import { useEffect } from "react";
 import appCss from "../styles.css?url";
 
@@ -67,6 +68,7 @@ export const Route = createRootRoute({
 
 function Boot() {
   useEffect(() => {
+    initSentry();
     listenForInstallPrompt();
     registerServiceWorker();
   }, []);

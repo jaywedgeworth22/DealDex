@@ -1,5 +1,13 @@
 # Current Handoff
 
+## 2026-08-31 ANTIGRAVITY — Sentry client observability integration (PR #214)
+
+Full handoff: **`docs/rollouts/2026-08-31-sentry-client-observability.md`**
+
+- **@sentry/react**: Integrated client error tracking, Session Replay (100% on error, 10% baseline session, text/media masked), and distributed browser tracing in `src/lib/observability/sentry.ts` and `src/routes/__root.tsx`.
+- **Gated & Inert**: Gated on `VITE_SENTRY_DSN` with zero overhead or network traffic in local development/CI when unset.
+- **Verification**: `npm run typecheck` (0 errors) and `npm test` (197/197 tests passed).
+
 ## 2026-08-31 BF-FIXER — Mobile scanner source row deployed (PR #213)
 
 Full handoff: **`docs/rollouts/2026-08-31-mobile-scanner-source-row.md`**
