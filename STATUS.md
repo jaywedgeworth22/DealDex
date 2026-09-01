@@ -1,5 +1,21 @@
 # Current Handoff
 
+## 2026-09-01 GROK — iOS pbxproj Sources membership for SentryTelemetry.swift
+
+Full handoff: **`docs/rollouts/2026-09-01-sentry-telemetry-pbxproj.md`**
+
+Scheduled ios-ship run 33524415676 failed on `main` `ab1390e`:
+`DealDexApp.swift` cannot find `SentryTelemetry` in scope.  The Swift file was
+on disk; the committed `project.pbxproj` did not compile it.
+
+- PBXBuildFile `6E68536A0591E1EAA8F9DF30`
+- PBXFileReference `BF5CF2870999472BC27D2F40`
+- sentry-cocoa SPM also added (pbxproj on `main` had the yml package but no
+  packageReferences)
+- No extra-ship.  No `--force-ship`.
+
+Branch `grok/sentry-telemetry-pbxproj`.  Board `9dd5fa7786a6428b9162000bc11c55a7`.
+
 ## 2026-08-31 ANTIGRAVITY — Sentry client observability integration (PR #214)
 
 Full handoff: **`docs/rollouts/2026-08-31-sentry-client-observability.md`**
