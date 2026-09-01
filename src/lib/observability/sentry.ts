@@ -46,6 +46,10 @@ export function initSentry(): void {
     replaysOnErrorSampleRate: !replayDisabled && Number.isFinite(replaysOnErrorSampleRate) ? replaysOnErrorSampleRate : 0,
     integrations: [
       Sentry.browserTracingIntegration(),
+      Sentry.feedbackIntegration({
+        colorScheme: "system",
+        autoInject: false,
+      }),
       ...(!replayDisabled
         ? [
             Sentry.replayIntegration({
