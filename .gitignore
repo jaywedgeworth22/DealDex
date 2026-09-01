@@ -24,6 +24,8 @@ public/spreaddex-android-debug.apk
 public/spreaddex-native-src.zip
 public/dealdex-android-debug.apk
 public/dealdex-native-src.zip
+public/DealDex.apk
+public/DealDex-source.zip
 .env
 .env.*
 !.env.example

@@ -6,11 +6,15 @@ Keys you paste in **Settings** live on the device.  If the website is down, scan
 
 **Settings** also has optional sign-in.  Use the same email as the website only when you want to copy keys to or from your account.
 
-Play and TestFlight are not shipping yet.  Android sideloads as `me.grok.dealdex`.  iOS is `net.dealdex` (team `CC8UTF7ATG`).  Do not upload iOS until the ASC app record exists (SKU `dealdex`).
+Play is not shipping yet.  Android package is `me.grok.dealdex` (build from
+`native/android` on `main`; dealdex.net does not host an APK).  iOS is
+`net.dealdex` (team `CC8UTF7ATG`, Apple app SKU `dealdex`, appleId `6802474288`).
+Internal TestFlight exists.  Do not restore a public APK until a signed,
+device-tested release build exists.
 
 ## Android
 
-**Sideload the debug APK** from the DealDex Apps page, or build it:
+Build the debug APK locally (there is no sideload file on dealdex.net):
 
 ```
 cd native/android
@@ -21,7 +25,7 @@ ANDROID_HOME="$ANDROID_HOME" JAVA_HOME="$JAVA_HOME" ./gradlew :app:assembleDebug
 
 The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your Android SDK (copy `local.properties.example`).  Need JDK 17.
 
-- Package `me.grok.dealdex`, min SDK 26, target 34.
+- Package `me.grok.dealdex`, min SDK 26, target 35.
 - Launcher name: DealDex.
 
 ## iOS

@@ -47,7 +47,6 @@ function EbayWordmark({
         aria-label={LABEL.ebay}
         className="block h-full w-full"
       >
-        <title>{LABEL.ebay}</title>
         <path
           fill={fill[0]}
           d="M199.636 185.866c-1.944-46.877-35.78-64.42-71.941-64.42-38.994 0-70.127 19.733-75.58 64.42zM51.034 219.191c2.704 45.484 34.07 72.384 77.198 72.384 29.88 0 56.46-12.175 65.359-38.66h51.684c-10.052 53.74-67.154 71.98-116.303 71.98C39.606 324.895 0 275.679 0 209.307 0 136.242 40.966 88.122 129.788 88.122c70.699 0 122.5 36.999 122.5 117.756v13.313z"
@@ -93,7 +92,6 @@ function MercariWordmark({
         aria-label={LABEL.mercari}
         className="block h-full w-full"
       >
-        <title>{LABEL.mercari}</title>
         <g fill={tone === "white" ? "#ffffff" : "#5356EE"}>
           <path d="M17.2 33.3 26.6 15.2h7.5v33.5h-7.4V29.5h-.1l-7.2 12.9h-4.8L7.5 29.5H7.4v19.1H0V15.1h7.5l9.5 18.2h.2z" />
           <path d="M72 54.5v-6.9H54.7v-6.4h16.5v-6.8H54.7v-6.7H72V21H47.3v33.5H72z" />
