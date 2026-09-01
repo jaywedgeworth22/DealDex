@@ -60,7 +60,8 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
   assert.equal(dealdex.scheme, "DealDex");
   assert.equal(dealdex.appleId, 6802474288);
   assert.match(dealdex.marketingVersionDefault, /^1\.0\.\d+$/);
-  assert.equal(dealdex.bundleId === "online.dealdex", false);
+  assert.doesNotMatch(JSON.stringify(dealdex), /online\.dealdex/);
+  assert.doesNotMatch(JSON.stringify(dealdex), /dealdex\.online/);
   assert.equal(dealdex.bundleId === "me.grok.dealdex", false);
 
   const ship = read("scripts/ios-fleet/ship-testflight.sh");

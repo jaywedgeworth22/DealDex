@@ -1,11 +1,12 @@
 # DealDex iOS
 
+**Public host:** `https://dealdex.net`
 **Bundle ID:** `net.dealdex`
 **Apple bundle resource ID:** `R2FAW69NPD` — this is the Developer portal App ID resource, **not** a team ID.  Never put it in `DEVELOPMENT_TEAM`, `DevelopmentTeam`, or any team field.
 **Team / DEVELOPMENT_TEAM:** `CC8UTF7ATG`
 **Project:** `native/ios/DealDex.xcodeproj`
 **Scheme:** `DealDex`
-**ASC:** Apple bundle `net.dealdex` is registered.  ASC app DealDex SKU `dealdex` id `6802474288`.  Do not treat `online.dealdex` as the live bundle.  Do not upload `online.dealdex` or `me.grok.dealdex`.
+**ASC:** Live iOS bundle is `net.dealdex`.  ASC app DealDex SKU `dealdex` id `6802474288`.  Do not upload any other iOS bundle id.
 **AppUpdatePrompt:** In-repo pin is `scripts/ios-fleet/AppUpdatePrompt.swift`.  Copy it into `DealDex/AppUpdatePrompt.swift` and keep the files identical.  Do not make a Swift package.  Apple IDs live in `scripts/ios-fleet/apps.json`, `jaywedgeworth22/ios-app-versions` `versions.json`, and Info.plist `AppUpdateAppleId` (`6802474288`).  Do not put `knownAppleIds` back in the Swift file.
 **TestFlight ship:** `.github/workflows/ios-ship.yml` on GitHub-hosted `macos-latest` (fleet protocol 2026-08-24 — no local Mac self-hosted runners).  Wrapper `scripts/ios-ship-testflight.sh` prefers in-repo `scripts/ios-fleet/` (fleet key `dealdex`, bundle `net.dealdex`).  `scripts/ios-appstore-gm-prepare.sh` writes `~/.secrets/appstore-connect.env` from repo secrets (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`, `IOS_DIST_P12_BASE64`, `IOS_DIST_P12_PASSWORD`) and imports the Distribution identity.  Cron is gated by `scripts/ios-scheduled-ship-gate.sh` so web-only commits do not ship.
 **Version regimen (fleet):** `MARKETING_VERSION` / `CFBundleShortVersionString` is `1.0.<seq>` (+1 every rebuild).  `CURRENT_PROJECT_VERSION` / `CFBundleVersion` is UTC `YYYYMMDDHHMM` when the build was cut.  App Store Connect should show `1.0.N (YYYYMMDDHHMM)`, not `1.0 (1)`.  `project.yml` records what last shipped; the ship script resolves the next pair.  After a ship, sync `project.yml` + regenerate `project.pbxproj` with `xcodegen generate`.

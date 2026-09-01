@@ -158,7 +158,7 @@ Canonical: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop.
 - Web: React 19, TanStack Start, Tailwind v4, Better Auth. Dev:
   `npm run dev` → `0.0.0.0:8080`.
 - Routes: `/` live scan, `/settings` keys, `/alerts`, `/saved` ledger,
-  `/install` APK + native source, `/login`.
+  `/install` native apps (no public APK), `/login` Google/Apple/X.
 - Native: `native/android` (package `me.grok.dealdex`),
   `native/ios/DealDex.xcodeproj` (bundle `net.dealdex`, team
   `CC8UTF7ATG`). Keys stay on device.  Apple bundle resource id

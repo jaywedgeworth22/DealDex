@@ -138,8 +138,10 @@ test("live DealDex Apple ID lives in apps.json and Info.plist, not Swift", () =>
   const dealdex = apps.apps.dealdex;
   assert.equal(dealdex.bundleId, "net.dealdex");
   assert.equal(dealdex.appleId, 6802474288);
-  assert.equal(dealdex.bundleId === "online.dealdex", false);
-  assert.match(dealdex.notes, /Do not treat online\.dealdex as the live bundle/);
+  assert.match(dealdex.notes, /net\.dealdex/);
+  assert.match(dealdex.notes, /dealdex\.net/);
+  assert.doesNotMatch(dealdex.notes, /online\.dealdex/);
+  assert.doesNotMatch(dealdex.notes, /dealdex\.online/);
 
   const plist = read("native/ios/DealDex/Info.plist");
   assert.match(
