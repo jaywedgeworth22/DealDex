@@ -1,4 +1,5 @@
 # DealDex Effort Log — cross-agent board
+- **2026-09-01 — GROK — IN PROGRESS — Datadog Free-tier: canonicalize `DD_ENV=prod` to `production` (board `ad678866`, branch `grok/datadog-free-tier`, worktree `~/apps/dealdex-grok-datadog-free`).**  Rollout: `docs/rollouts/2026-09-01-datadog-free-tier.md`.
 - **2026-09-01 — GROK — IN PROGRESS — Sentry DSN hygiene: no hardcoded iOS fallback (branch `grok/sentry-dsn-hygiene`, worktree `~/apps/dealdex-grok-sentry-dsn`).**  Board `7e18a8e4bb75488ca891a94d84033679`.  Cocoa init is plist-only / build-injected; empty DSN = no-op.
 Protocol: /Users/jay/apps/EFFORT-LOG-PROTOCOL.md (canonical). Live board: this file
 (mirror: docs/EFFORT-LOG.md in the repo). As of 2026-08-22.
