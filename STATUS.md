@@ -4,6 +4,14 @@
 
 Public name is **DealDex.net**.  Public host is **https://dealdex.net** on Vercel.  iOS bundle is **`net.dealdex`** (team `CC8UTF7ATG`, ASC appleId `6802474288`).  Android package stays **`me.grok.dealdex`**.  Dated stanzas below that name another host or iOS bundle are archaeology.
 
+## 2026-09-02 ANTIGRAVITY — Social auth UX: login auto-dismiss + Apple JWT generation (PR #254)
+
+Full handoff: **`docs/rollouts/2026-09-02-social-auth-fix.md`**
+
+- Login page auto-navigates to `callbackURL` when session becomes active (OAuth pop-up/redirect feel fixed).
+- Apple Sign In: JWT generated from `APPLE_TEAM_ID` + `APPLE_KEY_ID` + `APPLE_PRIVATE_KEY` so it never expires silently.
+- Old `APPLE_CLIENT_SECRET` (pre-generated JWT) path still works.
+
 ## 2026-09-01 GROK — Sentry fleet adoption (Feedback + Vercel DSN)
 
 Full handoff: **`docs/rollouts/2026-09-01-sentry-fleet-adoption.md`**
