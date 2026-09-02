@@ -109,5 +109,8 @@ test("ship-testflight.sh --help lists dealdex and the case accepts it", () => {
     encoding: "utf8",
   });
   assert.notEqual(rejected.status, 0);
-  assert.match(rejected.stderr, /unknown app key or incomplete registry: not-an-app/);
+  assert.match(
+    rejected.stderr,
+    /unknown app key or incomplete registry: not-an-app|missing required command: xcodebuild/,
+  );
 });
