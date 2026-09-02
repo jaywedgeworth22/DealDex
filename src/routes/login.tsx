@@ -1,5 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SOCIAL_PROVIDERS, authEnabled, signIn, type SocialProviderId } from "@/lib/auth/client";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { safeInternalPath } from "@/lib/auth/safe-redirect";
 import { Button } from "@/components/ui/button";
 import { DealDexWordmark } from "@/components/app-mark";
@@ -57,6 +59,17 @@ function ProviderIcon({ id }: { id: SocialProviderId }) {
 function Login() {
   const search = Route.useSearch();
   const callbackURL = search.redirect ?? "/settings";
+  const navigate = useNavigate();
+  const { user, isPending } = useCurrentUserState();
+
+  // If the user becomes signed in while this page is open (OAuth round-trip
+  // completed, or they navigated here while already signed in), close the
+  // login card by redirecting to the intended destination.
+  useEffect(() => {
+    if (!isPending && user) {
+      void navigate({ to: callbackURL as "/" });
+    }
+  }, [isPending, user, callbackURL, navigate]);
 
   return (
     <main className="grid min-h-dvh place-items-center bg-bg px-4 text-fg">
