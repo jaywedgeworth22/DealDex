@@ -63,6 +63,7 @@ on:
       - CI
       - Effort Issues Sync
       - iOS TestFlight ship (GitHub-hosted macOS)
+      - Sentry Deploy
     types: [completed]
 
 permissions:
