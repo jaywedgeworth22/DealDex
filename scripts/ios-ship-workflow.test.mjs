@@ -69,18 +69,20 @@ test("vendored ios-fleet ships net.dealdex on the 1.0.N train", () => {
   assert.match(ship, /CURRENT_PROJECT_VERSION = <UTC YYYYMMDDHHMM>/);
   assert.match(
     ship,
-    /<socratic\|congress\|usage\|usage-local\|dealdex>/,
+    /<socratic\|congress\|usage\|usage-local\|dealdex/,
     "usage header must list dealdex",
   );
+  // Positional APP_KEY is accepted then validated against apps.json (no closed case).
   assert.match(
     ship,
-    /socratic\|congress\|usage\|usage-local\|dealdex\) APP_KEY=/,
-    "positional case must accept dealdex like congress/socratic",
+    /if \[\[ -z "\$APP_KEY" \]\]; then/,
+    "positional APP_KEY assignment must exist",
   );
   assert.match(
     ship,
-    /app key required: socratic \| congress \| usage \| usage-local \| dealdex/,
+    /app key required \(e\.g\. socratic, congress, usage, usage-local, dealdex/,
   );
+  assert.match(ship, /dealdex\) echo "dealdex"/);
 
   const publish = read("scripts/ios-fleet/publish-ios-versions.sh");
   assert.match(publish, /fetch_remote_json/);
@@ -107,5 +109,8 @@ test("ship-testflight.sh --help lists dealdex and the case accepts it", () => {
     encoding: "utf8",
   });
   assert.notEqual(rejected.status, 0);
-  assert.match(rejected.stderr, /unknown arg: not-an-app/);
+  assert.match(
+    rejected.stderr,
+    /unknown app key or incomplete registry: not-an-app|missing required command: xcodebuild/,
+  );
 });
