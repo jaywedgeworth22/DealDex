@@ -204,3 +204,7 @@ Infisical is the sole source of truth for app runtime secrets when they exist.
 - Escalate a tier when a cheaper model's output fails verification — not
   preemptively, and not because the parent session is frontier-tier.
 - Canonical: `/Users/jay/apps/AGENT-SYNC.md` — "Delegation & model economics".
+
+## Fleet recall
+
+Search `fleet-agents` before re-deriving a lesson (`recall "<topic>"` or MCP `recall_search`).  Contribute every reusable lesson at closeout (`recall contribute "…" --category lesson --app dealdex`).  Cloud seats: https://agents.jays.services/mcp .  Do not dump chat logs into the corpus.  Canonical: ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md.
