@@ -31,10 +31,13 @@ test("iOS Cocoa reads SENTRY_DSN from Info.plist only", () => {
 
   const plist = read("native/ios/DealDex/Info.plist");
   assert.match(plist, /<key>SENTRY_DSN<\/key>/);
-  assert.match(plist, /<string>https:\/\//);
+  assert.match(plist, /<string>\$\(SENTRY_DSN\)<\/string>/);
+  assert.doesNotMatch(plist, /<string>https:\/\//);
 
   const yml = read("native/ios/project.yml");
-  assert.match(yml, /^\s+SENTRY_DSN:\s+"https:\/\//m);
+  assert.match(yml, /^\s+SENTRY_DSN:\s*""\s*$/m);
+  assert.match(yml, /^\s+SENTRY_DSN:\s*\$\(SENTRY_DSN\)\s*$/m);
+  assert.doesNotMatch(yml, /SENTRY_DSN:\s*"https:\/\//);
 });
 
 test("Android Sentry is documented as deferred until tracks ship", () => {

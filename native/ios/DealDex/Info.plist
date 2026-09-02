@@ -36,7 +36,7 @@
 		</dict>
 	</array>
 	<key>SENTRY_DSN</key>
-	<string>https://f0aa93fc73895cfca027854c0735b97f@o4511650476326912.ingest.us.sentry.io/4511941875400704</string>
+	<string>$(SENTRY_DSN)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSApplicationCategoryType</key>

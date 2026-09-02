@@ -38,6 +38,10 @@ settings:
     INFOPLIST_KEY_CFBundleDisplayName: DealDex
     INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.shopping
     INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+    # Native Sentry. Empty unless xcodebuild/CI passes SENTRY_DSN=...
+    # SentryTelemetry.swift skips init when this expands to empty or $(SENTRY_DSN).
+    # Do not put a live DSN in this file or in Info.plist.
+    SENTRY_DSN: ""
 
 packages:
   Sentry:
@@ -99,7 +103,7 @@ targets:
         AppUpdateAppleId: 6802474288
         LSApplicationCategoryType: public.app-category.shopping
         ITSAppUsesNonExemptEncryption: false
-        SENTRY_DSN: "https://f0aa93fc73895cfca027854c0735b97f@o4511650476326912.ingest.us.sentry.io/4511941875400704"
+        SENTRY_DSN: $(SENTRY_DSN)
         LSRequiresIPhoneOS: true
         UILaunchScreen:
           UIColorName: LaunchBackground
