@@ -59,9 +59,17 @@ export function resolveService(env: EnvMap): string {
   return firstEnv(env, ["DD_SERVICE"]) ?? DEFAULT_DD_SERVICE;
 }
 
+export function canonicalizeDatadogEnv(raw: string | undefined): string | undefined {
+  const trimmed = raw?.trim();
+  if (!trimmed) return undefined;
+  const lower = trimmed.toLowerCase();
+  if (lower === "prod" || lower === "production") return "production";
+  return trimmed;
+}
+
 export function resolveEnvName(env: EnvMap): string {
   return (
-    firstEnv(env, ["DD_ENV"]) ??
+    canonicalizeDatadogEnv(firstEnv(env, ["DD_ENV"])) ??
     (isProductionObservability(env) ? "production" : (readEnv(env, "NODE_ENV") ?? "development"))
   );
 }
