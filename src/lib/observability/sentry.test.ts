@@ -40,9 +40,26 @@ test("iOS Cocoa reads SENTRY_DSN from Info.plist only", () => {
   assert.doesNotMatch(yml, /SENTRY_DSN:\s*"https:\/\//);
 });
 
-test("Android Sentry is documented as deferred until tracks ship", () => {
+test("Android Sentry SDK is present, DSN-gated, and privacy-safe", () => {
+  const gradle = read("native/android/app/build.gradle.kts");
+  assert.match(gradle, /io\.sentry:sentry-android/);
+  assert.match(gradle, /buildConfigField\("String", "SENTRY_DSN"/);
+  assert.match(gradle, /System\.getenv\("SENTRY_DSN"\)/);
+  assert.doesNotMatch(gradle, /ingest\.sentry\.io/);
+
+  const app = read("native/android/app/src/main/java/me/grok/dealdex/DealDexApp.kt");
+  assert.match(app, /SentryAndroid\.init/);
+  assert.match(app, /isSendDefaultPii\s*=\s*false/);
+  assert.match(app, /isAttachScreenshot\s*=\s*false/);
+  assert.match(app, /isAttachViewHierarchy\s*=\s*false/);
+  assert.match(app, /tracesSampleRate\s*=\s*0\.2/);
+  assert.match(app, /isAnrEnabled\s*=\s*true/);
+
+  const manifest = read("native/android/app/src/main/AndroidManifest.xml");
+  assert.match(manifest, /io\.sentry\.auto-init/);
+  assert.match(manifest, /android:value="false"/);
+
   const native = read("native/README.md");
-  assert.match(native, /iOS only until Android tracks ship/i);
-  const android = read("native/android/app/build.gradle.kts");
-  assert.doesNotMatch(android, /io\.sentry/i);
+  assert.match(native, /io\.sentry:sentry-android/);
+  assert.doesNotMatch(native, /iOS only until Android tracks ship/i);
 });

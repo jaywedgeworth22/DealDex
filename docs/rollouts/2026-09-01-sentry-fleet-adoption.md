@@ -8,7 +8,7 @@ Production was dark: `@sentry/react` ^10.73 already had Replay + `enableLogs`, g
 - **User Feedback** widget via `Sentry.feedbackIntegration` (light theme, auto-injected).
 - **Vercel** `VITE_SENTRY_DSN` set on production + preview for the existing `dealdex` project.  No second Vercel project.
 - **iOS Cocoa** no longer has a hardcoded DSN fallback.  `SENTRY_DSN` is Info.plist / XcodeGen `project.yml` only.
-- **Android:** iOS only until Android tracks ship.
+- **Android:** Owner un-deferred; see `docs/rollouts/2026-09-01-android-sentry-sdk.md`.
 
 ## Verification
 

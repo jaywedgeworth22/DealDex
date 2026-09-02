@@ -14,9 +14,10 @@ device-tested release build exists.
 
 ## Android
 
-Sentry on native is **iOS only until Android tracks ship.**  Do not add
-the Android Sentry SDK until Play / sideload crash reporting is a real
-track.  Web Replay + Feedback still cover the site.
+Sentry Android (`io.sentry:sentry-android`) inits in `DealDexApp` when
+`BuildConfig.SENTRY_DSN` is set from env `SENTRY_DSN` at compile time.
+Empty DSN stays dark.  Privacy: no default PII, no screenshots, no view
+hierarchy.  Mapping upload plugin is not wired yet.
 
 Build the debug APK locally (there is no sideload file on dealdex.net):
 
