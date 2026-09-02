@@ -21,6 +21,12 @@ android {
         targetSdk = 35
         versionCode = 3
         versionName = "1.0.3"
+
+        // Compile-time DSN only.  Empty when SENTRY_DSN is unset so the SDK stays dark in CI.
+        val sentryDsn = (System.getenv("SENTRY_DSN") ?: "")
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+        buildConfigField("String", "SENTRY_DSN", "\"$sentryDsn\"")
     }
     signingConfigs {
         if (keystorePath != null) {
@@ -53,7 +59,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
 }
@@ -81,5 +90,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("com.google.android.play:app-update:2.1.0")
     implementation("com.google.android.play:app-update-ktx:2.1.0")
+    // Crash + ANR only.  Mapping upload plugin skipped; consumer rules ship with the AAR.
+    implementation("io.sentry:sentry-android:8.54.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

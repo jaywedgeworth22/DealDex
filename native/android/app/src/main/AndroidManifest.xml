@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DealDex"
         android:usesCleartextTraffic="false">
+        <!-- Manual init in DealDexApp; empty BuildConfig.SENTRY_DSN stays dark. -->
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
