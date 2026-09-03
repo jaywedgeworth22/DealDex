@@ -137,6 +137,30 @@ test("the hand-off needs a tap, so a flow the user did not start cannot finish s
   assert.match(oauth, /If you did not start this sign-in/);
 });
 
+test("native Apple Sign In uses the system sheet and HTTPS identity-token exchange", () => {
+  const route = read("src/routes/api/native/apple-signin.ts");
+  assert.match(route, /createFileRoute\("\/api\/native\/apple-signin"\)/);
+  assert.match(route, /signInSocial/);
+  assert.match(route, /provider:\s*"apple"/);
+  assert.match(route, /idToken/);
+  // Better Auth Apple idToken.user.name is { firstName, lastName }, not a string.
+  assert.match(route, /firstName/);
+  assert.match(route, /lastName/);
+  assert.doesNotMatch(readCode("src/routes/api/native/apple-signin.ts"), /name:\s*string/);
+
+  const tree = read("src/routeTree.gen.ts");
+  assert.match(tree, /\/api\/native\/apple-signin/);
+  assert.match(tree, /ApiNativeAppleSigninRoute/);
+
+  const swift = read("native/ios/DealDex/NativeAuth.swift");
+  assert.match(swift, /ASAuthorizationAppleIDProvider/);
+  assert.match(swift, /api\/native\/apple-signin/);
+  assert.match(swift, /identityToken/);
+  // Session token must travel over HTTPS JSON, never the dealdex:// query.
+  assert.doesNotMatch(swift, /dict\["token"\]/);
+  assert.match(swift, /json\["token"\]/);
+});
+
 test("credentials are kept in the platform keystore, not a plain prefs file", () => {
   const prefs = read("native/android/app/src/main/java/me/grok/dealdex/data/Prefs.kt");
   assert.match(prefs, /EncryptedSharedPreferences/);
