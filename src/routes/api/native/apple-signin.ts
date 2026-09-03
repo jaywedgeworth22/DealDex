@@ -10,7 +10,10 @@ import { auth } from "@/lib/auth/server";
  * Apple's public JWKS, creates a session, and returns the bearer token.
  *
  * Request body (JSON):
- *   { identityToken: string, user?: { name?: string, email?: string } }
+ *   {
+ *     identityToken: string,
+ *     user?: { firstName?: string; lastName?: string; email?: string }
+ *   }
  *
  * Response (JSON):
  *   { token: string, email: string }   on success
@@ -20,7 +23,10 @@ export const Route = createFileRoute("/api/native/apple-signin")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        let body: { identityToken?: string; user?: { name?: string; email?: string } };
+        let body: {
+          identityToken?: string;
+          user?: { firstName?: string; lastName?: string; email?: string };
+        };
         try {
           body = (await request.json()) as typeof body;
         } catch {
@@ -33,16 +39,28 @@ export const Route = createFileRoute("/api/native/apple-signin")({
         }
 
         try {
-          // Better Auth's signInSocial accepts an idToken for Apple — it validates
-          // the JWT against https://appleid.apple.com/auth/keys and creates a session.
+          // Build the Better Auth user payload.
+          // Better Auth's Apple idToken user.name expects { firstName?, lastName? }.
+          const baUser = body.user
+            ? {
+                ...(body.user.email ? { email: body.user.email } : {}),
+                ...((body.user.firstName || body.user.lastName)
+                  ? {
+                      name: {
+                        ...(body.user.firstName ? { firstName: body.user.firstName } : {}),
+                        ...(body.user.lastName  ? { lastName:  body.user.lastName  } : {}),
+                      },
+                    }
+                  : {}),
+              }
+            : undefined;
+
           const res = await auth.api.signInSocial({
             body: {
               provider: "apple",
               idToken: {
                 token: identityToken,
-                // Apple only sends the user's name/email on the very first sign-in.
-                // Forward it so Better Auth can populate the user record.
-                ...(body.user ? { user: body.user } : {}),
+                ...(baUser ? { user: baUser } : {}),
               },
             },
             asResponse: true,

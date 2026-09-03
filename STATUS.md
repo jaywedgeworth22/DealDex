@@ -1,5 +1,11 @@
 # Current Handoff
 
+## 2026-09-03 GROK — Pickup AG cap: native Apple Sign In (PR #271)
+
+Full handoff: **`docs/rollouts/2026-09-03-native-apple-signin.md`**
+
+AG left `ag/fix-apple-native-form-post` open with verify red (route tree missing `/api/native/apple-signin`, Better Auth `idToken.user.name` shape).  Uncommitted Swift/TS payload fix adopted with credit.  Session token stays on HTTPS JSON, not `dealdex://`.
+
 ## Identity (living)
 
 Public name is **DealDex.net**.  Public host is **https://dealdex.net** on Vercel.  iOS bundle is **`net.dealdex`** (team `CC8UTF7ATG`, ASC appleId `6802474288`).  Android package stays **`me.grok.dealdex`**.  Dated stanzas below that name another host or iOS bundle are archaeology.

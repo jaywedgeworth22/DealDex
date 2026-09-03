@@ -48,21 +48,19 @@ enum NativeAuth {
         }
 
         // Apple only provides name on the very first authorization — capture it.
-        var userPayload: [String: Any]? = nil
+        var userPayload: [String: Any] = [:]
         if let fullName = credential.fullName {
-            let first = fullName.givenName ?? ""
-            let last  = fullName.familyName ?? ""
-            let name  = [first, last].filter { !$0.isEmpty }.joined(separator: " ")
-            if !name.isEmpty { userPayload = ["name": name] }
+            if let first = fullName.givenName,  !first.isEmpty { userPayload["firstName"] = first }
+            if let last  = fullName.familyName, !last.isEmpty  { userPayload["lastName"]  = last  }
         }
         if let email = credential.email, !email.isEmpty {
-            userPayload = (userPayload ?? [:]).merging(["email": email]) { $1 }
+            userPayload["email"] = email
         }
 
         return try await exchangeAppleToken(
             site: site,
             identityToken: identityToken,
-            user: userPayload
+            user: userPayload.isEmpty ? nil : userPayload
         )
     }
 

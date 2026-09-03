@@ -19,6 +19,7 @@ import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiNativeAppleSigninRouteImport } from './routes/api/native/apple-signin'
 import { Route as ApiNativeExchangeRouteImport } from './routes/api/native/exchange'
 import { Route as ApiNativeKeysRouteImport } from './routes/api/native/keys'
 import { Route as ApiNativeOauthRouteImport } from './routes/api/native/oauth'
@@ -75,6 +76,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiNativeAppleSigninRoute = ApiNativeAppleSigninRouteImport.update({
+  id: '/api/native/apple-signin',
+  path: '/api/native/apple-signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNativeExchangeRoute = ApiNativeExchangeRouteImport.update({
   id: '/api/native/exchange',
   path: '/api/native/exchange',
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
   '/api/native/oauth': typeof ApiNativeOauthRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
   '/api/native/oauth': typeof ApiNativeOauthRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
   '/api/native/oauth': typeof ApiNativeOauthRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/native/apple-signin'
     | '/api/native/exchange'
     | '/api/native/keys'
     | '/api/native/oauth'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/native/apple-signin'
     | '/api/native/exchange'
     | '/api/native/keys'
     | '/api/native/oauth'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/native/apple-signin'
     | '/api/native/exchange'
     | '/api/native/keys'
     | '/api/native/oauth'
@@ -218,6 +230,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   CardCardIdRoute: typeof CardCardIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiNativeAppleSigninRoute: typeof ApiNativeAppleSigninRoute
   ApiNativeExchangeRoute: typeof ApiNativeExchangeRoute
   ApiNativeKeysRoute: typeof ApiNativeKeysRoute
   ApiNativeOauthRoute: typeof ApiNativeOauthRoute
@@ -297,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/native/apple-signin': {
+      id: '/api/native/apple-signin'
+      path: '/api/native/apple-signin'
+      fullPath: '/api/native/apple-signin'
+      preLoaderRoute: typeof ApiNativeAppleSigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/native/exchange': {
       id: '/api/native/exchange'
       path: '/api/native/exchange'
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   CardCardIdRoute: CardCardIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiNativeAppleSigninRoute: ApiNativeAppleSigninRoute,
   ApiNativeExchangeRoute: ApiNativeExchangeRoute,
   ApiNativeKeysRoute: ApiNativeKeysRoute,
   ApiNativeOauthRoute: ApiNativeOauthRoute,
