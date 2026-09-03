@@ -31,6 +31,86 @@ enum NativeAuth {
     private static var heldSession: ASWebAuthenticationSession?
     private static var heldPresenter: NativeAuthPresenter?
 
+    // MARK: - Native Apple Sign In
+
+    /// Sign in with Apple using the native iOS sheet (Face ID / Touch ID).
+    ///
+    /// Uses ASAuthorizationAppleIDProvider — no web browser, no form_post redirect.
+    /// The identity token Apple returns is sent directly to /api/native/apple-signin
+    /// which validates it server-side and returns a DealDex session token.
+    static func signInApple(origin: String) async throws -> AccountApi.Session {
+        let site = Self.normalized(origin)
+        let credential = try await requestAppleCredential()
+        guard let tokenData = credential.identityToken,
+              let identityToken = String(data: tokenData, encoding: .utf8)
+        else {
+            throw NativeAuthError.missingToken
+        }
+
+        // Apple only provides name on the very first authorization — capture it.
+        var userPayload: [String: Any]? = nil
+        if let fullName = credential.fullName {
+            let first = fullName.givenName ?? ""
+            let last  = fullName.familyName ?? ""
+            let name  = [first, last].filter { !$0.isEmpty }.joined(separator: " ")
+            if !name.isEmpty { userPayload = ["name": name] }
+        }
+        if let email = credential.email, !email.isEmpty {
+            userPayload = (userPayload ?? [:]).merging(["email": email]) { $1 }
+        }
+
+        return try await exchangeAppleToken(
+            site: site,
+            identityToken: identityToken,
+            user: userPayload
+        )
+    }
+
+    /// Shows the native Apple Sign In authorization sheet and returns the credential.
+    private static func requestAppleCredential() async throws -> ASAuthorizationAppleIDCredential {
+        let provider = ASAuthorizationAppleIDProvider()
+        let request  = provider.createRequest()
+        request.requestedScopes = [.email, .fullName]
+
+        return try await withCheckedThrowingContinuation { cont in
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            let delegate   = AppleSignInDelegate(continuation: cont)
+            controller.delegate = delegate
+            controller.presentationContextProvider = delegate
+            // Keep a strong reference so the delegate isn't released before the callback.
+            AppleSignInDelegate.held = delegate
+            controller.performRequests()
+        }
+    }
+
+    /// POST identityToken to the server, receive a DealDex session token.
+    private static func exchangeAppleToken(
+        site: String,
+        identityToken: String,
+        user: [String: Any]?
+    ) async throws -> AccountApi.Session {
+        guard let url = URL(string: "\(site)/api/native/apple-signin") else {
+            throw NativeAuthError.server("Website origin is not a valid URL.")
+        }
+        var body: [String: Any] = ["identityToken": identityToken]
+        if let user { body["user"] = user }
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue("DealDex/1.0 (ios)", forHTTPHeaderField: "User-Agent")
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (data, res) = try await URLSession.shared.data(for: req)
+        let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
+        let status = (res as? HTTPURLResponse)?.statusCode ?? 0
+        if status >= 400 {
+            throw NativeAuthError.server(json["error"] as? String ?? "Apple sign-in could not be completed.")
+        }
+        guard let token = json["token"] as? String, !token.isEmpty else {
+            throw NativeAuthError.missingToken
+        }
+        return AccountApi.Session(token: token, email: json["email"] as? String ?? "")
+    }
+
     /// PKCE verifier: high-entropy, generated per attempt, never leaves the app.
     ///
     /// Uses CryptoKit's own CSPRNG rather than `SecRandomCopyBytes`, whose
@@ -146,5 +226,61 @@ private extension Data {
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
+    }
+}
+
+// MARK: - Apple Sign In Delegate
+
+/// Bridges ASAuthorizationController's delegate callbacks into Swift Concurrency.
+@MainActor
+final class AppleSignInDelegate: NSObject,
+    ASAuthorizationControllerDelegate,
+    ASAuthorizationControllerPresentationContextProviding
+{
+    /// Keeps the delegate alive until the callback fires (ARC would otherwise release it).
+    static var held: AppleSignInDelegate?
+
+    private let continuation: CheckedContinuation<ASAuthorizationAppleIDCredential, Error>
+
+    init(continuation: CheckedContinuation<ASAuthorizationAppleIDCredential, Error>) {
+        self.continuation = continuation
+    }
+
+    // MARK: ASAuthorizationControllerDelegate
+
+    func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithAuthorization authorization: ASAuthorization
+    ) {
+        Self.held = nil
+        if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            continuation.resume(returning: credential)
+        } else {
+            continuation.resume(throwing: NativeAuthError.missingToken)
+        }
+    }
+
+    func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithError error: Error
+    ) {
+        Self.held = nil
+        let ns = error as NSError
+        if ns.domain == ASAuthorizationError.errorDomain,
+           ns.code == ASAuthorizationError.canceled.rawValue
+        {
+            continuation.resume(throwing: NativeAuthError.cancelled)
+        } else {
+            continuation.resume(throwing: error)
+        }
+    }
+
+    // MARK: ASAuthorizationControllerPresentationContextProviding
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        if let key = scenes.flatMap(\.windows).first(where: \.isKeyWindow) { return key }
+        if let any = scenes.flatMap(\.windows).first { return any }
+        return ASPresentationAnchor()
     }
 }

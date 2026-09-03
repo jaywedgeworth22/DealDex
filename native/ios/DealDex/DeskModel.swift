@@ -113,7 +113,15 @@ final class DeskModel: ObservableObject {
         accountBusy = true
         accountNote = nil
         do {
-            let session = try await NativeAuth.signIn(origin: DeskStore.defaultOrigin, provider: provider)
+            // Apple: use the native ASAuthorizationAppleIDProvider sheet — no web browser,
+            // no "Finish signing in" tap, no form_post redirect issues.
+            // Google / X: use the existing ASWebAuthenticationSession flow.
+            let session: AccountApi.Session
+            if provider == "apple" {
+                session = try await NativeAuth.signInApple(origin: DeskStore.defaultOrigin)
+            } else {
+                session = try await NativeAuth.signIn(origin: DeskStore.defaultOrigin, provider: provider)
+            }
             DeskStore.token = session.token
             DeskStore.email = session.email
             let label = provider == "twitter" ? "X" : provider.capitalized
