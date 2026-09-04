@@ -90,3 +90,39 @@ The shared free-desk window (~8 minutes) only avoids a full rematch for that sho
 
 - Detect whether a listing image changed **without** downloading the full image (for example ETag / Last-Modified / URL fingerprint).  May be more effort than reward; do not block Member or free-cap work on this.
 
+## Official marketplace APIs (researched 2026-09-04)
+
+### eBay
+
+- **Exists:** yes — Developers Program + Buy **Browse API** (`item_summary/search`, item detail).
+- **Cost:** free to join; **no per-call fees**.  Default quota about **5,000 calls/day per app**.  Higher limits via Application Growth Check / Developer Support (approval, not pay-as-you-go).
+- **Caveat:** production Buy/Browse access may need extra approval beyond a sandbox keyset.
+- **Refs:** https://developer.ebay.com/api-docs/buy/browse/overview.html · https://developer.ebay.com/develop/get-started/api-call-limits
+
+### Mercari
+
+- **Public search API:** no self-serve developer portal for listing search.
+- **Partner API:** partner-only under direct business agreements — not a free tier you can register for.
+- **Ref:** https://about.mercari.com/en/business/
+
+### Implication for DealDex
+
+- Prefer **eBay Browse** as the primary official hop; keep Jina → Brave → HTML as fallback.
+- Mercari stays on the scrape ladder unless a partnership lands.
+
+
+## Coverage vs precision (owner 2026-09-04)
+
+Owner feels some real singles may be missing, and is **happy with how few false positives** appear.
+
+- Do **not** loosen title match / filters in a way that floods junk listings.
+- Coverage audit should find wider-but-still-specific nets (query variants, set/number phrasing, BIN filters) that recover missed cards **without** raising false positives.
+- Prefer measuring missed inventory against a known card sample over blindly raising result caps.
+
+
+## Scan timing / Datadog (owner 2026-09-04)
+
+- Server scan stores image **URLs** only; it does not download listing pictures.  Thumbnail delay is client-side after results.
+- DealDex already ships Datadog logs + one APM span per HTTP request.  That shows total scan request duration, not per-hop (eBay / Mercari / enrichment).
+- Next observability step: child spans (or structured duration logs) for marketplace fetch vs card match vs paid-desk quotes so Datadog can answer what is longest.
+
