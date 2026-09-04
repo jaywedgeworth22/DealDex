@@ -143,8 +143,8 @@ DealDex already has Datadog one-span-per-request and client Sentry (browser trac
 
 **Prefer Sentry Performance** for hop breakdown (org has ample Sentry credit; Datadog free APM is the tighter limit):
 
-- Add server spans on the Nitro/API scan path: `scan.ebay`, `scan.mercari`, `scan.match`, `scan.enrich` (and cache hit/miss).
-- Optional: keep Datadog parent `web.request` only; do not spend free APM on deep child spans unless Sentry is insufficient.
+- Server spans on the Nitro/API scan path: `scan.ebay`, `scan.mercari`, `scan.match`, `scan.enrich`, `scan.cache.hit`, `scan.cache.miss`.
+- Datadog parent stays `web.request` only; do not spend free APM on deep child spans unless Sentry is insufficient.
 - Server still does not download listing images (URLs only) — thumbnail time is client RUM, not scan.
 
-Hand implementation to Fixer when ready.
+Implemented on `grok/sentry-scan-hop-spans` (Nitro middleware init/flush + `@sentry/node` `startSpan` around web and native scan handlers).  Extra-ship no.

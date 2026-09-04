@@ -125,4 +125,9 @@ test("no invented secrets and no iOS Datadog SDK", () => {
   assert.match(middleware, /missingServerKeys/);
   assert.doesNotMatch(middleware, /missingProductionKeys/);
   assert.doesNotMatch(middleware, /--force-ship/);
+  assert.match(middleware, /name: "web.request"/);
+  assert.doesNotMatch(middleware, /scan\.ebay/);
+  assert.doesNotMatch(middleware, /scan\.mercari/);
+  assert.doesNotMatch(middleware, /scan\.match/);
+  assert.doesNotMatch(middleware, /scan\.enrich/);
 });
