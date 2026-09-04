@@ -118,6 +118,8 @@ Owner feels some real singles may be missing, and is **happy with how few false 
 - Do **not** loosen title match / filters in a way that floods junk listings.
 - Coverage audit should find wider-but-still-specific nets (query variants, set/number phrasing, BIN filters) that recover missed cards **without** raising false positives.
 - Prefer measuring missed inventory against a known card sample over blindly raising result caps.
+- **Manual browser check:** periodically open the same query on eBay and Mercari in a real browser, count relevant singles, and compare to DealDex results to measure miss rate (not only automated scrapes).
+- **Prioritize higher-value cards** in that sample and in any ranking / alert path — expensive or chase singles matter more for Member speed and for judging coverage.
 
 
 ## Scan timing / Datadog (owner 2026-09-04)
