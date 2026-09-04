@@ -4,11 +4,10 @@
  * Gated on VITE_SENTRY_DSN (inlined by Vite at build time).
  * Completely inert in dev/CI when no DSN is provided.
  *
- * Utilizes the fleet's $5,000 sponsored credit with:
- * - Error tracking & boundary capture
- * - Session Replay (100% on error, 10% baseline session)
- * - Distributed tracing & browser navigation spans
- * - Strict text & media masking for user privacy
+ * Replay stays 100% on error / 10% session.  DealDex is not the giant
+ * public congress.trade surface; reserved Replay quota is org-level.
+ * User Feedback is the consumer widget (auto-injected).  Privacy: mask
+ * all text and block all media on Replay.
  */
 
 import * as Sentry from "@sentry/react";
@@ -47,8 +46,12 @@ export function initSentry(): void {
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.feedbackIntegration({
-        colorScheme: "system",
-        autoInject: false,
+        colorScheme: "light",
+        autoInject: true,
+        showBranding: false,
+        buttonLabel: "Report a problem",
+        submitButtonLabel: "Send",
+        formTitle: "Report a problem",
       }),
       ...(!replayDisabled
         ? [

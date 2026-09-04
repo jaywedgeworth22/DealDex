@@ -158,7 +158,7 @@ Canonical: `/Users/jay/apps/AGENT-SYNC.md` § iOS agent build loop.
 - Web: React 19, TanStack Start, Tailwind v4, Better Auth. Dev:
   `npm run dev` → `0.0.0.0:8080`.
 - Routes: `/` live scan, `/settings` keys, `/alerts`, `/saved` ledger,
-  `/install` APK + native source, `/login`.
+  `/install` native apps (no public APK), `/login` Google/Apple/X.
 - Native: `native/android` (package `me.grok.dealdex`),
   `native/ios/DealDex.xcodeproj` (bundle `net.dealdex`, team
   `CC8UTF7ATG`). Keys stay on device.  Apple bundle resource id
@@ -204,3 +204,7 @@ Infisical is the sole source of truth for app runtime secrets when they exist.
 - Escalate a tier when a cheaper model's output fails verification — not
   preemptively, and not because the parent session is frontier-tier.
 - Canonical: `/Users/jay/apps/AGENT-SYNC.md` — "Delegation & model economics".
+
+## Fleet recall
+
+Search `fleet-agents` before re-deriving a lesson (`recall "<topic>"` or MCP `recall_search`).  Contribute every reusable lesson at closeout (`recall contribute "…" --category lesson --app dealdex`).  Cloud seats: https://agents.jays.services/mcp .  Do not dump chat logs into the corpus.  Canonical: ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md.

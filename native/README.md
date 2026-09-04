@@ -4,13 +4,22 @@ Android and iPhone apps.  They talk to eBay, Mercari, TCGDex, JustTCG, PriceChar
 
 Keys you paste in **Settings** live on the device.  If the website is down, scan still uses those keys.
 
-**Settings** also has optional sign-in.  Use the same email as the website only when you want to copy keys to or from your account.
+**Settings** also has optional sign-in.  Use the same Google, Apple, or X account as the website only when you want to copy keys to or from your account.
 
-Play and TestFlight are not shipping yet.  Android sideloads as `me.grok.dealdex`.  iOS is `net.dealdex` (team `CC8UTF7ATG`).  Do not upload iOS until the ASC app record exists (SKU `dealdex`).
+Play is not shipping yet.  Android package is `me.grok.dealdex` (build from
+`native/android` on `main`; dealdex.net does not host an APK).  iOS is
+`net.dealdex` (team `CC8UTF7ATG`, Apple app SKU `dealdex`, appleId `6802474288`).
+Internal TestFlight exists.  Do not restore a public APK until a signed,
+device-tested release build exists.
 
 ## Android
 
-**Sideload the debug APK** from the DealDex Apps page, or build it:
+Sentry Android (`io.sentry:sentry-android`) inits in `DealDexApp` when
+`BuildConfig.SENTRY_DSN` is set from env `SENTRY_DSN` at compile time.
+Empty DSN stays dark.  Privacy: no default PII, no screenshots, no view
+hierarchy.  Mapping upload plugin is not wired yet.
+
+Build the debug APK locally (there is no sideload file on dealdex.net):
 
 ```
 cd native/android
@@ -21,7 +30,7 @@ ANDROID_HOME="$ANDROID_HOME" JAVA_HOME="$JAVA_HOME" ./gradlew :app:assembleDebug
 
 The repo ships a Gradle 8.7 wrapper.  Point `local.properties` `sdk.dir` at your Android SDK (copy `local.properties.example`).  Need JDK 17.
 
-- Package `me.grok.dealdex`, min SDK 26, target 34.
+- Package `me.grok.dealdex`, min SDK 26, target 35.
 - Launcher name: DealDex.
 
 ## iOS
@@ -48,7 +57,7 @@ xcodebuild -project native/ios/DealDex.xcodeproj -scheme DealDex \
 
 Bundle id: `net.dealdex`.  Display name: DealDex.  Min iOS: 17.0.  Project format: Xcode 26.3.  Team: `CC8UTF7ATG`.  Apple bundle resource id `R2FAW69NPD` is not a team id.
 
-TestFlight archive + upload is `.github/workflows/ios-ship.yml` on the owned Mac runner (app key `dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  Do not upload until the ASC app record exists.
+TestFlight archive + upload is `.github/workflows/ios-ship.yml` on GitHub-hosted `macos-latest` (app key `dealdex`, bundle `net.dealdex`).  Manual: `bash scripts/ios-ship-testflight.sh`.  ASC app DealDex SKU `dealdex`, appleId `6802474288`.
 
 AppIcon catalog is the DD on the ST tiled field.  Older preview variants
 live in `native/brand/icon-options/`.

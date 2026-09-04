@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -75,13 +75,13 @@ test("the phone apps' 'never sends a key' claim is qualified wherever it appears
   }
 });
 
-test("/install does not describe one build while serving another", () => {
-  // public/DealDex.apk predates the privacy and security work and could not be
-  // rebuilt here. Handing it out silently under the new copy would be the exact
-  // failure this whole change set is about.
+test("/install does not hand out the pre-fix APK", () => {
   const install = read("src/routes/install.tsx");
-  assert.match(install, /These downloads are an older build/);
-  assert.match(install, /still sends your paid desk keys/);
+  assert.match(install, /No sideload build on this site right now/);
+  assert.doesNotMatch(install, /href="\/DealDex\.apk"/);
+  assert.doesNotMatch(install, /href="\/DealDex-source\.zip"/);
+  assert.equal(existsSync(join(ROOT, "public/DealDex.apk")), false);
+  assert.equal(existsSync(join(ROOT, "public/DealDex-source.zip")), false);
 });
 
 test("native sign-in hands over a single-use code, never a session token", () => {
@@ -135,6 +135,30 @@ test("the hand-off needs a tap, so a flow the user did not start cannot finish s
   assert.match(oauth, /text\/html/);
   assert.match(oauth, /escapeHtml\(target\)/);
   assert.match(oauth, /If you did not start this sign-in/);
+});
+
+test("native Apple Sign In uses the system sheet and HTTPS identity-token exchange", () => {
+  const route = read("src/routes/api/native/apple-signin.ts");
+  assert.match(route, /createFileRoute\("\/api\/native\/apple-signin"\)/);
+  assert.match(route, /signInSocial/);
+  assert.match(route, /provider:\s*"apple"/);
+  assert.match(route, /idToken/);
+  // Better Auth Apple idToken.user.name is { firstName, lastName }, not a string.
+  assert.match(route, /firstName/);
+  assert.match(route, /lastName/);
+  assert.doesNotMatch(readCode("src/routes/api/native/apple-signin.ts"), /name:\s*string/);
+
+  const tree = read("src/routeTree.gen.ts");
+  assert.match(tree, /\/api\/native\/apple-signin/);
+  assert.match(tree, /ApiNativeAppleSigninRoute/);
+
+  const swift = read("native/ios/DealDex/NativeAuth.swift");
+  assert.match(swift, /ASAuthorizationAppleIDProvider/);
+  assert.match(swift, /api\/native\/apple-signin/);
+  assert.match(swift, /identityToken/);
+  // Session token must travel over HTTPS JSON, never the dealdex:// query.
+  assert.doesNotMatch(swift, /dict\["token"\]/);
+  assert.match(swift, /json\["token"\]/);
 });
 
 test("credentials are kept in the platform keystore, not a plain prefs file", () => {
@@ -299,4 +323,11 @@ test("iOS scans on the device first and sends no keys to the website", () => {
   assert.match(marks, /width: 64 \* scale, height: 14 \* scale/);
   assert.doesNotMatch(scanView, /Text\("e"\)/);
   assert.doesNotMatch(scanView, /Text\("MERCARI"\)/);
+});
+
+test("iOS Sentry stays dark without a configured DSN", () => {
+  const sentry = read("native/ios/DealDex/SentryTelemetry.swift");
+  assert.doesNotMatch(sentry, /ingest\.us\.sentry\.io/);
+  assert.match(sentry, /SENTRY_DSN/);
+  assert.match(sentry, /guard !dsn.isEmpty else \{ return \}/);
 });

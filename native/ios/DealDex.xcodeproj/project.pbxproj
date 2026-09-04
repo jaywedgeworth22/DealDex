@@ -13,6 +13,7 @@
 		4528ED88A9A6DC8FD799755B /* CardDossierView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8145DEE26D0AAA855D8E235F /* CardDossierView.swift */; };
 		4EB8A55543CD1CAB5F65B512 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E6ED06FC5E7DA4B309E90F /* Models.swift */; };
 		68974D10BC0FEF2DC8A3A261 /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97A4BEC4919A46E8FD55D24C /* AuthenticationServices.framework */; };
+		6E68536A0591E1EAA8F9DF30 /* SentryTelemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5CF2870999472BC27D2F40 /* SentryTelemetry.swift */; };
 		7265A8C3098CCF4BE78D8EB5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 451EF180EE98E8D5352F1E16 /* GoogleService-Info.plist */; };
 		738AFF1EAE0CCF70FB43D190 /* DealDexBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4102913782BABF7A13EFA78 /* DealDexBrand.swift */; };
 		82DBC6731314769E4279F52A /* DealDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D98B0DFA3A11DED5184FF2D /* DealDexApp.swift */; };
@@ -25,6 +26,7 @@
 		D69450F58B17C2EECD236C19 /* DeskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE02B033E727EE0760B492 /* DeskStore.swift */; };
 		D956F7DEF8BAB101A87B62F7 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22646DB4462EBE054FA5FD1D /* AccountView.swift */; };
 		DA03BB02896F3FA66E5E36C2 /* NativeAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392D9849BF8E736108C78668 /* NativeAuth.swift */; };
+		DF8D71CE132546FA7146EBD9 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3C58F82E1039DB8F6DE89FEC /* Sentry */; };
 		E0BFA5839CEC00B3F19EF40B /* DeskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8027642EE047BC6844FC1731 /* DeskModel.swift */; };
 		E3F64C89E2A95BCA354054BC /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74DAB841052EE8417CAA3FA /* AlertsView.swift */; };
 		E5211282CC027FCB1D5802DF /* SavedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE604E54D04D230B428A089D /* SavedView.swift */; };
@@ -51,6 +53,7 @@
 		A95FBB7F23AF521CD5F892A5 /* SavedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedStore.swift; sourceTree = "<group>"; };
 		AE604E54D04D230B428A089D /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
 		BD13DF27094FFB32AC7B7D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BF5CF2870999472BC27D2F40 /* SentryTelemetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentryTelemetry.swift; sourceTree = "<group>"; };
 		CADC3F5F7AEE97DEF19EACC1 /* Appraise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appraise.swift; sourceTree = "<group>"; };
 		D61487D9B0E035704CAFC1E9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E39A8CE869FC4AB1931CB1DF /* AppUpdatePrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdatePrompt.swift; sourceTree = "<group>"; };
@@ -65,6 +68,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68974D10BC0FEF2DC8A3A261 /* AuthenticationServices.framework in Frameworks */,
+				DF8D71CE132546FA7146EBD9 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +124,7 @@
 				A95FBB7F23AF521CD5F892A5 /* SavedStore.swift */,
 				AE604E54D04D230B428A089D /* SavedView.swift */,
 				F9F5F676B10407840DA6220C /* ScanView.swift */,
+				BF5CF2870999472BC27D2F40 /* SentryTelemetry.swift */,
 				D61487D9B0E035704CAFC1E9 /* SettingsView.swift */,
 			);
 			path = DealDex;
@@ -142,6 +147,7 @@
 			);
 			name = DealDex;
 			packageProductDependencies = (
+				3C58F82E1039DB8F6DE89FEC /* Sentry */,
 			);
 			productName = DealDex;
 			productReference = 50067F711863E53C8B62C880 /* DealDex.app */;
@@ -171,6 +177,9 @@
 			);
 			mainGroup = 9F6B8204DBAE4AFFF7AFCEE8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				ABFD61ED14077D3A75F5D501 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+			);
 			preferredProjectObjectVersion = 100;
 			productRefGroup = 3ADF03538B5F5916137FEA9A /* Products */;
 			projectDirPath = "";
@@ -217,6 +226,7 @@
 				FB7A4346B8B70A1F0759C930 /* SavedStore.swift in Sources */,
 				E5211282CC027FCB1D5802DF /* SavedView.swift in Sources */,
 				CDFE44760F4FDE7DB16B293C /* ScanView.swift in Sources */,
+				6E68536A0591E1EAA8F9DF30 /* SentryTelemetry.swift in Sources */,
 				BFBD6E80909740C203D5B174 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -349,6 +359,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = targeted;
@@ -423,6 +434,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SENTRY_DSN = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = targeted;
@@ -453,6 +465,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		ABFD61ED14077D3A75F5D501 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.44.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3C58F82E1039DB8F6DE89FEC /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ABFD61ED14077D3A75F5D501 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4CC1402F95CED31C94CA27DF /* Project object */;
 }

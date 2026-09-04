@@ -30,16 +30,15 @@ GitHub `main` is the code.  This preview (`/workspace`) is a workbench,
 not production.  Vercel Production builds `main` (team
 `jaywedgeworth22s-projects`, project `dealdex`).
 
-Owner registered `dealdex.net` 2026-08-22.  Public host is that name.
-`dealdex.online` redirects once both names are on the Vercel project.
+Owner registered `dealdex.net` 2026-08-22.  Public host is **https://dealdex.net**.
 `https://dealdex.vercel.app` is a different Next.js site
 ("DealDeX - Revolutionizing E-commerce").  Do not point About at it.
 
 Do not invent a second live URL.
 
-Native shipping is separate: Android package `me.grok.dealdex` (sideload
-debug APK), iOS bundle `online.dealdex`, team `CC8UTF7ATG`.  TestFlight
-and Play stay blocked on owner records.  See `README.md` and
+Native shipping is separate: Android package `me.grok.dealdex`, iOS bundle
+`net.dealdex`, team `CC8UTF7ATG`.  Internal TestFlight exists (ASC appleId
+`6802474288`).  Play stays blocked on owner records.  See `README.md` and
 `docs/store-listing.md`.
 
 ## Grok Build

@@ -26,3 +26,5 @@
 # Keep line numbers so a Play Console stack trace is still readable.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
+
+# Sentry ships consumer ProGuard rules in the AAR.  No extra -keep needed.

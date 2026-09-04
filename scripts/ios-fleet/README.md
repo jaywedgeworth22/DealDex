@@ -33,4 +33,4 @@ Apple IDs are not hardcoded in the Swift file.  Live DealDex is
 `net.dealdex` / `6802474288` in `apps.json` here and in
 `jaywedgeworth22/ai-fleet-coordinator` `site/ios-versions.json`.  The iOS target
 also sets Info.plist `AppUpdateAppleId` to that same number as a
-local fallback.  Do not treat `online.dealdex` as the live bundle.
+local fallback.  Public host is https://dealdex.net.

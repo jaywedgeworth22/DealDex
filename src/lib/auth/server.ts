@@ -66,7 +66,7 @@ const env = (key: string): string | undefined => {
 // provisions auth; set it to "false" to force auth off everywhere (dev user).
 const authDisabled = env("VITE_AUTH_ENABLED") === "false";
 
-const socialProviders = socialProviderConfig();
+const socialProviders = await socialProviderConfig();
 const socialEnabled = Object.keys(socialProviders).length > 0;
 
 /** True when at least one social provider has both client id and secret. */
