@@ -6,7 +6,7 @@
 //  Copy this file into the iOS target.  Do not fork behavior.
 //  Do not wrap this in a Swift package.
 //
-//  Apple IDs live in jaywedgeworth22/ios-app-versions versions.json
+//  Apple IDs live in jaywedgeworth22/ai-fleet-coordinator site/ios-versions.json
 //  and scripts/ios-fleet/apps.json (plus optional Info.plist
 //  AppUpdateAppleId).  Do not hardcode knownAppleIds here.
 //
@@ -28,7 +28,7 @@ import SwiftUI
 enum AppUpdatePrompt {
 
     static let defaultManifestURL = URL(
-        string: "https://raw.githubusercontent.com/jaywedgeworth22/ios-app-versions/main/versions.json"
+        string: "https://raw.githubusercontent.com/jaywedgeworth22/ai-fleet-coordinator/main/site/ios-versions.json"
     )!
 
     private static let skippedVersionKeyPrefix = "appUpdatePrompt.skippedVersion."
