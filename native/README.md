@@ -17,7 +17,8 @@ device-tested release build exists.
 Sentry Android (`io.sentry:sentry-android`) inits in `DealDexApp` when
 `BuildConfig.SENTRY_DSN` is set from env `SENTRY_DSN` at compile time.
 Empty DSN stays dark.  Privacy: no default PII, no screenshots, no view
-hierarchy.  Mapping upload plugin is not wired yet.
+hierarchy.  Masked Session Replay is 10% session / 100% error;
+`profilesSampleRate` is 0.1.  Mapping upload plugin is not wired yet.
 
 Build the debug APK locally (there is no sideload file on dealdex.net):
 

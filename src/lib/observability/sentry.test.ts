@@ -113,7 +113,12 @@ test("Android Sentry SDK is present, DSN-gated, and privacy-safe", () => {
   assert.match(app, /isAttachScreenshot\s*=\s*false/);
   assert.match(app, /isAttachViewHierarchy\s*=\s*false/);
   assert.match(app, /tracesSampleRate\s*=\s*0\.2/);
+  assert.match(app, /profilesSampleRate\s*=\s*0\.1/);
   assert.match(app, /isAnrEnabled\s*=\s*true/);
+  assert.match(app, /sessionReplay\.sessionSampleRate\s*=\s*0\.1/);
+  assert.match(app, /sessionReplay\.onErrorSampleRate\s*=\s*1\.0/);
+  assert.match(app, /setMaskAllText\(true\)/);
+  assert.match(app, /setMaskAllImages\(true\)/);
 
   const manifest = read("native/android/app/src/main/AndroidManifest.xml");
   assert.match(manifest, /io\.sentry\.auto-init/);
