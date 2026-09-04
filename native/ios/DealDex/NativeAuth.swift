@@ -65,19 +65,23 @@ enum NativeAuth {
     }
 
     /// Shows the native Apple Sign In authorization sheet and returns the credential.
+    ///
+    /// Continuation bodies are nonisolated.  Hop onto MainActor before constructing
+    /// `AppleSignInDelegate` (ios-ship archive, Swift 6 targeted concurrency).
     private static func requestAppleCredential() async throws -> ASAuthorizationAppleIDCredential {
-        let provider = ASAuthorizationAppleIDProvider()
-        let request  = provider.createRequest()
-        request.requestedScopes = [.email, .fullName]
-
-        return try await withCheckedThrowingContinuation { cont in
-            let controller = ASAuthorizationController(authorizationRequests: [request])
-            let delegate   = AppleSignInDelegate(continuation: cont)
-            controller.delegate = delegate
-            controller.presentationContextProvider = delegate
-            // Keep a strong reference so the delegate isn't released before the callback.
-            AppleSignInDelegate.held = delegate
-            controller.performRequests()
+        try await withCheckedThrowingContinuation { cont in
+            Task { @MainActor in
+                let provider = ASAuthorizationAppleIDProvider()
+                let request = provider.createRequest()
+                request.requestedScopes = [.email, .fullName]
+                let controller = ASAuthorizationController(authorizationRequests: [request])
+                let delegate = AppleSignInDelegate(continuation: cont)
+                controller.delegate = delegate
+                controller.presentationContextProvider = delegate
+                delegate.controller = controller
+                AppleSignInDelegate.held = delegate
+                controller.performRequests()
+            }
         }
     }
 
@@ -238,10 +242,22 @@ final class AppleSignInDelegate: NSObject,
     /// Keeps the delegate alive until the callback fires (ARC would otherwise release it).
     static var held: AppleSignInDelegate?
 
-    private let continuation: CheckedContinuation<ASAuthorizationAppleIDCredential, Error>
+    /// `performRequests()` returns immediately; the controller must outlive the
+    /// presenting `Task` until Apple calls back.
+    var controller: ASAuthorizationController?
+
+    private var continuation: CheckedContinuation<ASAuthorizationAppleIDCredential, Error>?
 
     init(continuation: CheckedContinuation<ASAuthorizationAppleIDCredential, Error>) {
         self.continuation = continuation
+    }
+
+    private func finish(_ result: Result<ASAuthorizationAppleIDCredential, Error>) {
+        guard let continuation else { return }
+        self.continuation = nil
+        Self.held = nil
+        controller = nil
+        continuation.resume(with: result)
     }
 
     // MARK: ASAuthorizationControllerDelegate
@@ -250,11 +266,10 @@ final class AppleSignInDelegate: NSObject,
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
     ) {
-        Self.held = nil
         if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            continuation.resume(returning: credential)
+            finish(.success(credential))
         } else {
-            continuation.resume(throwing: NativeAuthError.missingToken)
+            finish(.failure(NativeAuthError.missingToken))
         }
     }
 
@@ -262,14 +277,13 @@ final class AppleSignInDelegate: NSObject,
         controller: ASAuthorizationController,
         didCompleteWithError error: Error
     ) {
-        Self.held = nil
         let ns = error as NSError
         if ns.domain == ASAuthorizationError.errorDomain,
            ns.code == ASAuthorizationError.canceled.rawValue
         {
-            continuation.resume(throwing: NativeAuthError.cancelled)
+            finish(.failure(NativeAuthError.cancelled))
         } else {
-            continuation.resume(throwing: error)
+            finish(.failure(error))
         }
     }
 
