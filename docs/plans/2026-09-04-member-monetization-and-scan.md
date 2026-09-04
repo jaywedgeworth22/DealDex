@@ -75,3 +75,18 @@ Sometime soon, audit whether scans find **all relevant single-card Buy It Now li
 - `docs/store-listing.md` — current public listing copy.
 - `migrations/0004_scan_cache.sql`, `src/lib/server/scan-cache.ts` — shared free scan cache.
 - `src/lib/marketplaces/ebay.ts`, `mercari.ts`, `jina.ts`, `brave.ts` — fetch ladder.
+
+## Cache policy (owner refinement 2026-09-04)
+
+The shared free-desk window (~8 minutes) only avoids a full rematch for that short span.  Enrichment from appraisal / rating desks and other scored fields changes rarely.  Listing identity (title, URL, marketplace id) also changes rarely.
+
+**Prefer:**
+
+- Keep enrichment and stable listing fields for much longer (hours to a day, with a clear TTL).
+- On revisit, primarily re-check **price** (and maybe shipping) against the marketplace.
+- Treat a price change as the signal to refresh that row; leave card match / desk quotes alone unless stale by the long TTL or the user forces a full scan.
+
+**Optional / low priority:**
+
+- Detect whether a listing image changed **without** downloading the full image (for example ETag / Last-Modified / URL fingerprint).  May be more effort than reward; do not block Member or free-cap work on this.
+
