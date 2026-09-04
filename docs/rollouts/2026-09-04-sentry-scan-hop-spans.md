@@ -36,4 +36,6 @@ Attributes are counts, marketplace ids, and booleans only (`listing.count`, `mat
 
 No extra-ship.  No `--force-ship`.  Did not merge.
 
+PR https://github.com/jaywedgeworth22/DealDex/pull/282.  SHA `6665302`.
+
 Board `9fb9cccafb9c40b889466516a18e8dd5`.
