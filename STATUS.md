@@ -1,5 +1,13 @@
 # Current Handoff
 
+## 2026-09-04 GROK — Sentry Performance child spans on scan hops
+
+Full handoff: **`docs/rollouts/2026-09-04-sentry-scan-hop-spans.md`**
+
+Server scan hops now emit Sentry Performance spans: `scan.ebay`, `scan.mercari`, `scan.match`, `scan.enrich`, `scan.cache.hit`, `scan.cache.miss`, under parent `scan`.  Datadog stays one `web.request` parent.  HTTP/Fetch/Postgres auto-integrations are dropped so marketplace URLs cannot leak the search term.  Gated on `SENTRY_DSN` / `VITE_SENTRY_DSN`.  Extra-ship no.
+
+Branch `grok/sentry-scan-hop-spans`.  Board `9fb9cccafb9c40b889466516a18e8dd5`.  Local gates: lint 0 errors, typecheck clean, 217 tests, build green.
+
 ## 2026-09-03 GROK — NativeAuth Swift 6 main-actor hop (ios-ship archive)
 
 Full handoff: **`docs/rollouts/2026-09-03-ios-nativeauth-mainactor.md`**

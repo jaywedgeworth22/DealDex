@@ -47,6 +47,16 @@ Do not turn on Vercel log/trace drains (those are billed by Vercel).  Do not
 replace Sentry or PagerDuty.  iOS has no Datadog RUM SDK in this repo; adding
 one would need a Mac `xcodebuild` and is out of scope.
 
+Scan hop timing prefers **Sentry Performance** (org credit is the roomier
+budget; Datadog free APM stays one `web.request` parent).  Server spans:
+
+- `scan` (parent)
+- `scan.ebay`, `scan.mercari`, `scan.match`, `scan.enrich`
+- `scan.cache.hit` / `scan.cache.miss`
+
+Gated on `SENTRY_DSN` or the existing `VITE_SENTRY_DSN`.  Inert without a DSN.
+Traces do not include listing titles, search queries, or desk keys.
+
 ## Web (local)
 
 ```bash

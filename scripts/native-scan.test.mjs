@@ -61,6 +61,13 @@ test("the native scan endpoint refuses desk keys, because /privacy promises it",
   assert.match(privacy, /the scan endpoint refuses one outright/);
 });
 
+test("native scan records Sentry cache and parent spans without accepting keys", () => {
+  const scan = read("src/routes/api/native/scan.ts");
+  assert.match(scan, /withScanTransaction\("native"/);
+  assert.match(scan, /withScanCacheLookup/);
+  assert.match(scan, /scanAndScore\(query, sources\)/);
+});
+
 test("the phone apps' 'never sends a key' claim is qualified wherever it appears", () => {
   // Both clients expose "Push Phone Keys to Account", which POSTs to
   // /api/native/keys. An unqualified "never sends a key" is contradicted by a

@@ -10,6 +10,20 @@ function read(rel: string): string {
   return readFileSync(join(ROOT, rel), "utf8");
 }
 
+test("package.json ships @sentry/node next to @sentry/react", () => {
+  const pkg = read("package.json");
+  assert.match(pkg, /"@sentry\/node":\s*"\^10\./);
+  assert.match(pkg, /"@sentry\/react":\s*"\^10\./);
+});
+
+test("privacy discloses Sentry scan-hop traces without listing titles", () => {
+  const privacy = read("src/routes/privacy.tsx");
+  assert.match(privacy, /Website Analytics/);
+  assert.match(privacy, /Sentry Performance/);
+  assert.match(privacy, /do not include listing titles, search queries, or desk/);
+  assert.match(privacy, /Datadog Session Replay is off/);
+});
+
 test("Replay stays 100% on error, 10% session, masked, with Feedback widget", () => {
   const src = read("src/lib/observability/sentry.ts");
   assert.match(src, /VITE_SENTRY_DSN/);
@@ -38,6 +52,50 @@ test("iOS Cocoa reads SENTRY_DSN from Info.plist only", () => {
   assert.match(yml, /^\s+SENTRY_DSN:\s*""\s*$/m);
   assert.match(yml, /^\s+SENTRY_DSN:\s*\$\(SENTRY_DSN\)\s*$/m);
   assert.doesNotMatch(yml, /SENTRY_DSN:\s*"https:\/\//);
+});
+
+test("server scan hops use named Sentry spans and keep Datadog at web.request", () => {
+  const server = read("src/lib/observability/sentry-server.ts");
+  assert.match(server, /scan\.ebay/);
+  assert.match(server, /scan\.mercari/);
+  assert.match(server, /scan\.match/);
+  assert.match(server, /scan\.enrich/);
+  assert.match(server, /scan\.cache\.hit/);
+  assert.match(server, /scan\.cache\.miss/);
+  assert.match(server, /SENTRY_DSN/);
+  assert.match(server, /VITE_SENTRY_DSN/);
+  assert.match(server, /sendDefaultPii:\s*false/);
+  assert.match(server, /registerEsmLoaderHooks:\s*false/);
+  assert.match(server, /sentryServerIntegrations/);
+  assert.match(server, /beforeSendSpan:\s*sentryServerBeforeSendSpan/);
+  assert.match(server, /await import\("@sentry\/node"\)/);
+  assert.doesNotMatch(server, /listing\.title/);
+  assert.match(server, /never attaches listing titles, search queries, or desk keys/);
+
+  const hops = read("src/lib/marketplaces/scan.ts");
+  assert.match(hops, /SCAN_SPAN\.ebay/);
+  assert.match(hops, /SCAN_SPAN\.mercari/);
+  assert.match(hops, /SCAN_SPAN\.match/);
+  assert.match(hops, /SCAN_SPAN\.enrich/);
+  assert.match(hops, /scan\.marketplace/);
+
+  const web = read("src/lib/server/scan.ts");
+  assert.match(web, /withScanTransaction\("web"/);
+  assert.match(web, /withScanCacheLookup/);
+
+  const native = read("src/routes/api/native/scan.ts");
+  assert.match(native, /withScanTransaction\("native"/);
+  assert.match(native, /withScanCacheLookup/);
+
+  const middleware = read("server/middleware/sentry.ts");
+  assert.match(middleware, /initSentryServer/);
+  assert.match(middleware, /flushSentryServer/);
+  assert.doesNotMatch(middleware, /status: 503/);
+
+  const datadog = read("server/middleware/datadog.ts");
+  assert.match(datadog, /name: "web.request"/);
+  assert.doesNotMatch(datadog, /scan\.ebay/);
+  assert.doesNotMatch(datadog, /scan\.mercari/);
 });
 
 test("Android Sentry SDK is present, DSN-gated, and privacy-safe", () => {
