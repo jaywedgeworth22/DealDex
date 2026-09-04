@@ -156,6 +156,10 @@ test("native Apple Sign In uses the system sheet and HTTPS identity-token exchan
   assert.match(swift, /ASAuthorizationAppleIDProvider/);
   assert.match(swift, /api\/native\/apple-signin/);
   assert.match(swift, /identityToken/);
+  // Continuation bodies are nonisolated; AppleSignInDelegate is @MainActor.
+  // ios-ship archive (run 33721859665) failed without this hop.
+  assert.match(swift, /Task \{ @MainActor in/);
+  assert.match(swift, /@MainActor\nfinal class AppleSignInDelegate/);
   // Session token must travel over HTTPS JSON, never the dealdex:// query.
   assert.doesNotMatch(swift, /dict\["token"\]/);
   assert.match(swift, /json\["token"\]/);
