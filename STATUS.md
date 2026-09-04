@@ -4,7 +4,7 @@
 
 Full handoff: **`docs/rollouts/2026-09-03-ios-nativeauth-mainactor.md`**
 
-ios-ship run 33721859665 failed after #271 (`e9d3e347`) with archive rc=65: `AppleSignInDelegate.init(continuation:)` and `held` were MainActor-isolated and mutated from the nonisolated continuation body.  Hop setup onto `Task { @MainActor in }`.  Rebased onto #273 (`f26bcc7`).  Board `bce3ad82869f4f438851f60bdcf85145`.  No extra-ship.  No `--force-ship`.
+ios-ship run 33721859665 failed after #271 (`e9d3e347`) with archive rc=65: `AppleSignInDelegate.init(continuation:)` and `held` were MainActor-isolated and mutated from the nonisolated continuation body.  Hop setup onto `Task { @MainActor in }`.  Rebased onto #273 (`f26bcc7`).  PR https://github.com/jaywedgeworth22/DealDex/pull/276.  Board `bce3ad82869f4f438851f60bdcf85145`.  No extra-ship.  No `--force-ship`.
 
 ## 2026-09-03 GROK — Pickup AG cap: native Apple Sign In (PR #271)
 

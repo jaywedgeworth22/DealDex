@@ -1,6 +1,6 @@
 # 2026-09-03 — NativeAuth Swift 6 main-actor hop (ios-ship archive)
 
-Seat: GROK.  Branch `grok/ios-nativeauth-mainactor`.  Worktree `~/apps/dealdex-grok-nativeauth`.  Board `bce3ad82869f4f438851f60bdcf85145`.  Rebased onto #273 (`f26bcc7`).
+Seat: GROK.  Branch `grok/ios-nativeauth-mainactor`.  Worktree `~/apps/dealdex-grok-nativeauth`.  Board `bce3ad82869f4f438851f60bdcf85145`.  Rebased onto #273 (`f26bcc7`).  PR https://github.com/jaywedgeworth22/DealDex/pull/276.
 
 ## Why
 
