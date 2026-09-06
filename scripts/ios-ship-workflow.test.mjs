@@ -28,7 +28,13 @@ test("ios-ship.yml targets dealdex / native/ios on GitHub-hosted macos-latest", 
   assert.match(yml, /bash scripts\/ios-ship-testflight\.sh/);
   assert.doesNotMatch(yml, /--force-ship/);
   assert.match(yml, /ios-appstore-gm-prepare\.sh/);
-  assert.match(yml, /secrets\.ASC_KEY_ID/);
+  assert.match(yml, /Load Infisical signing secrets/);
+  assert.match(yml, /secrets\.INFISICAL_PROJECT_ID/);
+  assert.match(yml, /secrets\.INFISICAL_UNIVERSAL_AUTH_CLIENT_ID/);
+  assert.match(yml, /infisical login --method=universal-auth/);
+  assert.match(yml, /ASC_KEY_ID/);
+  assert.doesNotMatch(yml, /secrets\.ASC_KEY_ID/);
+  assert.doesNotMatch(yml, /ASC_KEY_ID: \$\{\{ secrets\.ASC_KEY_ID \}\}/);
   assert.doesNotMatch(yml, /if:.*secrets\./);
   assert.match(yml, /cron:\s*'22,52 \* \* \* \*'/);
   assert.match(yml, /workflow_dispatch/);
