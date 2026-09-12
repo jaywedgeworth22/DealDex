@@ -72,6 +72,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      # BOTH gates below (this workflow's own scheduled gate, and
+      # ship-testflight.sh's own min-interval / same-HEAD gate) key off
+      # ~/.cache/ios-fleet/last-ship-dealdex.txt. macos-latest is a fresh VM
+      # every run with no persisted $HOME, so without this restore step that
+      # file never exists and BOTH gates always take the "no prior ship
+      # recorded; proceeding" branch -- confirmed live in every run's log
+      # from 2026-09-07 through 2026-09-12. That silently turned a 1-hour
+      # min-interval + "skip if unchanged" throttle into "ship every tick,"
+      # spamming TestFlight with byte-identical rebuilds. Cache keys are
+      # immutable, so this restores the most recent entry under the prefix
+      # (restore-keys) rather than a fixed key that could never be updated.
+      - name: Restore ship-state cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ios-fleet
+          key: ios-fleet-state-dealdex-${{ github.run_id }}
+          restore-keys: |
+            ios-fleet-state-dealdex-
+
       # Runs FIRST so a tick with nothing to ship costs seconds and cannot go
       # red on an unrelated environment problem. The logic lives in a script,
       # not inline YAML, so Ubuntu CI can unit-test it on every PR -- otherwise
@@ -193,3 +212,15 @@ jobs:
         env:
           IOS_TF_RELEASE_NOTES: "1"  # Jay 2026-09-08: publish ASC What to Test
         run: bash scripts/ios-ship-testflight.sh
+
+      # Always: a skipped tick still needs its (unchanged) state persisted,
+      # and a partial failure after record_successful_ship still ran should
+      # not lose that write. The run_id key is always new, so this never hits
+      # "cache already exists" -- the immutability that made a fixed key
+      # useless for state that must change every run.
+      - name: Save ship-state cache
+        if: always()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ios-fleet
+          key: ios-fleet-state-dealdex-${{ github.run_id }}

@@ -1,5 +1,20 @@
 # Current Handoff
 
+## 2026-09-12 CLAUDE — Fix TestFlight ship spam: persist ship-state across ephemeral runners
+
+Full handoff: **`docs/rollouts/2026-09-12-ios-ship-state-cache.md`**
+
+Owner asked why TestFlight kept updating with no one shipping.  Root cause:
+`ios-ship.yml` runs on ephemeral `macos-latest`, so `~/.cache/ios-fleet/last-ship-dealdex.txt`
+never survived between runs — both the scheduled-ship gate and
+`ship-testflight.sh`'s own 1-hour min-interval/same-HEAD gate always saw "no
+prior ship" and shipped, every tick, verified across 5 separate run logs.
+Fixed with `actions/cache/restore` + `actions/cache/save` (unique
+`github.run_id` key + prefix `restore-keys`, since cache keys are immutable
+and this state must change every run).
+
+Branch `claude/investigate-testflight-cadence`.  Board `30abb003`.  `actionlint` clean.  Not yet merged — next scheduled tick after merge is the real-world check.
+
 ## 2026-09-04 GROK — Sentry Performance child spans on scan hops
 
 Full handoff: **`docs/rollouts/2026-09-04-sentry-scan-hop-spans.md`**
