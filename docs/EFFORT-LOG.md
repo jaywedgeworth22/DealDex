@@ -1,3 +1,4 @@
+- **2026-09-13 — FX — IN PROGRESS — Skip pointless Vercel production deploys (`fx/vercel-skip-pointless`, worktree `~/apps/dealdex-fx-deploy`, board `0934111e`).**
 - **2026-09-13 — FX — IN PROGRESS — Merge to main is Vercel production (`fx/merge-equals-live`, worktree `~/apps/dealdex-fx-deploy`, board `ef71d6c1`).**
 | 2026-08-28 | Antigravity | Completed | Verify open redirect protection and add /privacy-policy route | PR #208 |
 # DealDex Effort Log — cross-agent board
