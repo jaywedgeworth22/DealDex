@@ -1,3 +1,4 @@
+- **2026-09-13 — FX — IN PROGRESS — Merge to main is Vercel production (`fx/merge-equals-live`, worktree `~/apps/dealdex-fx-deploy`, board `ef71d6c1`).**
 | 2026-08-28 | Antigravity | Completed | Verify open redirect protection and add /privacy-policy route | PR #208 |
 # DealDex Effort Log — cross-agent board
 - **2026-09-01 — GROK — COMPLETED — Sentry DSN hygiene: no hardcoded iOS fallback (branch `grok/sentry-dsn-hygiene`, worktree `~/apps/dealdex-grok-sentry-dsn`).**  Board `7e18a8e4bb75488ca891a94d84033679`.  Cocoa init is plist-only / build-injected; empty DSN = no-op.
