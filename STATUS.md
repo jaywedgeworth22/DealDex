@@ -1,5 +1,9 @@
 # Current Handoff
 
+## 2026-09-13 FX — merge to main is Vercel production
+
+`vercel-ignore-hourly.sh` only skips preview auto-deploys.  Production git deploys always build (owner: sites go live on merge).  Board `ef71d6c1`.  Branch `fx/merge-equals-live`.
+
 ## 2026-09-12 CLAUDE — Fix TestFlight ship spam: persist ship-state across ephemeral runners
 
 Full handoff: **`docs/rollouts/2026-09-12-ios-ship-state-cache.md`**
