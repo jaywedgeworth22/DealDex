@@ -1,5 +1,9 @@
 # Current Handoff
 
+## 2026-09-13 FX — skip pointless Vercel production deploys
+
+Skip when site files did not change.  Cap one READY production deploy per hour.  Previews skipped.  Board `0934111e`.  Branch `fx/vercel-skip-pointless`.
+
 ## 2026-09-13 FX — merge to main is Vercel production
 
 `vercel-ignore-hourly.sh` only skips preview auto-deploys.  Production git deploys always build (owner: sites go live on merge).  Board `ef71d6c1`.  Branch `fx/merge-equals-live`.
