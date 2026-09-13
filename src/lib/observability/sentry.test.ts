@@ -32,7 +32,9 @@ test("Replay stays 100% on error, 10% session, masked, with Feedback widget", ()
   assert.match(src, /maskAllText:\s*true/);
   assert.match(src, /blockAllMedia:\s*true/);
   assert.match(src, /feedbackIntegration\(/);
-  assert.match(src, /autoInject:\s*true/);
+  assert.match(src, /autoInject:\s*false/);
+  assert.match(src, /formTitle:\s*"Report a Problem"/);
+  assert.match(src, /export function openSentryFeedback/);
   assert.match(src, /colorScheme:\s*"light"/);
   assert.match(src, /enableLogs:\s*true/);
 });

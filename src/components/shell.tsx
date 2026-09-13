@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DealDexWordmark } from "@/components/app-mark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { openSentryFeedback } from "@/lib/observability/sentry";
 
 function AuthSlot() {
   const { user, isPending } = useCurrentUserState();
@@ -53,7 +54,14 @@ export function Shell({ children }: { children: ReactNode }) {
             those markets or Pokémon.{" "}
             <Link to="/privacy" className="underline decoration-border underline-offset-2 hover:text-fg">
               Privacy
-            </Link>
+            </Link>{" "}·{" "}
+            <button
+              type="button"
+              onClick={() => openSentryFeedback()}
+              className="underline decoration-border underline-offset-2 hover:text-fg"
+            >
+              Report a Problem
+            </button>
           </p>
           <p className="sm:max-w-sm sm:text-right">
             Grade multipliers are estimates. Confirm authenticity before you buy.
