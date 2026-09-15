@@ -133,11 +133,34 @@ async function createPgliteSql(): Promise<Sql> {
   // reload after adding a migration file applies it live — with passes
   // serialized on a global chain so concurrent callers never double-apply.
   const migrate = async (): Promise<void> => {
-    const migrations = import.meta.glob("/migrations/*.sql", {
-      query: "?raw",
-      import: "default",
-      eager: true,
-    }) as Record<string, string>;
+    let migrations: Record<string, string> = {};
+    if (typeof (import.meta as { glob?: unknown }).glob === "function") {
+      migrations = (
+        import.meta as unknown as {
+          glob: (
+            pattern: string,
+            options?: Record<string, unknown>,
+          ) => Record<string, string>;
+        }
+      ).glob("/migrations/*.sql", {
+        query: "?raw",
+        import: "default",
+        eager: true,
+      });
+    } else {
+      // Node.js test / CLI environment fallback: read migrations from disk.
+      const { readdirSync, readFileSync } = await import("node:fs");
+      const { resolve, join } = await import("node:path");
+      const migrationsDir = resolve(process.cwd(), "migrations");
+      try {
+        const files = readdirSync(migrationsDir).filter((f) => f.endsWith(".sql"));
+        for (const file of files) {
+          migrations[`/migrations/${file}`] = readFileSync(join(migrationsDir, file), "utf-8");
+        }
+      } catch {
+        // Ignored if migrations dir does not exist in working directory.
+      }
+    }
     const doneRows = await pg.query<{ name: string }>(
       "select name from _migrations",
     );
