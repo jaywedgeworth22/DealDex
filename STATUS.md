@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-09-15 ANTIGRAVITY — Native auth tests, Desk Keys deduplication & Dependabot
+
+Full handoff: **`docs/rollouts/2026-09-15-auth-tests-and-desk-keys-dedup.md`**
+
+- **Native Auth Tests**: Added comprehensive functional test suite in `src/lib/server/native-auth-codes.test.ts` verifying single-use consumption, PKCE challenge verifier burns, and timeout expiration.
+- **Desk Keys Deduplication**: Extracted shared `fetchUserDeskKeys`, `upsertUserDeskKeys`, and `cleanDeskKeys` helpers into `src/lib/server/desk-keys.ts`, removing duplicate encryption and SQL statements from `/api/native/keys`. Added `src/lib/server/desk-keys.test.ts`.
+- **Database Test Fallback**: Added Node.js `fs` fallback in `src/lib/db.ts` for PGLite migrations during direct test execution outside Vite.
+- **Automated CVE Scanning**: Added `.github/dependabot.yml` for npm and GitHub Actions ecosystem scanning with pinned groups.
+- **Verification**: `npm run typecheck` clean, `npm run lint` clean (0 errors), `npm test` (227/227 pass), `npm run build` clean.
+
 ## 2026-09-13 FX — skip pointless Vercel production deploys
 
 Skip when site files did not change.  Cap one READY production deploy per hour.  Previews skipped.  Board `0934111e`.  Branch `fx/vercel-skip-pointless`.
