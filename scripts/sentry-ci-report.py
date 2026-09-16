@@ -70,6 +70,26 @@ CRON_SCHEDULES = {
     "iOS TestFlight ship (GitHub-hosted macOS)": "22,52 * * * *",
 }
 
+# This reporter only ever sends ONE check-in per scheduled run, after the
+# whole observed workflow_run has completed (see the module docstring) — there
+# is no separate "in_progress" check-in near the actual cron tick.  So Sentry
+# Crons' missed-check-in detection is really measuring "expected tick time" to
+# "workflow finished + workflow_run event fired + this reporter got scheduled
+# and ran", and checkin_margin has to cover that whole span, not just normal
+# reporting latency.  A flat 15-minute margin (FLEET-INFRA-CC, fixed
+# 2026-09-16) was blowing through on nearly every ios-ship tick, because that
+# job's own timeout-minutes is 90 -- any tick that actually ships (rather than
+# no-op via the scheduled-ship gate) is essentially guaranteed to report more
+# than 15 minutes after its expected slot, so Sentry flagged it "missed" even
+# though a real ok/error check-in always eventually arrived.  Default stays 15
+# for fast jobs; slow ones get an entry here sized to their own job timeout
+# plus slack for workflow_run dispatch + this reporter's own queue/run time.
+DEFAULT_CHECKIN_MARGIN_MINUTES = 15
+CRON_CHECKIN_MARGIN_MINUTES = {
+    # ios-ship.yml's "ship" job has timeout-minutes: 90; add ~10 min slack.
+    "iOS TestFlight ship (GitHub-hosted macOS)": 100,
+}
+
 # This map is keyed by a workflow's DISPLAY NAME, which is exactly the kind of
 # string that drifts out from under you: shared-package-pin-check.yml was
 # renamed "Shared package pin check" -> "Shared Package Pin Check" in d849720c
@@ -300,13 +320,16 @@ def main() -> int:
         else:
             checkin_status = "ok" if conclusion == "success" else "error"
             monitor_slug = f"ci-{APP}-{slugify(workflow_name)}"
+            checkin_margin = CRON_CHECKIN_MARGIN_MINUTES.get(
+                workflow_name, DEFAULT_CHECKIN_MARGIN_MINUTES
+            )
             checkin_payload = {
                 "check_in_id": uuid.uuid4().hex,
                 "monitor_slug": monitor_slug,
                 "status": checkin_status,
                 "monitor_config": {
                     "schedule": {"type": "crontab", "value": cron_expr},
-                    "checkin_margin": 15,
+                    "checkin_margin": checkin_margin,
                     "max_runtime": 60,
                     "timezone": "UTC",
                 },
