@@ -118,7 +118,7 @@ Same fleet rules as every other seat: rebase onto `origin/main`, work on a
 STATUS rows **GROK-BUILD**. If the sandbox drifted from GitHub, GitHub wins.
 After merge, Mac Grok should pull `~/apps/dealdex-grok` so the worktree matches.
 
-Live hosting is **not** this preview.  Current host and hosting rules: `docs/HOSTING.md`.
+Live hosting is **not** this preview.  The public site is dealdex.net; host and deploy rules: `docs/HOSTING.md`.
 
 Do not add a second Grok Build seat. Do not push `main` from this preview.
 
