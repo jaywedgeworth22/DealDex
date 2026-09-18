@@ -1,5 +1,18 @@
 # Current Handoff
 
+## 2026-09-18 CLAUDE — Seer Code Review fixup for ios-ship cache (PR #291 follow-up)
+
+Full handoff: **`docs/rollouts/2026-09-12-ios-ship-state-cache.md`** (rewritten; branch `claude/seer-fixup-20260918`).
+
+Seer Code Review on the original ios-ship-state-cache fix (#291, merged 2026-09-12) flagged two findings that were not addressed before merge.  This follow-up:
+
+- **P2 — fix:** added `github.run_attempt` to both `actions/cache/restore` and `actions/cache/save` keys.  Cache keys are immutable and GH reuses `run_id` on rerun, so without `run_attempt` a successful retry of a partially-failed run could never overwrite the stale save from the prior attempt, leaving the next scheduled tick to restore bad state.  Two-level `restore-keys` for the latest attempt of the current run, then any previous run.
+- **P1 — fix:** rewrote `docs/rollouts/2026-09-12-ios-ship-state-cache.md` with two-space sentence separators and updated it to reflect current main (v6.1.0 from Dependabot PRs #317/#320) and the new `run_attempt` key.
+
+Also wrote a fleet RAG lesson that Seer findings must be read, evaluated, and either acted on or formally dismissed with reason — see fleet-recall contribution `contrib/CLAUDE/2026-09-18/...`.  Board `30abb003`.
+
+Branch `claude/seer-fixup-20260918`.  Worktree `~/apps/dealdex-claude-seerfix`.  PR TBD; will arm auto-merge after verify + Seer clean.
+
 ## 2026-09-15 ANTIGRAVITY — Native auth tests, Desk Keys deduplication & Dependabot
 
 Full handoff: **`docs/rollouts/2026-09-15-auth-tests-and-desk-keys-dedup.md`**

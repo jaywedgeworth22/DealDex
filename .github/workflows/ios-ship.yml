@@ -80,15 +80,23 @@ jobs:
       # recorded; proceeding" branch -- confirmed live in every run's log
       # from 2026-09-07 through 2026-09-12. That silently turned a 1-hour
       # min-interval + "skip if unchanged" throttle into "ship every tick,"
-      # spamming TestFlight with byte-identical rebuilds. Cache keys are
-      # immutable, so this restores the most recent entry under the prefix
-      # (restore-keys) rather than a fixed key that could never be updated.
+      # spamming TestFlight with byte-identical rebuilds.
+      #
+      # The cache key MUST include github.run_attempt. Cache keys are
+      # immutable in GH Actions and run_id is reused on a workflow rerun, so
+      # without run_attempt a successful retry can never overwrite a stale
+      # save from the prior attempt (e.g. if: always() saving before
+      # record_successful_ship ran). Seer caught this on the original PR
+      # (#291) as P2; the first version of this fix shipped without it.
+      # restore-keys is a prefix match with two fallbacks: prefer the latest
+      # attempt of this run, then any previous run.
       - name: Restore ship-state cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ios-fleet
-          key: ios-fleet-state-dealdex-${{ github.run_id }}
+          key: ios-fleet-state-dealdex-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
+            ios-fleet-state-dealdex-${{ github.run_id }}-
             ios-fleet-state-dealdex-
 
       # Runs FIRST so a tick with nothing to ship costs seconds and cannot go
@@ -215,12 +223,14 @@ jobs:
 
       # Always: a skipped tick still needs its (unchanged) state persisted,
       # and a partial failure after record_successful_ship still ran should
-      # not lose that write. The run_id key is always new, so this never hits
-      # "cache already exists" -- the immutability that made a fixed key
-      # useless for state that must change every run.
+      # not lose that write. The run_id+run_attempt key is always fresh for
+      # this attempt, so this never hits "cache already exists" -- the
+      # immutability that made a fixed key useless for state that must change
+      # every run. run_attempt is critical (see Restore comment): a rerun
+      # reuses run_id and would otherwise fail to overwrite a stale save.
       - name: Save ship-state cache
         if: always()
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ios-fleet
-          key: ios-fleet-state-dealdex-${{ github.run_id }}
+          key: ios-fleet-state-dealdex-${{ github.run_id }}-${{ github.run_attempt }}
