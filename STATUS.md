@@ -1,5 +1,9 @@
 # Current Handoff
 
+## 2026-09-18 CURSOR — Effort Issues Sync Crons margin (FLEET-INFRA-CG)
+
+Daily `18 6 * * *` board mirror always succeeds; GitHub starts it 4.3-6.5h late so the 15-minute Sentry margin pages at 06:33Z.  Same override as ST #3194 / #3387 / #3389 / #3390, Autorotate #219, and UM #1491: `CRON_CHECKIN_MARGIN_MINUTES["Effort Issues Sync"] = 600`.  Existing iOS-ship 100 stays.  Cron unchanged.  Extra-ship no.  No Coolify.  Do not resolve CG on merge — wait for the next scheduled upsert of `ci-dealdex-effort-issues-sync`.  Rollout: `docs/rollouts/2026-09-18-effort-issues-sync-monitor-margin.md`.
+
 ## 2026-09-15 ANTIGRAVITY — Native auth tests, Desk Keys deduplication & Dependabot
 
 Full handoff: **`docs/rollouts/2026-09-15-auth-tests-and-desk-keys-dedup.md`**

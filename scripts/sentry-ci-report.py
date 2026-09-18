@@ -82,12 +82,28 @@ CRON_SCHEDULES = {
 # no-op via the scheduled-ship gate) is essentially guaranteed to report more
 # than 15 minutes after its expected slot, so Sentry flagged it "missed" even
 # though a real ok/error check-in always eventually arrived.  Default stays 15
-# for fast jobs; slow ones get an entry here sized to their own job timeout
-# plus slack for workflow_run dispatch + this reporter's own queue/run time.
+# for fast jobs that start on time; slow or late-started ones get an entry
+# here sized to their real delay (job timeout, or GitHub schedule lag) plus
+# slack for workflow_run dispatch + this reporter's own queue/run time.
 DEFAULT_CHECKIN_MARGIN_MINUTES = 15
 CRON_CHECKIN_MARGIN_MINUTES = {
     # ios-ship.yml's "ship" job has timeout-minutes: 90; add ~10 min slack.
+    # Do not raise this to 600: FLEET-INFRA-CC is a dropped-tick class, not
+    # a late-start class.  600 would hide missing 30-min macos ticks.
     "iOS TestFlight ship (GitHub-hosted macOS)": 100,
+    # FLEET-INFRA-CG (2026-09-18): daily Effort Issues Sync (`18 6 * * *`)
+    # misses every day at 06:33Z because GitHub starts the ubuntu-latest
+    # schedule 4.3-6.5h late (worst retained: 6h 30m on 2026-09-14 12:48Z).
+    # The sync then succeeds in ~12s and the late OK auto-resolves CG until
+    # the next day.  Reporter is completed + schedule-only; in_progress
+    # cannot cover this -- the run does not exist yet at 06:33Z.  600
+    # matches the daily ubuntu cron siblings (ST #3194 / FLEET-INFRA-C1,
+    # #3387 / C3, #3389 / BY, Autorotate #219 / CD, UM #1491 / CF,
+    # ST #3390 / C0).
+    "Effort Issues Sync": 600,
+}
+_CRON_CHECKIN_MARGINS_FOLDED = {
+    name.casefold(): margin for name, margin in CRON_CHECKIN_MARGIN_MINUTES.items()
 }
 
 # This map is keyed by a workflow's DISPLAY NAME, which is exactly the kind of
@@ -320,8 +336,8 @@ def main() -> int:
         else:
             checkin_status = "ok" if conclusion == "success" else "error"
             monitor_slug = f"ci-{APP}-{slugify(workflow_name)}"
-            checkin_margin = CRON_CHECKIN_MARGIN_MINUTES.get(
-                workflow_name, DEFAULT_CHECKIN_MARGIN_MINUTES
+            checkin_margin = _CRON_CHECKIN_MARGINS_FOLDED.get(
+                workflow_name.casefold(), DEFAULT_CHECKIN_MARGIN_MINUTES
             )
             checkin_payload = {
                 "check_in_id": uuid.uuid4().hex,
