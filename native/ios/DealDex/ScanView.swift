@@ -24,11 +24,6 @@ struct ScanView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-                Text("LIVE MARKET SCAN")
-                    .font(.caption)
-                    .tracking(1.6)
-                    .foregroundStyle(Color(red: 0.23, green: 0.22, blue: 0.20))
-                    .padding(.leading, 8)
                 HStack(spacing: 8) {
                     TextField("Card, set, or leave blank", text: $desk.query)
                         .textFieldStyle(.roundedBorder)

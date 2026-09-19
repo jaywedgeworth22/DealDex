@@ -6,7 +6,7 @@ Branch `fixer/ios-listing-images`, worktree `~/apps/dealdex-fixer`.  Owner-repor
 
 Root cause: `121ea10` flipped iOS to scan on-device first, but `native/ios/DealDex/Market.swift` `parseEbay`/`parseMercari` built rows with a hard-coded `image: nil`.  The site parser (`src/lib/marketplaces/jina.ts`) and the Android parser (`native/android/.../data/Market.kt`) read the thumbnail from the same Jina markdown, so iOS silently regressed when the on-device path became primary.
 
-Fix: mirror both — eBay `i.ebayimg.com`, Mercari `u-mercari-images.mercdn.net` with a deterministic `photos/<id>_1.jpg` fallback — via one shared `firstMatch` helper.  No layout, copy, or ship change.  Rollout: `docs/rollouts/2026-09-19-ios-listing-images.md`.
+Fix: mirror both — eBay `i.ebayimg.com`, Mercari `u-mercari-images.mercdn.net` with a deterministic `photos/<id>_1.jpg` fallback — via one shared `firstMatch` helper.  Same PR also removes the native iOS `"LIVE MARKET SCAN"` header (`ScanView.swift`), the last surviving copy of a line the owner asked to drop; the web scanner already lost it in PR #213.  No layout redesign, no ship change.  Rollout: `docs/rollouts/2026-09-19-ios-listing-images.md`.
 
 Also answered the owner's open questions on the scan desk (Hide Proxies is a **card** filter, not a network proxy; eBay is empty because Jina's eBay fetch gets a 403 and the Vercel egress IP looks datacenter; the scan caps at 16 listings/market with top-5 cross-desk verification; there is no residential-proxy support in the stack).  Follow-up work routed in-room: UI/copy to @Designer, user-defined count + per-user proxy + auto-scan to @Builder, Vercel Hobby daily-deploy cap decision to @Director/@Deployer.
 

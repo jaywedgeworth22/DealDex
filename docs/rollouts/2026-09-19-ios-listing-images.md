@@ -1,6 +1,15 @@
-# 2026-09-19 — iOS listings lost their photos (on-device parser dropped the image)
+# 2026-09-19 — iOS listings lost their photos + the stale "LIVE MARKET SCAN" header
 
 **Seat:** BF-FIXER  **Branch:** `fixer/ios-listing-images`  **Worktree:** `~/apps/dealdex-fixer`
+
+## Also in this change: remove the iOS "LIVE MARKET SCAN" header
+
+Owner asked (twice, on 2026-09-19) to drop the redundant "LIVE MARKET SCAN" /
+"Scan Sources" line.  The web scanner already had it removed in PR #213
+(`docs/rollouts/2026-08-31-mobile-scanner-source-row.md`), and the deployed
+`https://dealdex.net` serves no such string.  The only surviving instance was
+the native iOS header at `native/ios/DealDex/ScanView.swift:27`, so this change
+removes it.  The wordmark + one-line subtitle stay.
 
 ## Symptom
 
