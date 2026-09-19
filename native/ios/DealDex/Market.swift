@@ -237,6 +237,17 @@ enum Market {
         Double(s.replacingOccurrences(of: ",", with: ""))
     }
 
+    /// First match of `pattern` in `text`, or nil. Lifts the listing thumbnail
+    /// out of the Jina markdown. The on-device parsers dropped the image and
+    /// emitted `nil`, so rows scanned on the phone rendered without a photo even
+    /// though the same markdown carries one (the site parser has always read it).
+    private static func firstMatch(_ text: String, _ pattern: String) -> String? {
+        guard let re = try? NSRegularExpression(pattern: pattern) else { return nil }
+        let ns = text as NSString
+        guard let m = re.firstMatch(in: text, range: NSRange(location: 0, length: ns.length)) else { return nil }
+        return ns.substring(with: m.range)
+    }
+
     private static func parseEbay(_ md: String, _ query: String) -> [LiveListing] {
         let re = try! NSRegularExpression(pattern: #"\[([^\]]{8,220})\]\(https://www\.ebay\.com/itm/(\d{12,14})[^)]*\)([\s\S]{0,700})"#)
         let ns = md as NSString
@@ -251,7 +262,8 @@ enum Market {
             if !Appraise.titleMatches(title, query) { continue }
             let chunk = ns.substring(with: m.range(at: 3))
             guard let price = firstPrice(chunk) else { continue }
-            out.append(LiveListing(id: id, marketplace: "ebay", title: title, url: "https://www.ebay.com/itm/\(id)", price: price, shipping: 4.47, image: nil))
+            let image = firstMatch(chunk, #"https://i\.ebayimg\.com/images/g/[^)\s]+"#)
+            out.append(LiveListing(id: id, marketplace: "ebay", title: title, url: "https://www.ebay.com/itm/\(id)", price: price, shipping: 4.47, image: image))
             if out.count >= 16 { break }
         }
         return out
@@ -271,7 +283,12 @@ enum Market {
                 .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
                 .trimmingCharacters(in: .whitespaces)
             if title.isEmpty || Appraise.skipListing(title) || !Appraise.titleMatches(title, query) { continue }
-            out.append(LiveListing(id: id, marketplace: "mercari", title: title, url: "https://www.mercari.com/us/item/\(id)/", price: firstPrice(text), shipping: 4.49, image: nil))
+            // Mirror the Android parser: read the CDN thumbnail when the snippet
+            // carries one, else fall back to Mercari's deterministic first-photo
+            // URL so the row still shows a picture.
+            let image = firstMatch(inner, #"https://u-mercari-images\.mercdn\.net/[^)\s]+"#)
+                ?? "https://u-mercari-images.mercdn.net/photos/\(id)_1.jpg"
+            out.append(LiveListing(id: id, marketplace: "mercari", title: title, url: "https://www.mercari.com/us/item/\(id)/", price: firstPrice(text), shipping: 4.49, image: image))
             if out.count >= 16 { break }
         }
         return out

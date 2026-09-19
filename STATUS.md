@@ -1,5 +1,15 @@
 # Current Handoff
 
+## 2026-09-19 BF-FIXER — iOS listings lost their photos (on-device parser dropped the image)
+
+Branch `fixer/ios-listing-images`, worktree `~/apps/dealdex-fixer`.  Owner-reported: iOS rows used to show a thumbnail and now only show one after tapping into the listing.
+
+Root cause: `121ea10` flipped iOS to scan on-device first, but `native/ios/DealDex/Market.swift` `parseEbay`/`parseMercari` built rows with a hard-coded `image: nil`.  The site parser (`src/lib/marketplaces/jina.ts`) and the Android parser (`native/android/.../data/Market.kt`) read the thumbnail from the same Jina markdown, so iOS silently regressed when the on-device path became primary.
+
+Fix: mirror both — eBay `i.ebayimg.com`, Mercari `u-mercari-images.mercdn.net` with a deterministic `photos/<id>_1.jpg` fallback — via one shared `firstMatch` helper.  No layout, copy, or ship change.  Rollout: `docs/rollouts/2026-09-19-ios-listing-images.md`.
+
+Also answered the owner's open questions on the scan desk (Hide Proxies is a **card** filter, not a network proxy; eBay is empty because Jina's eBay fetch gets a 403 and the Vercel egress IP looks datacenter; the scan caps at 16 listings/market with top-5 cross-desk verification; there is no residential-proxy support in the stack).  Follow-up work routed in-room: UI/copy to @Designer, user-defined count + per-user proxy + auto-scan to @Builder, Vercel Hobby daily-deploy cap decision to @Director/@Deployer.
+
 ## 2026-09-18 CURSOR — Effort Issues Sync Crons margin (FLEET-INFRA-CG)
 
 Daily `18 6 * * *` board mirror always succeeds; GitHub starts it 4.3-6.5h late so the 15-minute Sentry margin pages at 06:33Z.  Same override as ST #3194 / #3387 / #3389 / #3390, Autorotate #219, and UM #1491: `CRON_CHECKIN_MARGIN_MINUTES["Effort Issues Sync"] = 600`.  Existing iOS-ship 100 stays.  Cron unchanged.  Extra-ship no.  No Coolify.  Do not resolve CG on merge — wait for the next scheduled upsert of `ci-dealdex-effort-issues-sync`.  Rollout: `docs/rollouts/2026-09-18-effort-issues-sync-monitor-margin.md`.
