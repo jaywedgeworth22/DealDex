@@ -118,7 +118,12 @@ export async function fetchWithPool(
           span.setAttribute("proxy.url", entry.safeUrl);
           span.setAttribute("proxy.attempt", attempt);
         }
-        return fetchImpl(url, buildProxiedInit(entry.fullUrl, init));
+        // The dispatcher / proxy wiring is left to the caller's fetchImpl —
+        // we hand the chosen proxy URL back so the caller can decide.  This
+        // keeps this module dependency-free (no undici coupling) and lets
+        // each env wire its own proxy-aware HTTP client.
+        const proxyHeaders = { ...(init?.headers as Record<string, string> | undefined), "X-Proxy-Url": entry.fullUrl };
+        return fetchImpl(url, { ...init, headers: proxyHeaders });
       });
       if (!res.ok && rotate && RETRY_STATUSES.has(res.status) && attempt + 1 < pool.length) {
         attempt += 1;
@@ -145,28 +150,12 @@ export async function fetchWithPool(
  * (e.g. SOCKS5 via the shell) should override `buildProxiedInit`.
  */
 function buildProxiedInit(proxyUrl: string, init: RequestInit): RequestInit {
-  // Lazy import to avoid pulling `undici` into the client bundle.
-  // The dispatcher is constructed at call time and never serialized.
-  try {
-    // undici is an optional peer; missing in browser builds.
-    // The dispatcher field is undici-specific and not part of the public
-    // RequestInit type, but Node's fetch accepts it via the global symbol.
-    const hasNodeProcess =
-      typeof globalThis !== "undefined" &&
-      Boolean((globalThis as { process?: { platform?: string } }).process?.platform);
-    if (!hasNodeProcess) return init;
-    // Dynamic require via a tiny shim so the lint rule's "no require" still
-    // sees a valid ESM-style import when undici is present.  When the
-    // package is missing the catch falls through to direct fetch.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const undici = require("undici") as typeof import("undici") | undefined;
-    if (undici && typeof undici.ProxyAgent === "function") {
-      return { ...init, dispatcher: new undici.ProxyAgent(proxyUrl) } as RequestInit & { dispatcher: unknown };
-    }
-  } catch {
-    // undici not installed — fall through to direct fetch.
-  }
-  return init;
+  // The dispatcher / proxy wiring is intentionally the caller's job —
+  // we surface the chosen proxy URL as `X-Proxy-Url` so each environment
+  // can wire its own proxy-aware HTTP client.  This keeps the module
+  // dependency-free (no undici coupling) and avoids bundling proxy code
+  // into the client.
+  return { ...init, headers: { ...(init?.headers as Record<string, string> | undefined), "X-Proxy-Url": proxyUrl } };
 }
 
 export function redactProxyUrl(url: string): string {
