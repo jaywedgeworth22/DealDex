@@ -118,6 +118,8 @@ async function mapPool<T, R>(items: T[], limit: number, fn: (item: T) => Promise
   return out;
 }
 
+const MATCH_POOL = 6;
+
 export async function scanAndScore(
   query: string,
   sources: ScanSource[],
@@ -160,7 +162,7 @@ export async function scanAndScore(
   const fx = await eurUsd().catch(() => null);
 
   const scored = await withScanSpan(SCAN_SPAN.match, async (span) => {
-    const rows = await mapPool(listings, 3, async (listing) => {
+    const rows = await mapPool(listings, MATCH_POOL, async (listing) => {
       const blob = `${listing.marketplace} ${listing.title} ${listing.price != null ? `$${listing.price}` : ""}`;
       const parsed = parseListingBlob(blob);
       parsed.url = listing.url;

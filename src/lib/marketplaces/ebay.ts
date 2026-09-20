@@ -11,6 +11,13 @@ import {
 } from "./html";
 import { fetchJina, parseJinaEbay } from "./jina";
 import type { LiveListing } from "./types";
+import {
+  filterBrowseByQuery,
+  searchEbayBrowse,
+  searchEbayBrowseEnabled,
+} from "./ebay-browse";
+
+export const EBAY_SCAN_CAP = 50;
 
 function pokemonQuery(query: string) {
   const q = query.trim();
@@ -19,6 +26,19 @@ function pokemonQuery(query: string) {
 }
 
 export async function searchEbay(query: string): Promise<LiveListing[]> {
+  // Try the official Browse API first when both keys are configured.  This
+  // avoids the Vercel datacenter IP getting 403'd on the raw HTML scrape,
+  // and gives paging up to ~50 listings per call across multiple pages.
+  if (searchEbayBrowseEnabled()) {
+    const browse = await searchEbayBrowse(query, EBAY_SCAN_CAP);
+    const filtered = filterBrowseByQuery(browse, query);
+    if (filtered.length >= Math.min(10, EBAY_SCAN_CAP / 2)) return filtered.slice(0, EBAY_SCAN_CAP);
+    if (filtered.length) {
+      // Browse returned a few good rows but the query filter is too narrow
+      // for the official search syntax — fall through to Jina to widen.
+    }
+  }
+
   const nkw = pokemonQuery(query);
   const broad = isBroadQuery(query);
   const jinaUrl =
@@ -80,7 +100,7 @@ export function parseEbayHtml(html: string, query = ""): LiveListing[] {
       image: img,
       listedAt: parseListedAt(chunk),
     });
-    if (out.length >= 16) break;
+    if (out.length >= EBAY_SCAN_CAP) break;
   }
 
   return out;

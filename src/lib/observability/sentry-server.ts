@@ -12,9 +12,12 @@
 export const SCAN_SPAN = {
   parent: "scan",
   ebay: "scan.ebay",
+  ebayApi: "scan.ebay.api",
+  ebayPage2: "scan.ebay.page2",
   mercari: "scan.mercari",
   match: "scan.match",
   enrich: "scan.enrich",
+  autoBuyPreview: "scan.auto_buy.preview",
   cacheHit: "scan.cache.hit",
   cacheMiss: "scan.cache.miss",
 } as const;
