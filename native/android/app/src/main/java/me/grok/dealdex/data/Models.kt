@@ -69,6 +69,19 @@ data class AutoBuyConfig(
     val marketplace: String = "ebay",
 )
 
+/** Out-of-app channel toggles + credentials.  Mirrors the web channels map
+ *  in src/lib/alerts/types.ts.  Email / SMS / Pushover providers are gated
+ *  server-side; the runner picks these up once the providers are wired. */
+data class AlertChannels(
+    val emailToggle: Boolean = false,
+    val email: String = "",
+    val smsToggle: Boolean = false,
+    val phone: String = "",
+    val pushoverToggle: Boolean = false,
+    val pushoverUser: String = "",
+    val pushoverToken: String = "",
+)
+
 data class AlertRule(
     val id: String,
     val name: String,
@@ -78,6 +91,7 @@ data class AlertRule(
     val minSpread: Double? = 0.15,
     val keyword: String = "",
     val autoBuy: AutoBuyConfig = AutoBuyConfig(),
+    val channels: AlertChannels = AlertChannels(),
 )
 
 data class SavedAppraisal(
