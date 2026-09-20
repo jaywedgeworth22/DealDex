@@ -16,6 +16,7 @@ import {
   searchEbayBrowse,
   searchEbayBrowseEnabled,
 } from "./ebay-browse";
+import { fetchWithPool, proxyPoolEnabled } from "@/lib/server/proxy-pool";
 
 export const EBAY_SCAN_CAP = 50;
 
@@ -54,7 +55,7 @@ export async function searchEbay(query: string): Promise<LiveListing[]> {
   const fromBrave = parseBraveListings(brave, query, "ebay");
   if (fromBrave.length) return fromBrave;
 
-  const res = await fetch(jinaUrl, { headers: BROWSER_HEADERS });
+  const res = await fetchWithPool(jinaUrl, { headers: BROWSER_HEADERS });
   if (res.ok) {
     const html = await res.text();
     const rows = parseEbayHtml(html, query);
