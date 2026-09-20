@@ -11,6 +11,8 @@ import {
 import { fetchJina, parseJinaMercari } from "./jina";
 import type { LiveListing } from "./types";
 
+export const MERCARI_SCAN_CAP = 50;
+
 function searchPhrase(query: string) {
   const q = query.trim();
   if (!q || /^(pokemon|pokémon)(\s+tcg)?$/i.test(q)) return "pokemon card";
@@ -54,7 +56,7 @@ export function parseDdgMercari(html: string, query = ""): LiveListing[] {
     ids.push(id);
   }
 
-  for (let i = 0; i < ids.length && out.length < 16; i++) {
+  for (let i = 0; i < ids.length && out.length < MERCARI_SCAN_CAP; i++) {
     const title = (titles[i] || `Mercari listing ${ids[i]}`)
       .replace(/\s*[|\-–]\s*Mercari.*$/i, "")
       .trim();
