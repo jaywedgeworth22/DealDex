@@ -16,7 +16,7 @@ import {
   searchEbayBrowse,
   searchEbayBrowseEnabled,
 } from "./ebay-browse";
-import { fetchWithPool, proxyPoolEnabled } from "@/lib/server/proxy-pool";
+import { fetchWithPool } from "@/lib/server/proxy-pool";
 
 export const EBAY_SCAN_CAP = 50;
 
