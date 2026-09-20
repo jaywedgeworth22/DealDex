@@ -51,15 +51,47 @@ object Market {
         sources: Collection<String> = listOf("ebay", "mercari"),
         origin: String = "https://dealdex.net",
     ): List<ScoredListing> {
-        val site = origin.trim().trimEnd('/').ifBlank { "https://dealdex.net" }
-        try {
-            val rows = scanOnDevice(query, keys, sources)
-            if (rows.isNotEmpty()) return rows
-        } catch (_: Exception) {
-            // Phone could not reach eBay/Mercari.  Fall back to the website's
-            // free-desk book rather than showing nothing.
+        val originSite = origin.trim().trimEnd('/').ifBlank { "https://dealdex.net" }
+        // Top-level Sentry transaction so the dashboard's per-platform scan
+        // traces (web + iOS + Android) line up.  Spans inside match the web
+        // SCAN_SPAN.* names: scan.ondevice / scan.site.
+        val tx = io.sentry.Sentry.startTransaction("scan", "scan")
+        return try {
+            val onDeviceSpan = tx.startChild("scan.ondevice")
+            val rows: List<ScoredListing> = try {
+                val out = scanOnDevice(query, keys, sources)
+                onDeviceSpan.setData("scan.ondevice.count", out.size)
+                out
+            } catch (t: Throwable) {
+                onDeviceSpan.throwable = t
+                onDeviceSpan.setData("scan.ondevice.failed", true)
+                emptyList()
+            } finally {
+                onDeviceSpan.finish()
+            }
+            if (rows.isNotEmpty()) {
+                tx.finish()
+                return rows
+            }
+            val siteSpan = tx.startChild("scan.site")
+            val siteRows = try {
+                val out = scanViaSite(originSite, query, sources)
+                siteSpan.setData("scan.site.count", out.size)
+                out
+            } catch (t: Throwable) {
+                siteSpan.throwable = t
+                siteSpan.setData("scan.site.failed", true)
+                emptyList()
+            } finally {
+                siteSpan.finish()
+            }
+            tx.finish()
+            siteRows
+        } catch (t: Throwable) {
+            tx.throwable = t
+            tx.finish()
+            throw t
         }
-        return scanViaSite(site, query, sources)
     }
 
     private fun scanViaSite(origin: String, query: String, sources: Collection<String>): List<ScoredListing> {

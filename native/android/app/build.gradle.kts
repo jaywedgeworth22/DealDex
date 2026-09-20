@@ -90,7 +90,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("com.google.android.play:app-update:2.1.0")
     implementation("com.google.android.play:app-update-ktx:2.1.0")
-    // Crash + ANR only.  Mapping upload plugin skipped; consumer rules ship with the AAR.
+    // Crash + ANR + profiling + scan spans.  Mapping upload plugin skipped;
+    // consumer rules ship with each AAR.
     implementation("io.sentry:sentry-android:8.54.0")
+    implementation("io.sentry:sentry-android-okhttp:8.54.0")
+    implementation("io.sentry:sentry-android-fragment:8.54.0")
+    implementation("io.sentry:sentry-android-compose:8.54.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

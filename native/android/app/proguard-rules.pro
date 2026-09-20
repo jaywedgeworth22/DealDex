@@ -27,4 +27,20 @@
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile
 
-# Sentry ships consumer ProGuard rules in the AAR.  No extra -keep needed.
+# Sentry ships consumer ProGuard rules in the AAR.  Explicit keep here
+# for the integrations added in PR #3 of the MM comprehensive review
+# (SentryOkHttpIntegration, FragmentLifecycleIntegration,
+# SentryComposeIntegration).  These integrations are reflectively wired
+# via ServiceLoader, so R8 would otherwise strip them in the release
+# build and tracing would silently degrade to crash-only.
+-keep class io.sentry.android.okhttp.** { *; }
+-keep class io.sentry.android.fragment.** { *; }
+-keep class io.sentry.android.compose.** { *; }
+-keep class io.sentry.android.core.** { *; }
+-keep class io.sentry.** { *; }
+-keepattributes Signature, InnerClasses, EnclosingMethod
+-keepclassmembers class * {
+    @io.sentry.SentryTransaction <methods>;
+    @io.sentry.SentryTrace <methods>;
+    @io.sentry.SentrySpan <methods>;
+}
