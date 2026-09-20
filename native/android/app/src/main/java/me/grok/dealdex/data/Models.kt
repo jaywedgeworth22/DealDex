@@ -56,6 +56,19 @@ data class ScoredListing(
     val id: String get() = listing.id
 }
 
+/** Auto-buy config for a saved filter.  Mirrors src/lib/alerts/types.ts
+ *  `AutoBuyConfig`.  Cents for caps. */
+data class AutoBuyConfig(
+    val enabled: Boolean = false,
+    val dryRun: Boolean = true,
+    val maxPriceCents: Int = 5000,
+    val minSpread: Double = 0.18,
+    val maxMonthlyCents: Int = 50000,
+    val maxDailyCents: Int = 10000,
+    val coolHours: Int = 24,
+    val marketplace: String = "ebay",
+)
+
 data class AlertRule(
     val id: String,
     val name: String,
@@ -64,6 +77,7 @@ data class AlertRule(
     val maxPrice: Double? = 100.0,
     val minSpread: Double? = 0.15,
     val keyword: String = "",
+    val autoBuy: AutoBuyConfig = AutoBuyConfig(),
 )
 
 data class SavedAppraisal(

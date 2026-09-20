@@ -45,6 +45,19 @@ struct ScoredListing: Identifiable, Hashable {
     var grade: String
 }
 
+/// Auto-buy config for a saved filter.  Mirrors src/lib/alerts/types.ts
+/// `AutoBuyConfig`.  Cents for caps (matches the eBay Order API).
+struct AutoBuyConfig: Codable, Hashable {
+    var enabled: Bool = false
+    var dryRun: Bool = true
+    var maxPriceCents: Int = 5000
+    var minSpread: Double = 0.18
+    var maxMonthlyCents: Int = 50000
+    var maxDailyCents: Int = 10000
+    var coolHours: Int = 24
+    var marketplace: String = "ebay"
+}
+
 struct AlertRule: Identifiable, Hashable {
     var id: String
     var name: String
@@ -52,6 +65,7 @@ struct AlertRule: Identifiable, Hashable {
     var keyword: String = ""
     var minSpread: Double? = 0.12
     var maxPrice: Double? = 100
+    var autoBuy: AutoBuyConfig = AutoBuyConfig()
 }
 
 struct SavedAppraisal: Identifiable, Codable, Hashable {

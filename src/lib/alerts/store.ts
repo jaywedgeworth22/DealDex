@@ -1,4 +1,4 @@
-import type { AlertHit, AlertRule } from "./types";
+import { DEFAULT_AUTO_BUY, type AlertHit, type AlertRule, type AutoBuyConfig } from "./types";
 
 const RULES_KEY = "spreaddex:alerts";
 const HITS_KEY = "spreaddex:alert-hits";
@@ -14,8 +14,25 @@ function readJson<T>(key: string, fallback: T): T {
   }
 }
 
+function normalizeAutoBuy(value: unknown): AutoBuyConfig {
+  if (!value || typeof value !== "object") return { ...DEFAULT_AUTO_BUY };
+  const v = value as Partial<AutoBuyConfig>;
+  return {
+    enabled: Boolean(v.enabled),
+    dryRun: v.dryRun !== false,
+    maxPriceCents: Math.max(0, Math.round(Number(v.maxPriceCents ?? DEFAULT_AUTO_BUY.maxPriceCents))),
+    minSpread: Math.max(0, Number(v.minSpread ?? DEFAULT_AUTO_BUY.minSpread)),
+    maxMonthlyCents: Math.max(0, Math.round(Number(v.maxMonthlyCents ?? DEFAULT_AUTO_BUY.maxMonthlyCents))),
+    maxDailyCents: Math.max(0, Math.round(Number(v.maxDailyCents ?? DEFAULT_AUTO_BUY.maxDailyCents))),
+    coolHours: Math.max(0, Math.round(Number(v.coolHours ?? DEFAULT_AUTO_BUY.coolHours))),
+    marketplace: "ebay",
+  };
+}
+
 export function loadRules(): AlertRule[] {
-  return readJson<AlertRule[]>(RULES_KEY, []);
+  const raw = readJson<AlertRule[]>(RULES_KEY, []);
+  if (!Array.isArray(raw)) return [];
+  return raw.map((r) => ({ ...r, autoBuy: normalizeAutoBuy((r as { autoBuy?: unknown }).autoBuy) }));
 }
 
 export function saveRules(rules: AlertRule[]) {
