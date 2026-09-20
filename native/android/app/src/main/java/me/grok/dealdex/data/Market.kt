@@ -51,7 +51,7 @@ object Market {
         sources: Collection<String> = listOf("ebay", "mercari"),
         origin: String = "https://dealdex.net",
     ): List<ScoredListing> {
-        val originSite = origin.trim().trimEnd('/').ifBlank { "https://dealdex.net" }
+        val site = origin.trim().trimEnd('/').ifBlank { "https://dealdex.net" }
         // Top-level Sentry transaction so the dashboard's per-platform scan
         // traces (web + iOS + Android) line up.  Spans inside match the web
         // SCAN_SPAN.* names: scan.ondevice / scan.site.
@@ -75,7 +75,7 @@ object Market {
             }
             val siteSpan = tx.startChild("scan.site")
             val siteRows = try {
-                val out = scanViaSite(originSite, query, sources)
+                val out = scanViaSite(site, query, sources)
                 siteSpan.setData("scan.site.count", out.size)
                 out
             } catch (t: Throwable) {
