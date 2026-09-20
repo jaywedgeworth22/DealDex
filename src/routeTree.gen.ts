@@ -18,6 +18,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
+import { Route as ApiAlertsRunRouteImport } from './routes/api/alerts/run'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiNativeAppleSigninRouteImport } from './routes/api/native/apple-signin'
 import { Route as ApiNativeExchangeRouteImport } from './routes/api/native/exchange'
@@ -71,6 +72,11 @@ const CardCardIdRoute = CardCardIdRouteImport.update({
   path: '/card/$cardId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAlertsRunRoute = ApiAlertsRunRouteImport.update({
+  id: '/api/alerts/run',
+  path: '/api/alerts/run',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
+  '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
+  '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/card/$cardId': typeof CardCardIdRoute
+  '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
@@ -229,6 +238,7 @@ export interface RootRouteChildren {
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
   CardCardIdRoute: typeof CardCardIdRoute
+  ApiAlertsRunRoute: typeof ApiAlertsRunRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiNativeAppleSigninRoute: typeof ApiNativeAppleSigninRoute
   ApiNativeExchangeRoute: typeof ApiNativeExchangeRoute
@@ -303,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CardCardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/alerts/run': {
+      id: '/api/alerts/run'
+      path: '/api/alerts/run'
+      fullPath: '/api/alerts/run'
+      preLoaderRoute: typeof ApiAlertsRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -365,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
   CardCardIdRoute: CardCardIdRoute,
+  ApiAlertsRunRoute: ApiAlertsRunRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiNativeAppleSigninRoute: ApiNativeAppleSigninRoute,
   ApiNativeExchangeRoute: ApiNativeExchangeRoute,

@@ -1,0 +1,196 @@
+/**
+ * Server-side scan runner.
+ *
+ * Owner direction 2026-09-20: the user wants auto-buy to fire before
+ * someone else snags the steal, and the user can't have the app open
+ * 24/7.  The runner is a thin server-side cron over Market.scan +
+ * auto-buy that fires once per enabled rule.
+ *
+ * Today (PR #5): the runner reads alert_rules from the server-side
+ * table, runs Market.scan, persists a scan_runs row, and runs the
+ * auto-buy decision engine in DRY-RUN mode (no orders).  Flipping
+ * dry-run off requires an explicit user confirmation AND an eBay
+ * order-write scope to be granted to the Browse app.
+ *
+ * Cadence: the .github/workflows/scan-runner.yml workflow hits the
+ * endpoint once per minute; the endpoint itself decides which rules to
+ * run this tick based on the rule's `coolHours` and the last scan_run
+ * row.
+ */
+import { createServerFn } from "@tanstack/react-start";
+import { authMiddleware } from "@/lib/auth/middleware";
+import { scanAndScore } from "@/lib/marketplaces/scan";
+import {
+  DEFAULT_AUTO_BUY,
+  type AlertRule,
+} from "@/lib/alerts/types";
+import type { ScanSource } from "@/lib/marketplaces/types";
+import { evaluateAutoBuy } from "./auto-buy";
+import { loadAlertRules, persistScanRun, listScanRunsSince, type AlertRuleRow } from "./alert-rules-store";
+
+const MAX_ROWS_PER_RUN = 50;
+
+type RunnerInput = {
+  /** When false, the runner only re-evaluates rows already on the scan_run record. */
+  forceScan?: boolean;
+  /** Optional cursor: only run rules whose last run is older than this. */
+  cursorMs?: number;
+};
+
+export type ScanRunnerOutput = {
+  ran: number;
+  skipped: number;
+  dryRunOnly: boolean;
+  perRule: Array<{
+    ruleId: string;
+    accepted: number;
+    rejected: number;
+    totalCents: number;
+    error?: string;
+  }>;
+};
+
+function rowToAlertRule(row: AlertRuleRow): AlertRule {
+  const marketplaces = row.marketplaces.filter(
+    (m): m is "ebay" | "mercari" => m === "ebay" || m === "mercari",
+  );
+  const verdicts = row.verdicts.filter(
+    (v): v is AlertRule["verdicts"][number] =>
+      v === "steal" || v === "good" || v === "fair" || v === "pass",
+  );
+  const ab = row.auto_buy as Partial<AlertRule["autoBuy"]> | null;
+  return {
+    id: row.id,
+    enabled: row.enabled,
+    name: row.name,
+    keyword: row.keyword,
+    marketplaces: marketplaces.length ? marketplaces : ["ebay"],
+    verdicts: verdicts.length ? verdicts : ["steal", "good"],
+    minSpread: row.min_spread,
+    maxPrice: row.max_price,
+    condition: row.condition === "raw" || row.condition === "graded" ? row.condition : "any",
+    channels: {
+      native: Boolean(row.channels.native),
+      email: Boolean(row.channels.email),
+      sms: Boolean(row.channels.sms),
+      pushover: Boolean(row.channels.pushover),
+    },
+    email: row.email,
+    phone: row.phone,
+    pushoverUser: row.pushover_user,
+    pushoverToken: row.pushover_token,
+    autoBuy: ab ? { ...DEFAULT_AUTO_BUY, ...ab, marketplace: "ebay" } : { ...DEFAULT_AUTO_BUY },
+  };
+}
+
+export const runScanRunner = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((input: RunnerInput = {}) => ({
+    forceScan: Boolean(input.forceScan),
+    cursorMs: typeof input.cursorMs === "number" ? input.cursorMs : 0,
+  }))
+  .handler(async ({ data }): Promise<ScanRunnerOutput> => {
+    const rules = await loadAlertRules();
+    const now = Date.now();
+    const cursorMs = data.cursorMs || 0;
+    const perRule: ScanRunnerOutput["perRule"] = [];
+    let ran = 0;
+    let skipped = 0;
+    let dryRunOnly = true;
+
+    for (const rawRule of rules) {
+      const rule = rowToAlertRule(rawRule);
+      if (!rule.enabled) {
+        skipped += 1;
+        continue;
+      }
+      if (!rule.autoBuy.enabled) {
+        skipped += 1;
+        continue;
+      }
+      const lastRuns = await listScanRunsSince(rawRule.user_id, rule.id, cursorMs);
+      if (!data.forceScan && lastRuns.length && now - new Date(lastRuns[0]!.started_at).getTime() < rule.autoBuy.coolHours * 3_600_000) {
+        skipped += 1;
+        continue;
+      }
+
+      ran += 1;
+      if (!rule.autoBuy.dryRun) dryRunOnly = false;
+
+      try {
+        const marketplaces: ScanSource[] = rule.marketplaces.filter(
+          (m): m is ScanSource => m === "ebay" || m === "mercari",
+        );
+        const scanResult = await scanAndScore(rule.keyword || "pokemon", marketplaces);
+        const scored = scanResult.rows;
+        const ledger = {
+          recentListingIds: new Map<string, number>(),
+          spentTodayCents: 0,
+          spentThisMonthCents: 0,
+        };
+        let accepted = 0;
+        let rejected = 0;
+        let totalCents = 0;
+        for (const row of scored.slice(0, MAX_ROWS_PER_RUN)) {
+          const d = evaluateAutoBuy(rule, row, now, ledger);
+          if (d.kind === "accept") {
+            accepted += 1;
+            totalCents += d.allInCents;
+            ledger.recentListingIds.set(row.listing.id, now);
+            ledger.spentTodayCents += d.allInCents;
+            ledger.spentThisMonthCents += d.allInCents;
+          } else {
+            rejected += 1;
+          }
+        }
+        await persistScanRun({
+          user_id: rawRule.user_id,
+          id: `run-${now}-${rule.id}`,
+          rule_id: rule.id,
+          query: rule.keyword,
+          marketplaces: rule.marketplaces,
+          row_count: scored.length,
+          accepted_count: accepted,
+          rejected_count: rejected,
+          total_cents: totalCents,
+          dry_run: rule.autoBuy.dryRun,
+          auto_buy_enabled: rule.autoBuy.enabled,
+          started_at: new Date(now).toISOString(),
+          finished_at: new Date(now).toISOString(),
+          error: null,
+        });
+        perRule.push({
+          ruleId: rule.id,
+          accepted,
+          rejected,
+          totalCents,
+        });
+      } catch (err) {
+        perRule.push({
+          ruleId: rule.id,
+          accepted: 0,
+          rejected: 0,
+          totalCents: 0,
+          error: err instanceof Error ? err.message : "unknown",
+        });
+        await persistScanRun({
+          user_id: rawRule.user_id,
+          id: `run-${now}-${rule.id}`,
+          rule_id: rule.id,
+          query: rule.keyword,
+          marketplaces: rule.marketplaces,
+          row_count: 0,
+          accepted_count: 0,
+          rejected_count: 0,
+          total_cents: 0,
+          dry_run: rule.autoBuy.dryRun,
+          auto_buy_enabled: rule.autoBuy.enabled,
+          started_at: new Date(now).toISOString(),
+          finished_at: new Date(now).toISOString(),
+          error: err instanceof Error ? err.message : "unknown",
+        }).catch(() => undefined);
+      }
+    }
+
+    return { ran, skipped, dryRunOnly, perRule };
+  });
