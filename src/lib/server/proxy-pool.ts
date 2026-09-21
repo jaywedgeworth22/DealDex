@@ -118,12 +118,8 @@ export async function fetchWithPool(
           span.setAttribute("proxy.url", entry.safeUrl);
           span.setAttribute("proxy.attempt", attempt);
         }
-        // The dispatcher / proxy wiring is left to the caller's fetchImpl —
-        // we hand the chosen proxy URL back so the caller can decide.  This
-        // keeps this module dependency-free (no undici coupling) and lets
-        // each env wire its own proxy-aware HTTP client.
-        const proxyHeaders = { ...(init?.headers as Record<string, string> | undefined), "X-Proxy-Url": entry.fullUrl };
-        return fetchImpl(url, { ...init, headers: proxyHeaders });
+        const proxiedInit = await buildProxiedInit(entry.fullUrl, init);
+        return fetchImpl(url, proxiedInit);
       });
       if (!res.ok && rotate && RETRY_STATUSES.has(res.status) && attempt + 1 < pool.length) {
         attempt += 1;
@@ -145,17 +141,18 @@ export async function fetchWithPool(
 /**
  * For fetch(), Node's built-in supports `proxy:` via undici's `ProxyAgent`
  * but only when fetch is dispatched with a `dispatcher` option.  We
- * attach via the `dispatcher` field so it works in both Node + edge.
- * Browsers ignore the field.  Vendors that need a different mechanism
- * (e.g. SOCKS5 via the shell) should override `buildProxiedInit`.
+ * attach via the `dispatcher` field so it works in Node without transmitting
+ * proxy credentials across the network in an HTTP request header.
  */
-function buildProxiedInit(proxyUrl: string, init: RequestInit): RequestInit {
-  // The dispatcher / proxy wiring is intentionally the caller's job —
-  // we surface the chosen proxy URL as `X-Proxy-Url` so each environment
-  // can wire its own proxy-aware HTTP client.  This keeps the module
-  // dependency-free (no undici coupling) and avoids bundling proxy code
-  // into the client.
-  return { ...init, headers: { ...(init?.headers as Record<string, string> | undefined), "X-Proxy-Url": proxyUrl } };
+async function buildProxiedInit(proxyUrl: string, init: RequestInit): Promise<RequestInit> {
+  try {
+    const { ProxyAgent } = await import("undici");
+    const dispatcher = new ProxyAgent(proxyUrl) as unknown as Record<string, unknown>;
+    dispatcher.uri = proxyUrl;
+    return { ...init, dispatcher: dispatcher as unknown };
+  } catch {
+    return { ...init, dispatcher: { uri: proxyUrl } };
+  }
 }
 
 export function redactProxyUrl(url: string): string {

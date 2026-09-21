@@ -27,6 +27,7 @@ import {
 import type { ScanSource } from "@/lib/marketplaces/types";
 import { evaluateAutoBuy } from "./auto-buy";
 import { loadAlertRules, persistScanRun, listScanRunsSince, type AlertRuleRow } from "./alert-rules-store";
+import { fetchUserDeskKeys } from "./desk-keys";
 
 const MAX_ROWS_PER_RUN = 50;
 
@@ -65,7 +66,7 @@ function rowToAlertRule(row: AlertRuleRow): AlertRule {
     name: row.name,
     keyword: row.keyword,
     marketplaces: marketplaces.length ? marketplaces : ["ebay"],
-    verdicts: verdicts.length ? verdicts : ["steal", "good"],
+    verdicts,
     minSpread: row.min_spread,
     maxPrice: row.max_price,
     condition: row.condition === "raw" || row.condition === "graded" ? row.condition : "any",
@@ -108,8 +109,9 @@ export const runScanRunner = createServerFn({ method: "POST" })
         skipped += 1;
         continue;
       }
+      const ruleStartedAt = Date.now();
       const lastRuns = await listScanRunsSince(rawRule.user_id, rule.id, cursorMs);
-      if (!data.forceScan && lastRuns.length && now - new Date(lastRuns[0]!.started_at).getTime() < rule.autoBuy.coolHours * 3_600_000) {
+      if (!data.forceScan && lastRuns.length && ruleStartedAt - new Date(lastRuns[0]!.started_at).getTime() < rule.autoBuy.coolHours * 3_600_000) {
         skipped += 1;
         continue;
       }
@@ -121,7 +123,8 @@ export const runScanRunner = createServerFn({ method: "POST" })
         const marketplaces: ScanSource[] = rule.marketplaces.filter(
           (m): m is ScanSource => m === "ebay" || m === "mercari",
         );
-        const scanResult = await scanAndScore(rule.keyword || "pokemon", marketplaces);
+        const keys = await fetchUserDeskKeys(rawRule.user_id);
+        const scanResult = await scanAndScore(rule.keyword || "pokemon", marketplaces, keys);
         const scored = scanResult.rows;
         const ledger = {
           recentListingIds: new Map<string, number>(),
@@ -132,20 +135,23 @@ export const runScanRunner = createServerFn({ method: "POST" })
         let rejected = 0;
         let totalCents = 0;
         for (const row of scored.slice(0, MAX_ROWS_PER_RUN)) {
-          const d = evaluateAutoBuy(rule, row, now, ledger);
+          if (row.listing.source !== rule.autoBuy.marketplace) continue;
+          const d = evaluateAutoBuy(rule, row, ruleStartedAt, ledger);
           if (d.kind === "accept") {
             accepted += 1;
             totalCents += d.allInCents;
-            ledger.recentListingIds.set(row.listing.id, now);
+            ledger.recentListingIds.set(row.listing.id, ruleStartedAt);
             ledger.spentTodayCents += d.allInCents;
             ledger.spentThisMonthCents += d.allInCents;
           } else {
             rejected += 1;
           }
         }
+        const ruleFinishedAt = Date.now();
+        const runError = scanResult.errors?.length && scored.length === 0 ? scanResult.errors.join("; ") : null;
         await persistScanRun({
           user_id: rawRule.user_id,
-          id: `run-${now}-${rule.id}`,
+          id: `run-${ruleStartedAt}-${rule.id}`,
           rule_id: rule.id,
           query: rule.keyword,
           marketplaces: rule.marketplaces,
@@ -155,27 +161,30 @@ export const runScanRunner = createServerFn({ method: "POST" })
           total_cents: totalCents,
           dry_run: rule.autoBuy.dryRun,
           auto_buy_enabled: rule.autoBuy.enabled,
-          started_at: new Date(now).toISOString(),
-          finished_at: new Date(now).toISOString(),
-          error: null,
+          started_at: new Date(ruleStartedAt).toISOString(),
+          finished_at: new Date(ruleFinishedAt).toISOString(),
+          error: runError,
         });
         perRule.push({
           ruleId: rule.id,
           accepted,
           rejected,
           totalCents,
+          error: runError ?? undefined,
         });
       } catch (err) {
+        const ruleFinishedAt = Date.now();
+        const errMsg = err instanceof Error ? err.message : "unknown";
         perRule.push({
           ruleId: rule.id,
           accepted: 0,
           rejected: 0,
           totalCents: 0,
-          error: err instanceof Error ? err.message : "unknown",
+          error: errMsg,
         });
         await persistScanRun({
           user_id: rawRule.user_id,
-          id: `run-${now}-${rule.id}`,
+          id: `run-${ruleStartedAt}-${rule.id}`,
           rule_id: rule.id,
           query: rule.keyword,
           marketplaces: rule.marketplaces,
@@ -185,9 +194,9 @@ export const runScanRunner = createServerFn({ method: "POST" })
           total_cents: 0,
           dry_run: rule.autoBuy.dryRun,
           auto_buy_enabled: rule.autoBuy.enabled,
-          started_at: new Date(now).toISOString(),
-          finished_at: new Date(now).toISOString(),
-          error: err instanceof Error ? err.message : "unknown",
+          started_at: new Date(ruleStartedAt).toISOString(),
+          finished_at: new Date(ruleFinishedAt).toISOString(),
+          error: errMsg,
         }).catch(() => undefined);
       }
     }
