@@ -117,14 +117,16 @@ export const runScanRunner = createServerFn({ method: "POST" })
       }
 
       ran += 1;
-      if (!rule.autoBuy.dryRun) dryRunOnly = false;
+      // Auto-buy order placement is pending server-side integration; always keep runner in dry-run mode
+      const isDryRun = true;
 
       try {
         const marketplaces: ScanSource[] = rule.marketplaces.filter(
           (m): m is ScanSource => m === "ebay" || m === "mercari",
         );
         const keys = await fetchUserDeskKeys(rawRule.user_id);
-        const scanResult = await scanAndScore(rule.keyword || "pokemon", marketplaces, keys);
+        const effectiveQuery = rule.keyword?.trim() || "pokemon";
+        const scanResult = await scanAndScore(effectiveQuery, marketplaces, keys);
         const scored = scanResult.rows;
         const ledger = {
           recentListingIds: new Map<string, number>(),
@@ -153,13 +155,13 @@ export const runScanRunner = createServerFn({ method: "POST" })
           user_id: rawRule.user_id,
           id: `run-${ruleStartedAt}-${rule.id}`,
           rule_id: rule.id,
-          query: rule.keyword,
+          query: effectiveQuery,
           marketplaces: rule.marketplaces,
           row_count: scored.length,
           accepted_count: accepted,
           rejected_count: rejected,
           total_cents: totalCents,
-          dry_run: rule.autoBuy.dryRun,
+          dry_run: isDryRun,
           auto_buy_enabled: rule.autoBuy.enabled,
           started_at: new Date(ruleStartedAt).toISOString(),
           finished_at: new Date(ruleFinishedAt).toISOString(),
