@@ -146,13 +146,19 @@ export async function fetchWithPool(
  */
 async function buildProxiedInit(proxyUrl: string, init: RequestInit): Promise<RequestInit> {
   try {
-    const { ProxyAgent } = await import("undici");
-    const dispatcher = new ProxyAgent(proxyUrl) as unknown as Record<string, unknown>;
-    dispatcher.uri = proxyUrl;
-    return ({ ...init, dispatcher } as unknown) as RequestInit;
+    const moduleName = "undici";
+    const mod = (await import(/* @vite-ignore */ moduleName).catch(() => null)) as {
+      ProxyAgent?: new (url: string) => Record<string, unknown>;
+    } | null;
+    if (mod?.ProxyAgent) {
+      const dispatcher = new mod.ProxyAgent(proxyUrl);
+      dispatcher.uri = proxyUrl;
+      return ({ ...init, dispatcher } as unknown) as RequestInit;
+    }
   } catch {
-    return ({ ...init, dispatcher: { uri: proxyUrl } } as unknown) as RequestInit;
+    // Ignore dynamic import failure in non-Node environments
   }
+  return ({ ...init, dispatcher: { uri: proxyUrl } } as unknown) as RequestInit;
 }
 
 export function redactProxyUrl(url: string): string {
