@@ -149,9 +149,9 @@ async function buildProxiedInit(proxyUrl: string, init: RequestInit): Promise<Re
     const { ProxyAgent } = await import("undici");
     const dispatcher = new ProxyAgent(proxyUrl) as unknown as Record<string, unknown>;
     dispatcher.uri = proxyUrl;
-    return { ...init, dispatcher: dispatcher as unknown };
+    return ({ ...init, dispatcher } as unknown) as RequestInit;
   } catch {
-    return { ...init, dispatcher: { uri: proxyUrl } };
+    return ({ ...init, dispatcher: { uri: proxyUrl } } as unknown) as RequestInit;
   }
 }
 

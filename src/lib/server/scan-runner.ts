@@ -135,7 +135,7 @@ export const runScanRunner = createServerFn({ method: "POST" })
         let rejected = 0;
         let totalCents = 0;
         for (const row of scored.slice(0, MAX_ROWS_PER_RUN)) {
-          if (row.listing.source !== rule.autoBuy.marketplace) continue;
+          if (row.listing.marketplace !== rule.autoBuy.marketplace) continue;
           const d = evaluateAutoBuy(rule, row, ruleStartedAt, ledger);
           if (d.kind === "accept") {
             accepted += 1;
