@@ -24,6 +24,7 @@ import {
   DEFAULT_AUTO_BUY,
   type AlertRule,
 } from "@/lib/alerts/types";
+import { listingMatchesRule } from "@/lib/alerts/match";
 import type { ScanSource } from "@/lib/marketplaces/types";
 import { evaluateAutoBuy } from "./auto-buy";
 import { loadAlertRules, persistScanRun, listScanRunsSince, type AlertRuleRow } from "./alert-rules-store";
@@ -138,6 +139,10 @@ export const runScanRunner = createServerFn({ method: "POST" })
         let totalCents = 0;
         const candidateRows = scored.filter((row) => row.listing.marketplace === rule.autoBuy.marketplace);
         for (const row of candidateRows.slice(0, MAX_ROWS_PER_RUN)) {
+          if (!listingMatchesRule(row, rule)) {
+            rejected += 1;
+            continue;
+          }
           const d = evaluateAutoBuy(rule, row, ruleStartedAt, ledger);
           if (d.kind === "accept") {
             accepted += 1;
