@@ -97,7 +97,7 @@ export const runScanRunner = createServerFn({ method: "POST" })
     const perRule: ScanRunnerOutput["perRule"] = [];
     let ran = 0;
     let skipped = 0;
-    let dryRunOnly = true;
+    const dryRunOnly = true;
 
     for (const rawRule of rules) {
       const rule = rowToAlertRule(rawRule);
