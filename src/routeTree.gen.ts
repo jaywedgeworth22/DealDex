@@ -17,6 +17,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as ApiAlertsRunRouteImport } from './routes/api/alerts/run'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -65,6 +66,11 @@ const SavedRoute = SavedRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CardCardIdRoute = CardCardIdRouteImport.update({
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
+  '/api/health': typeof ApiHealthRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
+  '/api/health': typeof ApiHealthRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
+  '/api/health': typeof ApiHealthRoute
   '/card/$cardId': typeof CardCardIdRoute
   '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -182,6 +191,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/saved'
     | '/settings'
+    | '/api/health'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/apple-signin'
@@ -200,6 +210,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/saved'
     | '/settings'
+    | '/api/health'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/apple-signin'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/saved'
     | '/settings'
+    | '/api/health'
     | '/card/$cardId'
     | '/api/auth/$'
     | '/api/native/apple-signin'
@@ -237,6 +249,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
+  ApiHealthRoute: typeof ApiHealthRoute
   CardCardIdRoute: typeof CardCardIdRoute
   ApiAlertsRunRoute: typeof ApiAlertsRunRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/card/$cardId': {
@@ -381,6 +401,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
+  ApiHealthRoute: ApiHealthRoute,
   CardCardIdRoute: CardCardIdRoute,
   ApiAlertsRunRoute: ApiAlertsRunRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
