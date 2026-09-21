@@ -148,7 +148,7 @@ export const runScanRunner = createServerFn({ method: "POST" })
           }
         }
         const ruleFinishedAt = Date.now();
-        const runError = scanResult.errors?.length && scored.length === 0 ? scanResult.errors.join("; ") : null;
+        const runError = scanResult.errors?.length ? scanResult.errors.join("; ") : null;
         await persistScanRun({
           user_id: rawRule.user_id,
           id: `run-${ruleStartedAt}-${rule.id}`,

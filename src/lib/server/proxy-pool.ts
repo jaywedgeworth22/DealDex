@@ -158,7 +158,7 @@ async function buildProxiedInit(proxyUrl: string, init: RequestInit): Promise<Re
   } catch {
     // Ignore dynamic import failure in non-Node environments
   }
-  return ({ ...init, dispatcher: { uri: proxyUrl } } as unknown) as RequestInit;
+  return init;
 }
 
 export function redactProxyUrl(url: string): string {
