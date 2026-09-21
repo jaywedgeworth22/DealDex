@@ -167,7 +167,7 @@ export async function searchEbayBrowsePage(
 
   const limit = Math.min(200, Math.max(1, options.limit ?? 50));
   const offset = options.offset ?? 0;
-  const conditions = options.conditionIds ?? [EBAY_CONDITION_IDS.NEW, EBAY_CONDITION_IDS.used];
+  const conditions = options.conditionIds ?? Array.from(new Set(Object.values(EBAY_CONDITION_IDS)));
 
   const params = new URLSearchParams();
   params.set("q", broadQuery(query));

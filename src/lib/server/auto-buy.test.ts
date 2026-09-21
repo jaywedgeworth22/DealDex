@@ -5,8 +5,6 @@ import type { Appraisal, ParsedListing, Verdict } from "@/lib/tcg/types";
 import type { AlertRule, AutoBuyConfig } from "@/lib/alerts/types";
 import {
   AUTO_BUY_COOL_HOURS_MAX,
-  AUTO_BUY_COOL_HOURS_MIN,
-  AUTO_BUY_PRICE_CENTS_MAX,
   AUTO_BUY_PRICE_CENTS_MIN,
   applyAutoBuy,
   clampAutoBuy,

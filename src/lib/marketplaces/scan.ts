@@ -124,26 +124,37 @@ export async function scanAndScore(
   query: string,
   sources: ScanSource[],
   keys: DeskKeys = {},
-): Promise<{ rows: ScoredListing[]; ebay: number; mercari: number; notes: string[] }> {
+): Promise<{ rows: ScoredListing[]; ebay: number; mercari: number; notes: string[]; errors?: string[] }> {
   const notes: string[] = [];
+  const errors: string[] = [];
   const listings: LiveListing[] = [];
   if (sources.includes("ebay")) {
     listings.push(
       ...(await withScanSpan(SCAN_SPAN.ebay, async (span) => {
-        const rows = await searchEbay(query).catch(() => []);
-        span?.setAttribute("scan.marketplace", "ebay");
-        span?.setAttribute("listing.count", rows.length);
-        return rows;
+        try {
+          const rows = await searchEbay(query);
+          span?.setAttribute("scan.marketplace", "ebay");
+          span?.setAttribute("listing.count", rows.length);
+          return rows;
+        } catch (err) {
+          errors.push(`ebay: ${err instanceof Error ? err.message : String(err)}`);
+          return [];
+        }
       })),
     );
   }
   if (sources.includes("mercari")) {
     listings.push(
       ...(await withScanSpan(SCAN_SPAN.mercari, async (span) => {
-        const rows = await searchMercari(query).catch(() => []);
-        span?.setAttribute("scan.marketplace", "mercari");
-        span?.setAttribute("listing.count", rows.length);
-        return rows;
+        try {
+          const rows = await searchMercari(query);
+          span?.setAttribute("scan.marketplace", "mercari");
+          span?.setAttribute("listing.count", rows.length);
+          return rows;
+        } catch (err) {
+          errors.push(`mercari: ${err instanceof Error ? err.message : String(err)}`);
+          return [];
+        }
       })),
     );
   }
@@ -238,5 +249,5 @@ export async function scanAndScore(
     const bs = b.appraisal?.spread ?? -99;
     return bs - as;
   });
-  return { rows: scored, ebay, mercari, notes };
+  return { rows: scored, ebay, mercari, notes, errors: errors.length ? errors : undefined };
 }

@@ -58,6 +58,20 @@ struct AutoBuyConfig: Codable, Hashable {
     var marketplace: String = "ebay"
 }
 
+/// Out-of-app channel toggles + credentials.  Mirrors the web channels
+/// map in src/lib/alerts/types.ts.  Email / SMS / Pushover providers are
+/// gated server-side; the runner picks these up once the providers are
+/// wired.
+struct AlertChannels: Codable, Hashable {
+    var emailToggle: Bool = false
+    var email: String = ""
+    var smsToggle: Bool = false
+    var phone: String = ""
+    var pushoverToggle: Bool = false
+    var pushoverUser: String = ""
+    var pushoverToken: String = ""
+}
+
 struct AlertRule: Identifiable, Hashable {
     var id: String
     var name: String
@@ -66,6 +80,7 @@ struct AlertRule: Identifiable, Hashable {
     var minSpread: Double? = 0.12
     var maxPrice: Double? = 100
     var autoBuy: AutoBuyConfig = AutoBuyConfig()
+    var channels: AlertChannels = AlertChannels()
 }
 
 struct SavedAppraisal: Identifiable, Codable, Hashable {
