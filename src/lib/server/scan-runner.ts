@@ -28,6 +28,8 @@ import { listingMatchesRule } from "@/lib/alerts/match";
 import type { ScanSource } from "@/lib/marketplaces/types";
 import { evaluateAutoBuy } from "./auto-buy";
 import { loadAlertRules, persistScanRun, listScanRunsSince, type AlertRuleRow } from "./alert-rules-store";
+import { fetchWithPool } from "./proxy-pool";
+import { loadRunUserCredentials } from "./user-settings-store";
 import { fetchUserDeskKeys } from "./desk-keys";
 
 const MAX_ROWS_PER_RUN = 50;
@@ -118,8 +120,24 @@ export const runScanRunner = createServerFn({ method: "POST" })
       }
 
       ran += 1;
-      // Auto-buy order placement is pending server-side integration; always keep runner in dry-run mode
-      const isDryRun = true;
+      // Consult per-user credentials BEFORE flipping dry-run off.  The runner
+      // stays in dry-run whenever the user has not connected their eBay
+      // account, so an auto-buy rule with autoBuy.dryRun=false but no eBay
+      // OAuth never silently places an order — it logs scan.runner.no_credentials
+      // and stays safe.  Future work: load the eBay refresh token, refresh
+      // the access token, and call the eBay Order API on `accepted` rows.
+      const userCreds = await loadRunUserCredentials(rawRule.user_id, ruleStartedAt);
+      const isDryRun =
+        rule.autoBuy.dryRun || !userCreds.has_ebay || userCreds.ebay_oauth_expired;
+      if (!userCreds.has_ebay) {
+        console.warn(
+          `[scan.runner.no_credentials] rule=${rule.id} user=${rawRule.user_id} reason=ebay_not_connected`,
+        );
+      } else if (userCreds.ebay_oauth_expired) {
+        console.warn(
+          `[scan.runner.no_credentials] rule=${rule.id} user=${rawRule.user_id} reason=ebay_token_expired`,
+        );
+      }
 
       try {
         const marketplaces: ScanSource[] = rule.marketplaces.filter(
@@ -127,7 +145,9 @@ export const runScanRunner = createServerFn({ method: "POST" })
         );
         const keys = await fetchUserDeskKeys(rawRule.user_id);
         const effectiveQuery = rule.keyword?.trim() || "pokemon";
-        const scanResult = await scanAndScore(effectiveQuery, marketplaces, keys);
+        const scanResult = await scanAndScore(effectiveQuery, marketplaces, keys, {
+          userProxyUrl: userCreds.proxy_url_override,
+        });
         const scored = scanResult.rows;
         const ledger = {
           recentListingIds: new Map<string, number>(),
