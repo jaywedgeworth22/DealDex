@@ -21,6 +21,9 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as CardCardIdRouteImport } from './routes/card.$cardId'
 import { Route as ApiAlertsRunRouteImport } from './routes/api/alerts/run'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiSettingsIndexRouteImport } from './routes/api/settings'
+import { Route as ApiSettingsEbayOauthStartRouteImport } from './routes/api/settings/ebay/oauth/start'
+import { Route as ApiSettingsEbayOauthCallbackRouteImport } from './routes/api/settings/ebay/oauth/callback'
 import { Route as ApiNativeAppleSigninRouteImport } from './routes/api/native/apple-signin'
 import { Route as ApiNativeExchangeRouteImport } from './routes/api/native/exchange'
 import { Route as ApiNativeKeysRouteImport } from './routes/api/native/keys'
@@ -88,6 +91,21 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSettingsIndexRoute = ApiSettingsIndexRouteImport.update({
+  id: '/api/settings',
+  path: '/api/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSettingsEbayOauthStartRoute = ApiSettingsEbayOauthStartRouteImport.update({
+  id: '/api/settings/ebay/oauth/start',
+  path: '/api/settings/ebay/oauth/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSettingsEbayOauthCallbackRoute = ApiSettingsEbayOauthCallbackRouteImport.update({
+  id: '/api/settings/ebay/oauth/callback',
+  path: '/api/settings/ebay/oauth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiNativeAppleSigninRoute = ApiNativeAppleSigninRouteImport.update({
   id: '/api/native/apple-signin',
   path: '/api/native/apple-signin',
@@ -132,6 +150,9 @@ export interface FileRoutesByFullPath {
   '/card/$cardId': typeof CardCardIdRoute
   '/api/alerts/run': typeof ApiAlertsRunRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/settings': typeof ApiSettingsIndexRoute
+  '/api/settings/ebay/oauth/callback': typeof ApiSettingsEbayOauthCallbackRoute
+  '/api/settings/ebay/oauth/start': typeof ApiSettingsEbayOauthStartRoute
   '/api/native/apple-signin': typeof ApiNativeAppleSigninRoute
   '/api/native/exchange': typeof ApiNativeExchangeRoute
   '/api/native/keys': typeof ApiNativeKeysRoute
@@ -194,6 +215,9 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/settings'
+    | '/api/settings/ebay/oauth/callback'
+    | '/api/settings/ebay/oauth/start'
     | '/api/native/apple-signin'
     | '/api/native/exchange'
     | '/api/native/keys'
@@ -213,6 +237,9 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/settings'
+    | '/api/settings/ebay/oauth/callback'
+    | '/api/settings/ebay/oauth/start'
     | '/api/native/apple-signin'
     | '/api/native/exchange'
     | '/api/native/keys'
@@ -232,6 +259,9 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/card/$cardId'
     | '/api/auth/$'
+    | '/api/settings'
+    | '/api/settings/ebay/oauth/callback'
+    | '/api/settings/ebay/oauth/start'
     | '/api/native/apple-signin'
     | '/api/native/exchange'
     | '/api/native/keys'
@@ -347,6 +377,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/settings': {
+      id: '/api/settings'
+      path: '/api/settings'
+      fullPath: '/api/settings'
+      preLoaderRoute: typeof ApiSettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/settings/ebay/oauth/callback': {
+      id: '/api/settings/ebay/oauth/callback'
+      path: '/api/settings/ebay/oauth/callback'
+      fullPath: '/api/settings/ebay/oauth/callback'
+      preLoaderRoute: typeof ApiSettingsEbayOauthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/settings/ebay/oauth/start': {
+      id: '/api/settings/ebay/oauth/start'
+      path: '/api/settings/ebay/oauth/start'
+      fullPath: '/api/settings/ebay/oauth/start'
+      preLoaderRoute: typeof ApiSettingsEbayOauthStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/native/apple-signin': {
       id: '/api/native/apple-signin'
       path: '/api/native/apple-signin'
@@ -405,7 +456,9 @@ const rootRouteChildren: RootRouteChildren = {
   CardCardIdRoute: CardCardIdRoute,
   ApiAlertsRunRoute: ApiAlertsRunRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiNativeAppleSigninRoute: ApiNativeAppleSigninRoute,
+  ApiSettingsIndexRoute: ApiSettingsIndexRoute,
+  ApiSettingsEbayOauthStartRoute: ApiSettingsEbayOauthStartRoute,
+  ApiSettingsEbayOauthCallbackRoute: ApiSettingsEbayOauthCallbackRoute,  ApiNativeAppleSigninRoute: ApiNativeAppleSigninRoute,
   ApiNativeExchangeRoute: ApiNativeExchangeRoute,
   ApiNativeKeysRoute: ApiNativeKeysRoute,
   ApiNativeOauthRoute: ApiNativeOauthRoute,

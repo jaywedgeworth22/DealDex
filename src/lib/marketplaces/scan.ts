@@ -124,15 +124,21 @@ export async function scanAndScore(
   query: string,
   sources: ScanSource[],
   keys: DeskKeys = {},
+  options: { userProxyUrl?: string | null } = {},
 ): Promise<{ rows: ScoredListing[]; ebay: number; mercari: number; notes: string[]; errors?: string[] }> {
   const notes: string[] = [];
   const errors: string[] = [];
   const listings: LiveListing[] = [];
+  // When the user has set a per-user proxy override, fold it into a synthetic
+  // env so fetchWithPool picks the override ahead of the server default.
+  const env = options.userProxyUrl
+    ? { ...process.env, PROXY_URL_LIST: options.userProxyUrl }
+    : process.env;
   if (sources.includes("ebay")) {
     listings.push(
       ...(await withScanSpan(SCAN_SPAN.ebay, async (span) => {
         try {
-          const rows = await searchEbay(query);
+          const rows = await searchEbay(query, { userProxyUrl: options.userProxyUrl });
           span?.setAttribute("scan.marketplace", "ebay");
           span?.setAttribute("listing.count", rows.length);
           return rows;

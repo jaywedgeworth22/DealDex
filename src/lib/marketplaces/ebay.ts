@@ -26,7 +26,14 @@ function pokemonQuery(query: string) {
   return /pokemon|pokémon|tcg/i.test(q) ? q : `${q} pokemon`;
 }
 
-export async function searchEbay(query: string): Promise<LiveListing[]> {
+export async function searchEbay(
+  query: string,
+  options: { userProxyUrl?: string | null } = {},
+): Promise<LiveListing[]> {
+  // Per-user proxy override takes precedence over the server default.
+  const env = options.userProxyUrl
+    ? { ...process.env, PROXY_URL_LIST: options.userProxyUrl }
+    : process.env;
   // Try the official Browse API first when both keys are configured.  This
   // avoids the Vercel datacenter IP getting 403'd on the raw HTML scrape,
   // and gives paging up to ~50 listings per call across multiple pages.
@@ -55,7 +62,7 @@ export async function searchEbay(query: string): Promise<LiveListing[]> {
   const fromBrave = parseBraveListings(brave, query, "ebay");
   if (fromBrave.length) return fromBrave;
 
-  const res = await fetchWithPool(jinaUrl, { headers: BROWSER_HEADERS });
+  const res = await fetchWithPool(jinaUrl, { headers: BROWSER_HEADERS }, env);
   if (res.ok) {
     const html = await res.text();
     const rows = parseEbayHtml(html, query);
