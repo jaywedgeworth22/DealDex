@@ -16,7 +16,7 @@ struct AlertsView: View {
                         .keyboardType(.decimalPad)
                     Toggle("Alerts on", isOn: $desk.rule.enabled)
                 }
-                Section("Out-of-app channels") {
+                Section {
                     Toggle("Email me", isOn: $desk.rule.channels.emailToggle)
                     if desk.rule.channels.emailToggle {
                         TextField("Email address", text: $desk.rule.channels.email)
@@ -36,10 +36,12 @@ struct AlertsView: View {
                             .autocorrectionDisabled()
                         SecureField("Pushover API token", text: $desk.rule.channels.pushoverToken)
                     }
+                } header: {
+                    Text("Out-of-app channels")
                 } footer: {
                     Text("Out-of-app channels are gated by server-side providers; the alert config is saved locally today and the runner will pick it up once the providers are wired (server-side PR #7).")
                 }
-                Section("Auto-buy (dry-run by default)") {
+                Section {
                     Toggle("Buy It Now within caps", isOn: $desk.rule.autoBuy.enabled)
                     if desk.rule.autoBuy.enabled {
                         TextField("Max all-in (cents)", text: autoBuyMaxCents)
@@ -54,6 +56,8 @@ struct AlertsView: View {
                             .keyboardType(.numberPad)
                         Toggle("Dry-run (recommended)", isOn: $desk.rule.autoBuy.dryRun)
                     }
+                } header: {
+                    Text("Auto-buy (dry-run by default)")
                 } footer: {
                     Text("Auto-buy is dry-run by default. Flipping dry-run off is gated server-side and requires an explicit confirmation.")
                 }
