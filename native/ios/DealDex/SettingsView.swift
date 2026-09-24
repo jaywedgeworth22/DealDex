@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct SettingsView: View {
     @EnvironmentObject var desk: DeskModel
@@ -75,6 +76,23 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private func connectOrDisconnectEbay() async {
+        if ebayConnected {
+            // Future: server-side disconnect endpoint.
+            ebayConnected = false
+            ebayUsername = nil
+            return
+        }
+        connectingEbay = true
+        defer { connectingEbay = false }
+        do {
+            let url = try await EbayOAuth.start()
+            await UIApplication.shared.open(url)
+        } catch {
+            desk.settingsNote = "Could not start eBay OAuth: \(error.localizedDescription)"
         }
     }
 }
@@ -175,22 +193,6 @@ struct SignedInUserView: View {
         .disabled(desk.accountBusy)
     }
 
-    private func connectOrDisconnectEbay() async {
-        if ebayConnected {
-            // Future: server-side disconnect endpoint.
-            ebayConnected = false
-            ebayUsername = nil
-            return
-        }
-        connectingEbay = true
-        defer { connectingEbay = false }
-        do {
-            let url = try await EbayOAuth.start()
-            await UIApplication.shared.open(url)
-        } catch {
-            desk.settingsNote = "Could not start eBay OAuth: \(error.localizedDescription)"
-        }
-    }
 }
 
 /// Thin wrapper around `/api/settings/ebay/oauth/start` so the iOS Settings
