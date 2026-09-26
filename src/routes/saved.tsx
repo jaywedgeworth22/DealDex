@@ -14,8 +14,8 @@ import { Lead } from "@/components/lead";
 
 export const Route = createFileRoute("/saved")({ component: SavedPage });
 
-const LOCAL_KEY = "spreaddex:saved";
-const LEGACY_KEY = "trueask:saved";
+const LOCAL_KEY = "dealdex:saved";
+const LEGACY_KEYS = ["spreaddex:saved", "trueask:saved"];
 
 function asVerdict(v: string): Verdict {
   if (v === "steal" || v === "good" || v === "fair" || v === "high" || v === "avoid") return v;
@@ -30,7 +30,18 @@ function variant(v: Verdict) {
 
 function readLocal(): SavedRow[] {
   try {
-    const raw = localStorage.getItem(LOCAL_KEY) ?? localStorage.getItem(LEGACY_KEY);
+    let raw = localStorage.getItem(LOCAL_KEY);
+    if (!raw) {
+      for (const legacy of LEGACY_KEYS) {
+        const v = localStorage.getItem(legacy);
+        if (v) {
+          raw = v;
+          localStorage.setItem(LOCAL_KEY, v);
+          localStorage.removeItem(legacy);
+          break;
+        }
+      }
+    }
     if (!raw) return [];
     const parsed = JSON.parse(raw) as Array<SavedRow & { createdAt?: string }>;
     return parsed.map((r) => ({
